@@ -1,3 +1,3 @@
 # android-app
 
-A very informative readme. 
+An informative readme. 
