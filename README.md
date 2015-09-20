@@ -1,3 +1,3 @@
 # android-app
 
-Stay away, or the pirate will get you.
+A very informative readme. 
