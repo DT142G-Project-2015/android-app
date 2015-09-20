@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="order">Beställningar</string>
+    <string name="kitchen">Köket</string>
+    <string name="menu">Meny</string>
+    <string name="lager">Lager</string>
 </resources>
