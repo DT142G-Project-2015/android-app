@@ -2,7 +2,8 @@
     <string name="app_name">Antons Skafferi</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="actionbar_settings">Settings</string>
+    <string name="actionbar_exit">Exit</string>
     <string name="order">Beställningar</string>
     <string name="kitchen">Köket</string>
     <string name="menu">Meny</string>
