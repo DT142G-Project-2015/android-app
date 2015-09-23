@@ -40,6 +40,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.proxymeister.antonsskafferi.MainActivity" />
         </activity>
+        <activity
+        android:name=".LagerActivity"
+        android:label="@string/title_activity_lager" >
+            </activity>
     </application>
 
 </manifest>

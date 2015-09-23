@@ -44,18 +44,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/button3"
         android:layout_alignStart="@+id/button3"
-        android:layout_marginBottom="73dp"/>
+        android:onClick="startLagerActivity"
+        android:layout_marginBottom="73dp" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/editText"
-        android:layout_alignBottom="@+id/button3"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="417dp"
-        android:layout_marginStart="417dp" />
 
 </RelativeLayout>

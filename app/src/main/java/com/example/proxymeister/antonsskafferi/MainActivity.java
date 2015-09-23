@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.content.Intent;
 import android.view.View;
 
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -40,6 +41,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+
+    }
+
+    // Called on by the Lager button in activity_main.xml
+    // Starts the lager activity
+    public void startLagerActivity(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, LagerActivity.class);
+        startActivity(intent);
     }
 
     //-------------------------------------------------------------------------------------//
