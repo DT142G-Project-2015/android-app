@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.content.Intent;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,4 +41,28 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    //-------------------------------------------------------------------------------------//
+    // When you click on any of the buttons "beställningar/kök/meny/lager", the button is sent in as
+    // an argument of type "view" to these functions. When the corresponding function runs, it sets
+    // up a new activity called "OrderActivity". Navigate to that file if you want to implement
+    // something related.
+
+    public void openOrderActivity(View view) {
+        Intent intent = new Intent(this, OrderActivity.class);
+        startActivity(intent);
+    }
+
+    public void openKitchenActivity(View view) {
+        Intent intent = new Intent(this, KitchenActivity.class);
+        startActivity(intent);
+    }
+
+    public void openMenuActivity(View view) {
+        Intent intent = new Intent(this, MenuActivity.class);
+        startActivity(intent);
+    }
+    //-------------------------------------------------------------------------------------//
+
+
 }
