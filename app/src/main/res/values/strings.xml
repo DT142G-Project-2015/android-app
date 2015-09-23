@@ -8,4 +8,7 @@
     <string name="kitchen">Köket</string>
     <string name="menu">Meny</string>
     <string name="lager">Lager</string>
+    <string name="title_activity_lager">LagerActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="work_in_progress">Work in progress...</string>
 </resources>
