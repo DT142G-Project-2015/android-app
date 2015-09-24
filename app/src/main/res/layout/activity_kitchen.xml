@@ -6,7 +6,31 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.proxymeister.antonsskafferi.KitchenActivity">
 
-    <TextView android:text="Work in progress..." android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/order_label"
+        android:textSize="35sp"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" >
+
+        <!-- Placed orders should be displayed here ? -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""
+            android:id="@+id/placed_orders_kitchen" />
+    </ScrollView>
 </RelativeLayout>
+
+
