@@ -67,11 +67,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, KitchenActivity.class);
         startActivity(intent);
     }
-
     public void openMenuActivity(View view) {
-        Intent intent = new Intent(this, MenuActivity.class);
+        Intent intent = new Intent(this, MenuListActivity.class);
         startActivity(intent);
     }
+
+    //public void MenuListActivity(View view) {
+      //  Intent intent = new Intent(this, MenuActivity.class);
+        //startActivity(intent);
+    //}
     //-------------------------------------------------------------------------------------//
 
 
