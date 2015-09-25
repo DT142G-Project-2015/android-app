@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 public class KitchenActivity extends AppCompatActivity {
 
@@ -11,6 +13,8 @@ public class KitchenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen);
+        TextView text = (TextView) findViewById(R.id.placed_orders_kitchen);
+        text.setText(Databas.getInstance().text);
     }
 
     @Override
@@ -34,4 +38,7 @@ public class KitchenActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
 }

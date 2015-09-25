@@ -29,6 +29,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text=""
+            android:layout_marginTop="15dp"
+            android:textSize="25dp"
+            android:background="#AAFAAA"
             android:id="@+id/placed_orders_kitchen" />
     </ScrollView>
 </RelativeLayout>
