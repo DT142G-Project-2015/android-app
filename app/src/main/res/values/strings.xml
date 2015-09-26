@@ -15,7 +15,7 @@
     <string name="title_activity_lager">Lager Activity</string>
     <string name="work_in_progress">Work in progress...</string>
     <string name="order_label">Beställningar</string>
-    <string name="demo_order">Fläskfile med potatisklyftor och whiskeysås</string>
+    <string name="demo_order">Fläskfile \nPotatisklyftor \nWhiskeysås</string>
     <string name="title_activity_menu_list">MenuListActivity</string>
 
 </resources>

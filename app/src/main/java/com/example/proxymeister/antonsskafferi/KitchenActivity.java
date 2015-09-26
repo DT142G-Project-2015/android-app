@@ -15,6 +15,8 @@ public class KitchenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_kitchen);
         TextView text = (TextView) findViewById(R.id.placed_orders_kitchen);
         text.setText(Databas.getInstance().text);
+        if(Databas.getInstance().text != null)
+            text.setVisibility(View.VISIBLE);
     }
 
     @Override
