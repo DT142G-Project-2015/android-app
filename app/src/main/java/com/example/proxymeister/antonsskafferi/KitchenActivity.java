@@ -9,40 +9,78 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class KitchenActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
 
+public class KitchenActivity extends SwipeListViewActivity {
+    private List<String> orders;
+    private String order;
+    private ListView mListView;
+    private ArrayAdapter<String> mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen);
 
+
         // Sampleorder
-        String order = Databas.getInstance().text;
+        order = "";
+
+        if(Databas.getInstance().text != null)
+        {
+            order = Databas.getInstance().text;
+        }
 
         // An array for orders
-        String[] orders = {order};
+        orders = new ArrayList<>();
+        orders.add(order);
+
+        // Find the ListView in activity_kitchen
+        mListView = (ListView) findViewById(R.id.ordersListView);
+
+        // ListAdapter acts as a bridge between the data and each ListItem
+        mAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, orders);
+
+        // Tells the ListView to use adapter to display its content
+        mListView.setAdapter(mAdapter);
 
 
-        if(order != null) {
 
-            // ListAdapter acts as a bridge between the data and each ListItem
-            ListAdapter theAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                    orders);
-
-            // Find the ListView in activity_kitchen
-            ListView theListView = (ListView) findViewById(R.id.ordersListView);
-
-            // Tells the ListView to use adapter to display its content
-            theListView.setAdapter(theAdapter);
-        }
     }
 
+    @Override
+    public ListView getListView() {
+        return mListView;
+    }
+
+    // See SwipeListViewActivity
+    @Override
+    public void deleteSwipedItem(boolean isLeft, int position) {
+
+        if(isLeft)
+        {
+            String item = orders.get(position);
+            orders.remove(item);
+            mAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_list_item_1, orders);
+            mListView.setAdapter(mAdapter);
+            Databas.getInstance().text = null;
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_kitchen, menu);
         return true;
+    }
+
+    @Override
+    public void onItemClickListener(ListAdapter adapter, int position) {
+        Toast.makeText(this, "Single tap on item position " + position,
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override
