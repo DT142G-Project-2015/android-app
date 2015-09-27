@@ -16,24 +16,15 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/scrollView"
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ordersListView"
         android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" >
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="15dp"/>
 
-        <!-- Placed orders should be displayed here ? -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="15dp"
-            android:textSize="25dp"
-            android:background="#AAFAAA"
-            android:id="@+id/placed_orders_kitchen"
-            android:visibility="invisible"/>
-    </ScrollView>
 </RelativeLayout>
 
 

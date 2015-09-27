@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class KitchenActivity extends AppCompatActivity {
@@ -13,10 +16,26 @@ public class KitchenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen);
-        TextView text = (TextView) findViewById(R.id.placed_orders_kitchen);
-        text.setText(Databas.getInstance().text);
-        if(Databas.getInstance().text != null)
-            text.setVisibility(View.VISIBLE);
+
+        // Sampleorder
+        String order = Databas.getInstance().text;
+
+        // An array for orders
+        String[] orders = {order};
+
+
+        if(order != null) {
+
+            // ListAdapter acts as a bridge between the data and each ListItem
+            ListAdapter theAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                    orders);
+
+            // Find the ListView in activity_kitchen
+            ListView theListView = (ListView) findViewById(R.id.ordersListView);
+
+            // Tells the ListView to use adapter to display its content
+            theListView.setAdapter(theAdapter);
+        }
     }
 
     @Override
