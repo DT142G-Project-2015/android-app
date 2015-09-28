@@ -16,6 +16,7 @@
         android:text="@string/order_label"
         android:textSize="@dimen/orderlabel_textsize"
         android:id="@+id/textView"
+        android:paddingLeft="10dp"
         />
 
     </LinearLayout>
