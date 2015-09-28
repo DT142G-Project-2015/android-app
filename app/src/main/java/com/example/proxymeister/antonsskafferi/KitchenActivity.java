@@ -1,14 +1,11 @@
 package com.example.proxymeister.antonsskafferi;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -16,7 +13,6 @@ import java.util.List;
 
 public class KitchenActivity extends SwipeListViewActivity {
     private List<String> orders;
-    private String order;
     private ListView mListView;
     private ArrayAdapter<String> mAdapter;
     @Override
@@ -25,17 +21,11 @@ public class KitchenActivity extends SwipeListViewActivity {
         setContentView(R.layout.activity_kitchen);
 
 
-        // Sampleorder
-        order = "";
-
-        if(Databas.getInstance().text != null)
-        {
-            order = Databas.getInstance().text;
+        orders = new ArrayList<>();
+        for (Databas.Order o : Databas.getInstance().orders) {
+            orders.add(o.text);
         }
 
-        // An array for orders
-        orders = new ArrayList<>();
-        orders.add(order);
 
         // Find the ListView in activity_kitchen
         mListView = (ListView) findViewById(R.id.ordersListView);
@@ -67,7 +57,6 @@ public class KitchenActivity extends SwipeListViewActivity {
             mAdapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_1, orders);
             mListView.setAdapter(mAdapter);
-            Databas.getInstance().text = null;
         }
     }
     @Override
