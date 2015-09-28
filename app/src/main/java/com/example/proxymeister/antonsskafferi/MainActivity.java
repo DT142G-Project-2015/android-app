@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
     // Starts the lager activity
     public void startLagerActivity(View view)
     {
-        Intent intent = new Intent(MainActivity.this, LagerActivity.class);
+        Intent intent;
+        intent = new Intent(MainActivity.this, LagerActivity.class);
         startActivity(intent);
     }
 
