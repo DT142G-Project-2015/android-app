@@ -1,5 +1,6 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,10 +20,12 @@ public class OrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order);
 
 
-        Button btn = (Button) findViewById(R.id.place_order_orderview);
+        Button btn = (Button) findViewById(R.id.place_new_order_button);
         OnClickListener oclbtn = new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Intent intent = new Intent(OrderActivity.this, MenuActivity.class);
+                //startActivity(intent);
                 Databas.getInstance().text = getString(R.string.demo_order);
             }
         };
