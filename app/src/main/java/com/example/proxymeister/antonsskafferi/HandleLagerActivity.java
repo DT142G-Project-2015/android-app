@@ -1,24 +1,24 @@
 package com.example.proxymeister.antonsskafferi;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.proxymeister.antonsskafferi.R;
 
-public class LagerActivity extends AppCompatActivity {
+public class HandleLagerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lager);
+        setContentView(R.layout.activity_handle_lager);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_lager, menu);
+        getMenuInflater().inflate(R.menu.menu_handle_lager, menu);
         return true;
     }
 
@@ -29,12 +29,11 @@ public class LagerActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // lagerhanterings alternativ
+        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, HandleLagerActivity.class);
-            startActivity(intent);
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }
