@@ -52,10 +52,12 @@ public class KitchenActivity extends SwipeListViewActivity {
 
         if(isLeft)
         {
-            Databas.getInstance().orders.remove(position);
+            String item = orders.get(position);
+            orders.remove(item);
             mAdapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_1, orders);
             mListView.setAdapter(mAdapter);
+            Databas.getInstance().orders.remove(position);
         }
     }
     @Override
