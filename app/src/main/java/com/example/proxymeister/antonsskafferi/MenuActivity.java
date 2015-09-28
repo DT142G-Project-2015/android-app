@@ -16,6 +16,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -23,6 +28,8 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        int id = getIntent().getIntExtra("menu-id", 0);
 
         Utils.FetchURL.Callback callback = new Utils.FetchURL.Callback() {
 
@@ -63,7 +70,7 @@ public class MenuActivity extends AppCompatActivity {
         Utils.FetchURL fetchMenuItems = new Utils.FetchURL(callback);
 
         try {
-            fetchMenuItems.execute(new URL("http://46.254.14.163/web-app/api/menu/0/item"));
+            fetchMenuItems.execute(new URL("http://46.254.14.163/web-app/api/menu/"+ id +"/item"));
         } catch (MalformedURLException e) {} // ignore
 
     }
@@ -89,6 +96,5 @@ public class MenuActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 }
