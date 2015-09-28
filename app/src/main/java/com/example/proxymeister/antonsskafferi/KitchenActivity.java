@@ -52,8 +52,7 @@ public class KitchenActivity extends SwipeListViewActivity {
 
         if(isLeft)
         {
-            String item = orders.get(position);
-            orders.remove(item);
+            Databas.getInstance().orders.remove(position);
             mAdapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_1, orders);
             mListView.setAdapter(mAdapter);
