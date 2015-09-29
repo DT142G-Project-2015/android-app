@@ -4,21 +4,29 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:id="@+id/linearlayout_topbar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/order_label"
         android:textSize="@dimen/orderlabel_textsize"
         android:id="@+id/textView"
         android:paddingLeft="10dp"
+        android:layout_weight="1.0"
         />
 
+        <Button
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+
+            android:layout_weight="1.0"
+            android:text="undo"
+            android:id="@+id/undodeletebutton" />
     </LinearLayout>
 
     <View
