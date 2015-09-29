@@ -82,6 +82,7 @@ public class OrderLunchActivity extends AppCompatActivity implements AdapterView
     }
 
     public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
+
         Toast.makeText(OrderLunchActivity.this,
                 "Item in position " + position + " clicked",
                 Toast.LENGTH_LONG).show();

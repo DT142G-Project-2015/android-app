@@ -1,9 +1,12 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -12,16 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KitchenActivity extends SwipeListViewActivity {
-    private List<String> orders;
+    private List<String> orders = new ArrayList<>();
+    private List<String> deletedorders = new ArrayList<>();
     private ListView mListView;
     private ArrayAdapter<String> mAdapter;
+    int oldposition = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen);
 
 
-        orders = new ArrayList<>();
         for (Databas.Order o : Databas.getInstance().orders) {
             orders.add(o.text);
         }
@@ -38,6 +42,46 @@ public class KitchenActivity extends SwipeListViewActivity {
         mListView.setAdapter(mAdapter);
 
 
+        // Undo delete button
+        Button deletebtn = (Button) findViewById(R.id.undodeletebutton);
+
+        View.OnClickListener oclbtn = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!deletedorders.isEmpty()) {
+                    String item = deletedorders.get(deletedorders.size() - 1);
+                    orders.add(item);
+                    /*
+                    if(orders.get(oldposition) == null)
+                        orders.add(item);
+                    else
+                    {
+                        orders.add("");
+                        for(int i = orders.size()-1; i > oldposition; i++ )
+                        {
+                            String temp = orders.get(i);
+
+                            orders.add(oldposition, item);
+                        }
+                    }
+
+                    */
+
+                    deletedorders.remove(item);
+                    mAdapter = new ArrayAdapter<>(KitchenActivity.this,
+                            android.R.layout.simple_list_item_1, orders);
+
+                    mListView.setAdapter(mAdapter);
+                    Databas.Order o = new Databas.Order();
+                    o.text = item;
+                    Databas.getInstance().orders.add(o);
+                }
+            }
+        };
+
+        deletebtn.setOnClickListener(oclbtn);
+
 
     }
 
@@ -53,11 +97,13 @@ public class KitchenActivity extends SwipeListViewActivity {
         if(isLeft)
         {
             String item = orders.get(position);
+            deletedorders.add(item);
             orders.remove(item);
             mAdapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_1, orders);
             mListView.setAdapter(mAdapter);
             Databas.getInstance().orders.remove(position);
+           // oldposition = position;
         }
     }
     @Override
@@ -68,9 +114,10 @@ public class KitchenActivity extends SwipeListViewActivity {
     }
 
     @Override
+    // Single tap on each item.
     public void onItemClickListener(ListAdapter adapter, int position) {
-        Toast.makeText(this, "Single tap on item position " + position,
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Single tap on item position " + position,
+         //       Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -87,6 +134,8 @@ public class KitchenActivity extends SwipeListViewActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
 
