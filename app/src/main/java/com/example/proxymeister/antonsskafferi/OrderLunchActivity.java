@@ -88,7 +88,7 @@ public class OrderLunchActivity extends AppCompatActivity implements AdapterView
                 Toast.LENGTH_LONG).show();
         Databas.Order o = new Databas.Order();
         o.text = strings.get(position);
-        Databas.getInstance().orders.add(o);
+        //Databas.getInstance().orders.add(o);
     }
 
     @Override

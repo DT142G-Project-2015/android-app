@@ -3,12 +3,17 @@ package com.example.proxymeister.antonsskafferi;
 
 import android.os.AsyncTask;
 
+import com.example.proxymeister.antonsskafferi.model.ApiInterface;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
 
 public class Utils {
 
@@ -25,6 +30,15 @@ public class Utils {
         }
 
         return buf.toString();
+    }
+
+    public static ApiInterface getApi() {
+        String BASE_URL = "http://46.254.14.163/web-app/api";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(ApiInterface.class);
     }
 
     static class FetchURL extends AsyncTask<URL, Void, String> {

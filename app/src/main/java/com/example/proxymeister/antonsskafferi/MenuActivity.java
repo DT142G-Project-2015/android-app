@@ -16,11 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -73,6 +68,34 @@ public class MenuActivity extends AppCompatActivity {
             fetchMenuItems.execute(new URL("http://46.254.14.163/web-app/api/menu/"+ id +"/item"));
         } catch (MalformedURLException e) {} // ignore
 
+
+        /*Call<List<Item>> call = Utils.getApi().getItems(id);
+        call.enqueue(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(Response<List<Item>> response) {
+                int statusCode = response.code();
+                List<Item> items = response.body();
+                // strings = persons.map(_.toString())
+                List<String> strings = new ArrayList<String>();
+                for (Item p : items) {
+                    strings.add(p.toString());
+                }
+
+                // create simple ArrayAdapter to hold the strings for the ListView
+                ArrayAdapter<String> itemsAdapter =
+                        new ArrayAdapter<String>(MenuActivity.this, android.R.layout.simple_list_item_1, strings);
+
+                // pass the adapter to the ListView
+                ListView list = (ListView)findViewById(R.id.list);
+                list.setAdapter(itemsAdapter);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i(MainActivity.class.getName(), "error");
+
+            }
+        });*/
     }
 
     @Override
