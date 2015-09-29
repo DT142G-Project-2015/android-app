@@ -33,7 +33,7 @@ public class Utils {
     }
 
     public static ApiInterface getApi() {
-        String BASE_URL = "http://46.254.14.163/web-app/api";
+        String BASE_URL = "http://46.254.14.163/web-app/api/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -41,6 +41,7 @@ public class Utils {
         return retrofit.create(ApiInterface.class);
     }
 
+    // TODO: Remove this class:
     static class FetchURL extends AsyncTask<URL, Void, String> {
         private final Callback callback;
 
