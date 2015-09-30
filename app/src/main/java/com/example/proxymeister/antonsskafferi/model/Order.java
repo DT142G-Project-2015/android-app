@@ -1,9 +1,7 @@
 package com.example.proxymeister.antonsskafferi.model;
 
-
-import java.math.BigDecimal;
-import java.security.acl.Group;
 import java.util.List;
+
 
 public class Order {
     public List<Group> groups;
@@ -13,7 +11,7 @@ public class Order {
     public String toString() {
         String temp = new String();
         for(Group g : groups) {
-            temp += groups.toString() + ", ";
+            temp += g.toString() + ", ";
         }
         return  id + ", " + temp;
     }
