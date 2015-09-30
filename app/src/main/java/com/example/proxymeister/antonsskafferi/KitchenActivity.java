@@ -40,35 +40,32 @@ public class KitchenActivity /*extends SwipeListViewActivity*/ extends Activity 
         //OBS: The call for "order" does not work as intended. It does not generate any errors, however the get-function does not
         //     retrieve any data from the database.
         //     It can currently fetch data from "List<Item>", but not from "List<Order>".
-        Call<Order> call = Utils.getApi().getOrder(1);
+        Call<List<Order>> call = Utils.getApi().getOrders();
 
-        call.enqueue(new Callback<Order>() {
+        call.enqueue(new Callback<List<Order>>() {
             @Override
-            public void onResponse(Response<Order> response, Retrofit retrofit) {
-                TextView text = (TextView) findViewById(R.id.text);
-                text.setText("NEJ");
+            public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
+
                 int statusCode = response.code();
                 Log.i(MainActivity.class.getName(), "Status: " + statusCode);
 
-                Order order = response.body();
+                List<Order> orders = response.body();
 
-                if (order != null) {
+                if (orders != null) {
 
-                    text.setText(order.toString());
-                    /*
-                    // strings = items.map(_.toString())
+                    // strings = orders.map(_.toString())
                     List<String> strings = new ArrayList<String>();
-                    //for (Order p : orders) {
-                    strings.add(orders.toString());
-                    //}
-                    */
+                    for (Order o : orders) {
+                        strings.add(o.toString());
+                    }
+
                     // create simple ArrayAdapter to hold the strings for the ListView
-                    /*ArrayAdapter<String> ordersAdapter =
+                    ArrayAdapter<String> ordersAdapter =
                             new ArrayAdapter<String>(KitchenActivity.this, android.R.layout.simple_list_item_1, strings);
 
                     // pass the adapter to the ListView
                     ListView list = (ListView) findViewById(R.id.ordersListView);
-                    list.setAdapter(ordersAdapter);*/
+                    list.setAdapter(ordersAdapter);
                 }
             }
 
