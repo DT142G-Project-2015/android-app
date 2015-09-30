@@ -9,11 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.proxymeister.antonsskafferi.model.Item;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +25,9 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        int id = getIntent().getIntExtra("menu-id", 0);
+        int id = getIntent().getIntExtra("menu-id", 1);
 
-        Call<List<Item>> call = Utils.getApi().getItems(id);
+        Call<List<Item>> call = Utils.getApi().getMenuItems(id);
 
         call.enqueue(new Callback<List<Item>>() {
             @Override

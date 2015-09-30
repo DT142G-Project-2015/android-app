@@ -6,9 +6,8 @@ import java.security.acl.Group;
 import java.util.List;
 
 public class Order {
-    private List<Group> groups;
-   // public String status;
-    public BigDecimal id;
+    public List<Group> groups;
+    public int id;
 
     @Override
     public String toString() {
@@ -16,6 +15,6 @@ public class Order {
         for(Group g : groups) {
             temp += groups.toString() + ", ";
         }
-        return  id.toString() + ", " + temp;
+        return  id + ", " + temp;
     }
 }
