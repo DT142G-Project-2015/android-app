@@ -7,7 +7,7 @@ public class Item {
     public String name;
     public String description;
     public BigDecimal price;
-    public int type;
+    public int foodtype;
 
     @Override
     public String toString() {

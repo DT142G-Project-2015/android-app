@@ -33,7 +33,7 @@ public class Utils {
     }
 
     public static ApiInterface getApi() {
-        String BASE_URL = "http://46.254.14.163/web-app/api/";
+        String BASE_URL = "http://46.254.15.8/api/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

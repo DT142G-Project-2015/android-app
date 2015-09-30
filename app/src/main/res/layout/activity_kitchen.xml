@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:weightSum="1">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:id="@+id/linearlayout_topbar"
@@ -35,14 +36,24 @@
         android:layout_height="1dp"
         android:layout_below = "@id/linearlayout_topbar"
         />
-    <ListView
+    <!-- Temporarily ADDED for testing purposes -->
+    <TextView
+        android:layout_width="186dp"
+        android:layout_height="0dp"
+        android:text="New Text"
+        android:id="@+id/text"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.33" />
+
+    <!-- Temporarily REMOVED for testing purposes -->
+   <!-- <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ordersListView"
         android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"/>-->
 </LinearLayout>
 
 

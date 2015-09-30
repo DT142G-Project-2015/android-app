@@ -1,7 +1,9 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,12 +11,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.proxymeister.antonsskafferi.model.Group;
+import com.example.proxymeister.antonsskafferi.model.Item;
+import com.example.proxymeister.antonsskafferi.model.Order;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class KitchenActivity extends SwipeListViewActivity {
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+
+public class KitchenActivity /*extends SwipeListViewActivity*/ extends Activity {
     private List<String> orders = new ArrayList<>();
     private List<String> deletedorders = new ArrayList<>();
     private ListView mListView;
@@ -25,7 +37,45 @@ public class KitchenActivity extends SwipeListViewActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen);
 
+        //OBS: The call for "order" does not work as intended. It does not generate any errors, however the get-function does not
+        //     retrieve any data from the database.
+        //     It can currently fetch data from "List<Item>", but not from "List<Order>".
+        Call<List<Order>> call = Utils.getApi().getOrders(1);
 
+        call.enqueue(new Callback<List<Order>>() {
+            @Override
+            public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
+                TextView text = (TextView) findViewById(R.id.text);
+                text.setText("NEJ");
+                int statusCode = response.code();
+                Log.i(MainActivity.class.getName(), "Status: " + statusCode);
+
+                List<Order> orders = response.body();
+
+                if (orders != null) {
+                    // strings = items.map(_.toString())
+                    List<String> strings = new ArrayList<String>();
+                    //for (Order p : orders) {
+                    strings.add(orders.toString());
+                    //}
+
+                    // create simple ArrayAdapter to hold the strings for the ListView
+                    /*ArrayAdapter<String> ordersAdapter =
+                            new ArrayAdapter<String>(KitchenActivity.this, android.R.layout.simple_list_item_1, strings);
+
+                    // pass the adapter to the ListView
+                    ListView list = (ListView) findViewById(R.id.ordersListView);
+                    list.setAdapter(ordersAdapter);*/
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+            }
+        });
+
+        /*
         for (Databas.Order o : Databas.getInstance().orders) {
             orders.add(o.text);
         }
@@ -40,7 +90,7 @@ public class KitchenActivity extends SwipeListViewActivity {
 
         // Tells the ListView to use adapter to display its content
         mListView.setAdapter(mAdapter);
-
+        */
 
         // Undo delete button
         Button deletebtn = (Button) findViewById(R.id.undodeletebutton);
@@ -84,7 +134,7 @@ public class KitchenActivity extends SwipeListViewActivity {
 
 
     }
-
+/*
     @Override
     public ListView getListView() {
         return mListView;
@@ -135,7 +185,7 @@ public class KitchenActivity extends SwipeListViewActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+*/
 
 
 

@@ -7,6 +7,14 @@ import java.util.List;
  */
 public class Group {
     private List<Item> items;
+    private String status = "";
 
-
+    @Override
+    public String toString() {
+        String temp = new String();
+                for(Item i : items) {
+                    temp += items.toString() + ", ";
+                }
+        return status + temp;
+    }
 }
