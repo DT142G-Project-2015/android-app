@@ -26,14 +26,14 @@ public class OrderListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(OrderListActivity.this, OrderLunchActivity.class);
-                intent.putExtra("menu-id", 0);
+                intent.putExtra("menu-id", 1);
                 startActivity(intent);
             }
         });
         MiddagBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view){
                 Intent intent = new Intent(OrderListActivity.this, OrderDinnerActivity.class);
-                intent.putExtra("menu-id", 1);
+                intent.putExtra("menu-id", 2);
                 startActivity(intent);
             }
         });

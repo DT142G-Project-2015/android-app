@@ -1,21 +1,13 @@
 package com.example.proxymeister.antonsskafferi;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.proxymeister.antonsskafferi.model.Group;
-import com.example.proxymeister.antonsskafferi.model.Item;
 import com.example.proxymeister.antonsskafferi.model.Order;
 
 import java.util.ArrayList;
@@ -40,7 +32,7 @@ public class KitchenActivity /*extends SwipeListViewActivity*/ extends Activity 
         //OBS: The call for "order" does not work as intended. It does not generate any errors, however the get-function does not
         //     retrieve any data from the database.
         //     It can currently fetch data from "List<Item>", but not from "List<Order>".
-        Call<List<Order>> call = Utils.getApi().getOrders();
+        Call<List<Order>> call = Utils.getApi().getOrdersByStatus("readyForKitchen");
 
         call.enqueue(new Callback<List<Order>>() {
             @Override

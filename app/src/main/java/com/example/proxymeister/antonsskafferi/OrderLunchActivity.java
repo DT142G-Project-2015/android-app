@@ -1,24 +1,28 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.Item;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class OrderLunchActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private List<String> strings;
@@ -29,66 +33,95 @@ public class OrderLunchActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_menu);
         list = (ListView)findViewById(R.id.list);
 
-        int id = getIntent().getIntExtra("menu-id", 0);
+        int id = getIntent().getIntExtra("menu-id", 1);
 
-        Utils.FetchURL.Callback callback = new Utils.FetchURL.Callback() {
+        Call<List<Item>> call = Utils.getApi().getMenuItems(id);
 
+        call.enqueue(new Callback<List<Item>>() {
             @Override
-            public void onComplete(Object result) {
+            public void onResponse(Response<List<Item>> response, Retrofit retrofit) {
 
-                Gson gson = new Gson();
+                int statusCode = response.code();
+                Log.i(MainActivity.class.getName(), "Status: " + statusCode);
 
-                // convert the JSON string to a List of Items
-                List<Item> persons = gson.fromJson((String)result,
-                        new TypeToken<List<Item>>() {}.getType());
+                List<Item> items = response.body();
 
-                // strings = persons.map(_.toString())
-
-                strings = new ArrayList<>();
-                for (Item p : persons) {
-                    strings.add(p.toString());
+                if (items != null) {
+                    ItemAdapter itemAdapter = new ItemAdapter(OrderLunchActivity.this, items);
+                    list.setAdapter(itemAdapter);
                 }
-
-                // create simple ArrayAdapter to hold the strings for the ListView
-                ArrayAdapter<String> itemsAdapter =
-                        new ArrayAdapter<>(OrderLunchActivity.this, android.R.layout.simple_list_item_1, strings);
-
-                // pass the adapter to the ListView
-                list.setAdapter(itemsAdapter);
-
-                Log.i(MainActivity.class.getName(), "complete");
             }
 
             @Override
-            public void onError() {
-                Log.i(MainActivity.class.getName(), "error");
+            public void onFailure(Throwable t) {
+                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
             }
-        };
-
-
-
-        Utils.FetchURL fetchMenuItems = new Utils.FetchURL(callback);
-
-        try {
-            fetchMenuItems.execute(new URL("http://46.254.14.163/web-app/api/menu/"+ id +"/item"));
-        } catch (MalformedURLException e) {} // ignore
-
+        });
 
         // Item Click Listener for the list
         list.setOnItemClickListener(this);
+    }
+
+    public static class ItemHolder {
+        public ItemHolder(Item item) {
+            counter = 0;
+            this.item = item;
+        }
+
+        public Item item;
+        public int counter;
+    }
+
+    public static class ItemAdapter extends ArrayAdapter<ItemHolder>{
 
 
+        public ItemAdapter(Context context, List<Item> items) {
+            super(context, 0);
 
+            for (Item i : items) {
+                add(new ItemHolder(i));
+            }
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v = convertView;
+
+            if (v == null) {
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = inflater.inflate(R.layout.activity_order_lunch_list_view, null);
+            }
+
+            TextView name = (TextView) v.findViewById(R.id.name);
+            TextView price = (TextView) v.findViewById(R.id.price);
+            TextView counter = (TextView) v.findViewById(R.id.counter);
+            TextView description = (TextView) v.findViewById(R.id.description);
+
+            ItemHolder holder = getItem(position);
+
+            v.setTag(holder);
+
+            name.setText(holder.item.name);
+            price.setText(holder.item.price.toString());
+            counter.setText(Integer.valueOf(holder.counter).toString());
+            description.setText(holder.item.description);
+
+
+            return v;
+        }
     }
 
     public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
 
+        ItemHolder holder = (ItemHolder) container.getTag();
+
+        TextView counter = (TextView) container.findViewById(R.id.counter);
+        counter.setText(Integer.valueOf(++holder.counter).toString());
+
+
         Toast.makeText(OrderLunchActivity.this,
                 "Item in position " + position + " clicked",
                 Toast.LENGTH_LONG).show();
-        Databas.Order o = new Databas.Order();
-        o.text = strings.get(position);
-        //Databas.getInstance().orders.add(o);
     }
 
     @Override

@@ -6,6 +6,7 @@ import retrofit.Call;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 public interface ApiInterface {
 
@@ -42,5 +43,8 @@ public interface ApiInterface {
     // for example to get all orders that have groups ready for the kitchen
     @GET("order")
     Call<List<Order>> getOrders();
+
+    @GET("order")
+    Call<List<Order>> getOrdersByStatus(@Query("status") String status);
 }
 
