@@ -1,6 +1,7 @@
 package com.example.proxymeister.antonsskafferi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,12 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Item;
+import com.example.proxymeister.antonsskafferi.model.Order;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Call;
@@ -27,11 +32,24 @@ import retrofit.Retrofit;
 public class OrderLunchActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private List<String> strings;
     private ListView list;
+    private Button addOrderButton;
+    List<Item> temporder = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         list = (ListView)findViewById(R.id.list);
+        addOrderButton = (Button) findViewById(R.id.AddItem);
+
+
+        addOrderButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                onAddOrderClick();
+            }
+        });
+
+
+
 
         int id = getIntent().getIntExtra("menu-id", 1);
 
@@ -114,14 +132,41 @@ public class OrderLunchActivity extends AppCompatActivity implements AdapterView
     public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
 
         ItemHolder holder = (ItemHolder) container.getTag();
-
         TextView counter = (TextView) container.findViewById(R.id.counter);
         counter.setText(Integer.valueOf(++holder.counter).toString());
+
+        temporder.add(holder.item);
 
 
         Toast.makeText(OrderLunchActivity.this,
                 "Item in position " + position + " clicked",
                 Toast.LENGTH_LONG).show();
+    }
+
+    public void onAddOrderClick(){
+        Order o = new Order();
+        Group g = new Group();
+
+        g.items = temporder;
+
+        o.groups = new ArrayList<>();
+        g.status = "readyForKitchen";
+        o.groups.add(g);
+        Call<Void> call = Utils.getApi().createOrder(o);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                Log.i("idg", "Response succesfull");
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i("idg", "MEGA FAIL");
+            }
+        });
+
+        Intent intent = new Intent(this, OrderActivity.class);
+        startActivity(intent);
     }
 
     @Override

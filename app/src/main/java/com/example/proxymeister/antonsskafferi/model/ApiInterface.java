@@ -3,8 +3,10 @@ package com.example.proxymeister.antonsskafferi.model;
 import java.util.List;
 
 import retrofit.Call;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -46,5 +48,8 @@ public interface ApiInterface {
 
     @GET("order")
     Call<List<Order>> getOrdersByStatus(@Query("status") String status);
+
+    @POST("order")
+    Call<Void> createOrder(@Body Order order);
 }
 

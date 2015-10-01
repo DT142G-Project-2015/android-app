@@ -28,6 +28,7 @@
         android:id="@+id/AddItem"
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/list"
-        android:layout_alignEnd="@+id/list" />
+        android:layout_alignEnd="@+id/list"
+        android:onClick="onAddOrderClick"/>
 
 </RelativeLayout>

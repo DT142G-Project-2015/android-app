@@ -32,7 +32,6 @@ public class MenuActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Item>>() {
             @Override
             public void onResponse(Response<List<Item>> response, Retrofit retrofit) {
-
                 int statusCode = response.code();
                 Log.i(MainActivity.class.getName(), "Status: " + statusCode);
 
