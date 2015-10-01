@@ -29,7 +29,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class OrderLunchActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class OrderMealActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private List<String> strings;
     private ListView list;
     private Button addOrderButton;
@@ -65,7 +65,7 @@ public class OrderLunchActivity extends AppCompatActivity implements AdapterView
                 List<Item> items = response.body();
 
                 if (items != null) {
-                    ItemAdapter itemAdapter = new ItemAdapter(OrderLunchActivity.this, items);
+                    ItemAdapter itemAdapter = new ItemAdapter(OrderMealActivity.this, items);
                     list.setAdapter(itemAdapter);
                 }
             }
@@ -138,7 +138,7 @@ public class OrderLunchActivity extends AppCompatActivity implements AdapterView
         temporder.add(holder.item);
 
 
-        Toast.makeText(OrderLunchActivity.this,
+        Toast.makeText(OrderMealActivity.this,
                 "Item in position " + position + " clicked",
                 Toast.LENGTH_LONG).show();
     }
