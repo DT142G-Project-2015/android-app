@@ -1,9 +1,0 @@
-<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
-	<line y1="1" x1="50" y2="50" x2="1" stroke-width="1.5" stroke="#000"></line>
-	<line y1="14" x1="63" y2="63" x2="14" stroke-width="1.5" stroke="#000"></line>
-	<line y1="50" x1="1" y2="63" x2="1" stroke-width="1.5" stroke="#000"></line>
-	<line y1="1" x1="50" y2="14" x2="63" stroke-width="1.5" stroke="#000"></line>
-	<line y1="63" x1="14" y2="63" x2="1" stroke-width="1.5" stroke="#000"></line>
-	<line y1="50" x1="1" y2="63" x2="15" stroke-width="1.5" stroke="#000"></line>
-	<line y1="8" x1="42" y2="22" x2="56" stroke-width="1.5" stroke="#000"></line>
-</svg>
