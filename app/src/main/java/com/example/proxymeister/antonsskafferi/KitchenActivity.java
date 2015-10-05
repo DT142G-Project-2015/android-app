@@ -178,6 +178,7 @@ public class KitchenActivity extends Activity {
 
 
     }
+
     void setSwipeListener()
     {
         touchListener =
