@@ -7,16 +7,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Item;
 import com.example.proxymeister.antonsskafferi.model.ItemAdapter;
-import com.example.proxymeister.antonsskafferi.model.ItemHolder;
 import com.example.proxymeister.antonsskafferi.model.Order;
 
 import java.util.ArrayList;
@@ -27,11 +23,12 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class OrderMealActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class OrderMealActivity extends AppCompatActivity /*implements AdapterView.OnItemClickListener*/ {
     private List<String> strings;
     private ListView list;
     private Button addOrderButton;
-    List<Item> temporder = new ArrayList<>();
+    private ItemAdapter itemAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +60,7 @@ public class OrderMealActivity extends AppCompatActivity implements AdapterView.
                 List<Item> items = response.body();
 
                 if (items != null) {
-                    ItemAdapter itemAdapter = new ItemAdapter(OrderMealActivity.this, items);
+                    itemAdapter = new ItemAdapter(OrderMealActivity.this, items);
                     list.setAdapter(itemAdapter);
                 }
             }
@@ -74,30 +71,14 @@ public class OrderMealActivity extends AppCompatActivity implements AdapterView.
             }
         });
 
-        // Item Click Listener for the list
-        list.setOnItemClickListener(this);
     }
 
-
-    public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
-
-        ItemHolder holder = (ItemHolder) container.getTag();
-        TextView counter = (TextView) container.findViewById(R.id.counter);
-        counter.setText(Integer.valueOf(++holder.counter).toString());
-
-        temporder.add(holder.item);
-
-
-        Toast.makeText(OrderMealActivity.this,
-                "Item in position " + position + " clicked",
-                Toast.LENGTH_LONG).show();
-    }
 
     public void onAddOrderClick(){
         Order o = new Order();
         Group g = new Group();
 
-        g.items = temporder;
+        g.items = itemAdapter.temporder;
 
         o.groups = new ArrayList<>();
         g.status = "readyForKitchen";
