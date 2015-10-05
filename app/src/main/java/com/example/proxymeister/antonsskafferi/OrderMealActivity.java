@@ -1,17 +1,13 @@
 package com.example.proxymeister.antonsskafferi;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Item;
+import com.example.proxymeister.antonsskafferi.model.ItemAdapter;
+import com.example.proxymeister.antonsskafferi.model.ItemHolder;
 import com.example.proxymeister.antonsskafferi.model.Order;
 
 import java.util.ArrayList;
@@ -80,54 +78,6 @@ public class OrderMealActivity extends AppCompatActivity implements AdapterView.
         list.setOnItemClickListener(this);
     }
 
-    public static class ItemHolder {
-        public ItemHolder(Item item) {
-            counter = 0;
-            this.item = item;
-        }
-
-        public Item item;
-        public int counter;
-    }
-
-    public static class ItemAdapter extends ArrayAdapter<ItemHolder>{
-
-
-        public ItemAdapter(Context context, List<Item> items) {
-            super(context, 0);
-
-            for (Item i : items) {
-                add(new ItemHolder(i));
-            }
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View v = convertView;
-
-            if (v == null) {
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = inflater.inflate(R.layout.activity_order_lunch_list_view, null);
-            }
-
-            TextView name = (TextView) v.findViewById(R.id.name);
-            TextView price = (TextView) v.findViewById(R.id.price);
-            TextView counter = (TextView) v.findViewById(R.id.counter);
-            TextView description = (TextView) v.findViewById(R.id.description);
-
-            ItemHolder holder = getItem(position);
-
-            v.setTag(holder);
-
-            name.setText(holder.item.name);
-            price.setText(holder.item.price.toString());
-            counter.setText(Integer.valueOf(holder.counter).toString());
-            description.setText(holder.item.description);
-
-
-            return v;
-        }
-    }
 
     public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
 
