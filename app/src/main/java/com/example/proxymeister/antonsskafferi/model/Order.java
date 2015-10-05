@@ -15,4 +15,13 @@ public class Order {
         }
         return  id + ", " + temp;
     }
+
+
+    public String toStringKitchenFormat() {
+        String temp = new String();
+        for(Group g : groups) {
+            temp += g.toStringKitchenFormat() + " ";
+        }
+        return  id + ": " + "\n" + temp;
+    }
 }

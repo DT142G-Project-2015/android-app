@@ -60,7 +60,7 @@ public class KitchenActivity extends Activity {
                     // strings = orders.map(_.toString())
                     strings = new ArrayList<>();
                     for (Order o : orders) {
-                        strings.add(o.toString());
+                        strings.add(o.toStringKitchenFormat());
                     }
 
 

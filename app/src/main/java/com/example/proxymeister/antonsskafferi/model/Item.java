@@ -9,8 +9,14 @@ public class Item {
     public BigDecimal price;
     public int foodtype;
 
+
     @Override
     public String toString() {
         return name + ", " + description + ", " + price.toString() + " kr";
+    }
+
+
+    public String toStringKitchenFormat() {
+        return name;
     }
 }
