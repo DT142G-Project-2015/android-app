@@ -9,13 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Meny"
-            android:textSize="@dimen/orderlabel_textsize"
-            android:id="@+id/textView"
-            android:paddingLeft="10dp"/>
+
     </LinearLayout>
     <View
         android:background="#000000"

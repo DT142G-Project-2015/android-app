@@ -24,11 +24,11 @@
     <Button
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:text="Add item"
+        android:text="lägg till"
         android:id="@+id/AddItem"
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/list"
         android:layout_alignEnd="@+id/list"
-        android:onClick="onAddOrderClick"/>
+     />
 
 </RelativeLayout>

@@ -9,13 +9,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Meny"
-            android:textSize="@dimen/orderlabel_textsize"
-            android:id="@+id/textView"
-            android:paddingLeft="10dp"/>
+
+
     </LinearLayout>
     <View
         android:background="#000000"
@@ -33,9 +28,10 @@
 
 
         <Button
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:text="Add item"
+            android:layout_width="fill_parent"
+            android:padding="20dp"
+            android:layout_height="wrap_content"
+            android:text="Lägg till"
             android:id="@+id/AddItem"
             android:layout_alignParentBottom="true"
             android:layout_alignRight="@+id/list"
