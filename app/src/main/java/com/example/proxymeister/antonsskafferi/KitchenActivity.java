@@ -198,6 +198,8 @@ public class KitchenActivity extends Activity {
                                     //orders.remove(position);
                                     strings.remove(position);
                                 }
+
+                                setAdapter();
                                 // do not call notifyItemRemoved for every item, it will cause gaps on deleting items
                                 mAdapter.notifyDataSetChanged();
                             }
