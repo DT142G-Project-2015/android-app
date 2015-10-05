@@ -69,7 +69,7 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
 
 
         name.setText(holder.item.name);
-        price.setText(holder.item.price.toString());
+        price.setText(holder.item.price.toString() + ":-");
         counter.setText(Integer.valueOf(holder.counter).toString());
         description.setText(holder.item.description);
 
