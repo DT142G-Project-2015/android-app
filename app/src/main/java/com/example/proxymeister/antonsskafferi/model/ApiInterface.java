@@ -15,7 +15,7 @@ public interface ApiInterface {
     //// Menu Item Resource
 
     // Gets all items currently on a menu
-    @GET("menu/{menu_id}/item")
+    @GET("menu/{menu_id}/group/1/item")
     Call<List<Item>> getMenuItems(@Path("menu_id") int menuId);
 
     // Removes an item from the menu

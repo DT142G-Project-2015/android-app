@@ -17,7 +17,7 @@
     <string name="work_in_progress">Work in progress...</string>
     <string name="order_label">Beställningar</string>
     <string name="demo_order">Fläskfile \nPotatisklyftor \nWhiskeysås</string>
-    <string name="title_activity_menu_list">MenuListActivity</string>
+    <string name="title_activity_menu_list">Meny</string>
 
     //Variabler till login rutan
     <string name="title_activity_login">Login</string>

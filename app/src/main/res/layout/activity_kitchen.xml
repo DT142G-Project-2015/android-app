@@ -12,15 +12,6 @@
         android:layout_marginTop="10dp">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/order_label"
-        android:textSize="@dimen/orderlabel_textsize"
-        android:id="@+id/textView"
-        android:paddingLeft="10dp"
-        android:layout_weight="1.0" />
-
         <Button
             android:layout_width="0.0dip"
             android:layout_height="fill_parent"
@@ -48,7 +39,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ordersRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:padding="10dp"/>
 </LinearLayout>
 
 
