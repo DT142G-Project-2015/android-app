@@ -41,6 +41,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.proxymeister.antonsskafferi.MainActivity" />
         </activity>
+
         <activity
             android:name=".OrderListActivity"
             android:label="@string/title_activity_order"
@@ -51,14 +52,6 @@
         </activity>
         <activity
             android:name=".OrderMealActivity"
-            android:label="@string/title_activity_order"
-            android:parentActivityName=".OrderListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.proxymeister.antonsskafferi.OrderListActivity" />
-        </activity>
-        <activity
-            android:name=".OrderDinnerActivity"
             android:label="@string/title_activity_order"
             android:parentActivityName=".OrderListActivity" >
             <meta-data
@@ -90,7 +83,11 @@
         </activity>
         <activity
             android:name=".MenuListActivity"
-            android:label="@string/title_activity_menu_list" >
+            android:label="@string/title_activity_menu_list"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.proxymeister.antonsskafferi.MainActivity" />
         </activity>
         <activity
             android:name=".HandleLagerActivity"

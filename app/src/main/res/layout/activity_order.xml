@@ -14,11 +14,11 @@ android:layout_height="fill_parent">
         android:textSize="25dp"
         android:id="@+id/place_new_order_button"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:background="#008000">
+        android:layout_width="fill_parent"
+        android:background="#333">
     </Button>
-    <TextView
-        android:text="@string/order_label"
+    <!--<TextView
+
         android:id="@+id/order_label_textView"
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
@@ -26,7 +26,7 @@ android:layout_height="fill_parent">
         android:layout_marginLeft="30dp"
         android:textAlignment="center"
         android:layout_marginTop="10dp">
-    </TextView>
+    </TextView>-->
 </LinearLayout>
 
     <View
@@ -35,4 +35,10 @@ android:layout_height="fill_parent">
         android:layout_height="1dp"
         android:layout_below = "@id/linearlayout_topbar"
         />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/ordersRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"/>
 </LinearLayout>

@@ -1,21 +1,21 @@
 package com.example.proxymeister.antonsskafferi;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
 import com.example.proxymeister.antonsskafferi.model.Order;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class KitchenActivity extends Activity {
+public class KitchenActivity extends AppCompatActivity{
     private List<String> orders = new ArrayList<>();
     private List<String> deletedorders = new ArrayList<>();
     private List<String> strings;
@@ -60,13 +60,14 @@ public class KitchenActivity extends Activity {
                     // strings = orders.map(_.toString())
                     strings = new ArrayList<>();
                     for (Order o : orders) {
-                        strings.add(o.toString());
+                        strings.add(o.toStringKitchenFormat());
                     }
 
 
                     mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
                     mLayoutManager = new LinearLayoutManager(KitchenActivity.this);
                     mRecyclerView.setLayoutManager(mLayoutManager);
+                    mRecyclerView.addItemDecoration(new DividerItemDecoration(KitchenActivity.this, DividerItemDecoration.VERTICAL_LIST));
                     setAdapter();
                     setSwipeListener();
                     setScrollListener();
@@ -198,6 +199,8 @@ public class KitchenActivity extends Activity {
                                     //orders.remove(position);
                                     strings.remove(position);
                                 }
+
+                                setAdapter();
                                 // do not call notifyItemRemoved for every item, it will cause gaps on deleting items
                                 mAdapter.notifyDataSetChanged();
                             }
@@ -239,21 +242,20 @@ public class KitchenActivity extends Activity {
             Databas.getInstance().orders.remove(position);
            // oldposition = position;
         }
-    }
+    }*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_kitchen, menu);
         return true;
-    }
-
+    }/*
     @Override
     // Single tap on each item.
     public void onItemClickListener(ListAdapter adapter, int position) {
         //Toast.makeText(this, "Single tap on item position " + position,
          //       Toast.LENGTH_SHORT).show();
     }
-
+    */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -267,7 +269,7 @@ public class KitchenActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }/*
 
 */
 

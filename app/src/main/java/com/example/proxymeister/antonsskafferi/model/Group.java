@@ -12,9 +12,19 @@ public class Group {
     @Override
     public String toString() {
         String temp = new String();
-                for(Item i : items) {
-                    temp += items.toString() + ", ";
-                }
+        for(Item i : items) {
+            temp += items.toString() + ", ";
+        }
         return status + temp;
+    }
+
+    public String toStringKitchenFormat() {
+        String temp = new String();
+
+        for(Item i : items) {
+            temp += i.toStringKitchenFormat() + "\n";
+        }
+
+        return temp;
     }
 }
