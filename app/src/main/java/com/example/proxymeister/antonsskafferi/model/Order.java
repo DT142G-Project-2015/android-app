@@ -20,7 +20,7 @@ public class Order {
     public String toStringKitchenFormat() {
         String temp = new String();
         for(Group g : groups) {
-            temp += g.toStringKitchenFormat() + " ";
+            temp += g.toStringKitchenFormat();
         }
         return  "\n" + "Order No." + id  + "\n\n" + temp;
     }
