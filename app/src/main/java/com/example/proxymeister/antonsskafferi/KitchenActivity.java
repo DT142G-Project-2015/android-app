@@ -29,23 +29,27 @@ import retrofit.Retrofit;
 public class KitchenActivity extends AppCompatActivity{
     private List<String> orders = new ArrayList<>();
     private List<String> deletedorders = new ArrayList<>();
-    private List<String> strings;
+    private List<String> strings = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
     SwipeDismissRecyclerViewTouchListener touchListener;
 
-    //private ArrayAdapter<String> mAdapter;
-    int oldposition = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen);
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
+        mLayoutManager = new LinearLayoutManager(KitchenActivity.this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(KitchenActivity.this, DividerItemDecoration.VERTICAL_LIST));
+
 
         Call<List<Order>> call = Utils.getApi().getOrdersByStatus("readyForKitchen");
-
+        if(call != null)
         call.enqueue(new Callback<List<Order>>() {
             @Override
             public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
@@ -55,6 +59,7 @@ public class KitchenActivity extends AppCompatActivity{
 
                 List<Order> orders = response.body();
 
+
                 if (orders != null) {
 
                     // strings = orders.map(_.toString())
@@ -63,14 +68,12 @@ public class KitchenActivity extends AppCompatActivity{
                         strings.add(o.toStringKitchenFormat());
                     }
 
-
-                    mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
-                    mLayoutManager = new LinearLayoutManager(KitchenActivity.this);
-                    mRecyclerView.setLayoutManager(mLayoutManager);
-                    mRecyclerView.addItemDecoration(new DividerItemDecoration(KitchenActivity.this, DividerItemDecoration.VERTICAL_LIST));
                     setAdapter();
                     setSwipeListener();
                     setScrollListener();
+
+
+
 
 /*
                         // create simple ArrayAdapter to hold the strings for the ListView
@@ -91,65 +94,6 @@ public class KitchenActivity extends AppCompatActivity{
             }
 
             );
-
-        /*
-        for (Databas.Order o : Databas.getInstance().orders) {
-            orders.add(o.text);
-        }
-
-
-        // Find the ListView in activity_kitchen
-        mListView = (ListView) findViewById(R.id.ordersListView);
-
-        // ListAdapter acts as a bridge between the data and each ListItem
-        mAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, orders);
-
-        // Tells the ListView to use adapter to display its content
-        mListView.setAdapter(mAdapter);
-        */
-
-            // Undo delete button
-      /*      Button deletebtn = (Button) findViewById(R.id.undodeletebutton);
-
-            View.OnClickListener oclbtn = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (!deletedorders.isEmpty()) {
-                        String item = deletedorders.get(deletedorders.size() - 1);
-                        orders.add(item);
-                    /*
-                    if(orders.get(oldposition) == null)
-                        orders.add(item);
-                    else
-                    {
-                        orders.add("");
-                        for(int i = orders.size()-1; i > oldposition; i++ )
-                        {
-                            String temp = orders.get(i);
-
-                            orders.add(oldposition, item);
-                        }
-                    }
-
-                    */
-        /*
-
-                        deletedorders.remove(item);
-                        mAdapter = new ArrayAdapter<>(KitchenActivity.this,
-                                android.R.layout.simple_list_item_1, orders);
-
-                        mListView.setAdapter(mAdapter);
-                        Databas.Order o = new Databas.Order();
-                        o.text = item;
-                        Databas.getInstance().orders.add(o);
-                    }
-                }
-            };
-
-            deletebtn.setOnClickListener(oclbtn);
-    */
 
         }
 
