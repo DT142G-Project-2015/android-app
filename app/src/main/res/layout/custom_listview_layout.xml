@@ -2,9 +2,9 @@
 
 <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
 android:id="@+id/ordersListView"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:textAppearance="?android:attr/textAppearanceLarge"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:textAppearance="?android:attr/textAppearanceListItemSmall"
 android:gravity="center_vertical"
 android:paddingLeft="6dip"
 android:paddingRight="6dip"
