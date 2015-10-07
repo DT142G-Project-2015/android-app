@@ -1,7 +1,6 @@
 <resources>
 
     <!-- Base application theme. -->
-
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorButtonNormal">#333</item>
         <item name="android:colorBackground">#333</item>
@@ -11,11 +10,12 @@
     </style>
 
 
-
-    <!-- Base button style
+   <!-- Base button style -->
     <style name="ButtonTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:background">#333</item>
+        <item name="colorButtonNormal">#333</item>
+        <item name="android:textSize">@dimen/main_buttons_textsize</item>
+        <item name="android:textColor">#fff</item>
     </style>
-    -->
+
 
 </resources>

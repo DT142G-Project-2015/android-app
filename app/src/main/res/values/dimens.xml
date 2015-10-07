@@ -3,4 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="orderlabel_textsize">30sp</dimen>
+
+    <!-- Custom margins -->
+    <dimen name="main_buttons_textsize">20dip</dimen>
 </resources>
