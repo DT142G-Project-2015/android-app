@@ -232,7 +232,7 @@ public class KitchenActivity extends AppCompatActivity{
         void onItemClick(View view, int position);
     }
 
-    public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
+    public class RecyclerItemClickListener extends RecyclerView.SimpleOnItemTouchListener {
         private OnItemClickListener mListener;
 
         private static final long DELAY_MILLIS = 100;
