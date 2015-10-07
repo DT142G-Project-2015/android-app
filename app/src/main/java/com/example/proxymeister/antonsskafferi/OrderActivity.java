@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
+import com.example.proxymeister.antonsskafferi.model.Group;
+import com.example.proxymeister.antonsskafferi.model.Item;
 import com.example.proxymeister.antonsskafferi.model.Order;
 
 import java.util.ArrayList;
@@ -28,7 +30,8 @@ import retrofit.Retrofit;
 
 public class OrderActivity extends AppCompatActivity{
     //______________TILLFÄLLIGT______________________
-    private List<String> strings;
+    private List<Order> orders;
+    private List<Group> groups = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
@@ -44,7 +47,11 @@ public class OrderActivity extends AppCompatActivity{
         OnClickListener oclbtn = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrderActivity.this, OrderListActivity.class);
+                /*Intent intent = new Intent(OrderActivity.this, OrderListActivity.class);
+                startActivity(intent);*/
+
+                Intent intent = new Intent(OrderActivity.this, OrderMealActivity.class);
+                intent.putExtra("menu-id", 1);
                 startActivity(intent);
             }
         };
@@ -61,19 +68,18 @@ public class OrderActivity extends AppCompatActivity{
                              int statusCode = response.code();
                              Log.i(MainActivity.class.getName(), "Status: " + statusCode);
 
-                             List<Order> orders = response.body();
+                             orders = response.body();
 
                              if (orders != null) {
-                                 // strings = orders.map(_.toString())
-                                 strings = new ArrayList<>();
-                                 for (Order o : orders) {
-                                     strings.add(o.toStringKitchenFormat());
+                                 for(Order o : orders){
+                                     for(Group g : o.groups)
+                                         groups.add(g);
                                  }
                                  mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
                                  mLayoutManager = new LinearLayoutManager(OrderActivity.this);
                                  mRecyclerView.setLayoutManager(mLayoutManager);
                                  mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
-                                 setAdapter();
+                                 setOrderAdapter();
                              }
                          }
 
@@ -84,26 +90,27 @@ public class OrderActivity extends AppCompatActivity{
                      }
 
         );
-        //________________________END____________________________________________
+        //______________________________END____________________________________________
 
     }
     //________________________Tillfälligt___________________________________
     private class CustomViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView mTextView;
+        public List<Item> items = new ArrayList<>();
+        private TextView mOrderTextView;
+        private TextView mGroupTextView;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
-
-            mTextView = (TextView) itemView.findViewById(android.R.id.text1);
+            mOrderTextView = (TextView) itemView.findViewById(R.id.order);
+            mGroupTextView = (TextView) itemView.findViewById(R.id.group);
         }
     }
 
-    void setAdapter(){
+    void setOrderAdapter(){
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
             public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(android.R.layout.simple_list_item_1
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_order_item
                         , viewGroup, false);
                 view.setBackgroundResource(android.R.drawable.list_selector_background);
                 return new CustomViewHolder(view);
@@ -111,13 +118,13 @@ public class OrderActivity extends AppCompatActivity{
 
             @Override
             public void onBindViewHolder(CustomViewHolder viewHolder, int i) {
-                viewHolder.mTextView.setText(strings.get(i));
-                viewHolder.mTextView.setPressed(false);
+                viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).id);
+                viewHolder.mOrderTextView.setPressed(true);
             }
 
             @Override
             public int getItemCount() {
-                return strings.size();
+                return orders.size();
             }
         };
         mRecyclerView.setAdapter(mAdapter);

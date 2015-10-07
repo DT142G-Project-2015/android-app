@@ -60,10 +60,10 @@
             android:name=".OrderMealActivity"
             android:label="@string/title_activity_order"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".OrderListActivity" >
+            android:parentActivityName=".OrderActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.proxymeister.antonsskafferi.OrderListActivity" />
+                android:value="com.example.proxymeister.antonsskafferi.OrderActivity" />
         </activity>
         <activity
             android:name=".KitchenActivity"
