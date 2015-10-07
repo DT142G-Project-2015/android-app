@@ -32,7 +32,7 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_order_meal);
         list = (ListView)findViewById(R.id.list);
         addOrderButton = (Button) findViewById(R.id.AddItem);
 
