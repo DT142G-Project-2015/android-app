@@ -1,5 +1,6 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +15,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        //Gets current screen orientation value
+        int screen = getResources().getConfiguration().orientation;
+        //Switches layout depending on the screen orientation
+        switch (screen){
+            case 0:
+                setContentView(R.layout.activity_main_land); //SQUARE (value 0)
+                break;
+            case 1:
+                setContentView(R.layout.activity_main); //PORTRAIT (value 1)
+                break;
+            case 2:
+                setContentView(R.layout.activity_main_land); //LANDSCAPE (value 2)
+                break;
+            default:
+                setContentView(R.layout.activity_main); //DEFAULT (value ?)
+                break;
+        }
     }
 
     @Override
