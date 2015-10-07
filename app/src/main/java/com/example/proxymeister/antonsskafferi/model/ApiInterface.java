@@ -19,9 +19,13 @@ public interface ApiInterface {
     @GET("menu/{menu_id}/group/1/item")
     Call<List<Item>> getMenuItems(@Path("menu_id") int menuId);
 
-    // Removes an item from the menu
-    @DELETE("menu/{menu_id}/item/{item_id}")
-    Call<Item> removeMenuItem(@Path("menu_id") int menuId, @Path("item_id") int itemId);
+    // Get 'expanded' (all groups with items) menu
+    @GET("menu/{menu_id}?expand=true")
+    Call<Menu> getMenu(@Path("menu_id") int menuId);
+
+    // Removes an item from the menu group
+    @DELETE("menu/{menu_id}/{group_id}/item/{item_id}")
+    Call<Void> removeMenuItem(@Path("menu_id") int menuId, @Path("group_id") int groupId, @Path("item_id") int itemId);
 
 
 
