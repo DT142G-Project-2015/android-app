@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/groupnum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="\nBord: "
+        android:textSize="25dp"
+        android:textColor="#EEE" />
+
+    <TextView
+        android:id="@+id/itemname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:textColor="#EEE"
+        android:paddingBottom="10dp"/>
+
+
+</LinearLayout>
+
+

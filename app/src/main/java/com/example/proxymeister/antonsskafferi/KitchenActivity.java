@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -12,28 +13,44 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Timer;
+
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
+import com.example.proxymeister.antonsskafferi.model.Group;
+import com.example.proxymeister.antonsskafferi.model.Item;
 import com.example.proxymeister.antonsskafferi.model.Order;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimerTask;
 
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class KitchenActivity extends AppCompatActivity{
-    private List<String> orders = new ArrayList<>();
+public class KitchenActivity extends AppCompatActivity {
+    private List<Order> orders;
+    private List<Group> groups = new ArrayList<>();
     private List<String> deletedorders = new ArrayList<>();
-    private List<String> strings = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
+    private Button undodeletebtn;
+    private Animation animfadeout;
+    private int millisecondstoshowbutton;
     SwipeDismissRecyclerViewTouchListener touchListener;
 
 
@@ -42,6 +59,14 @@ public class KitchenActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen);
 
+
+        undodeletebtn = (Button) findViewById(R.id.undodeletebutton);
+        animfadeout = AnimationUtils.loadAnimation(this, R.anim.abc_fade_out);
+        animfadeout.setDuration(500);
+
+
+        millisecondstoshowbutton = 5000;
+
         mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
         mLayoutManager = new LinearLayoutManager(KitchenActivity.this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -49,60 +74,53 @@ public class KitchenActivity extends AppCompatActivity{
 
 
         Call<List<Order>> call = Utils.getApi().getOrdersByStatus("readyForKitchen");
-        if(call != null)
-        call.enqueue(new Callback<List<Order>>() {
-            @Override
-            public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
+        if (call != null)
+            call.enqueue(new Callback<List<Order>>() {
+                             @Override
+                             public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
 
-                int statusCode = response.code();
-                Log.i(MainActivity.class.getName(), "Status: " + statusCode);
+                                 int statusCode = response.code();
+                                 Log.i(MainActivity.class.getName(), "Status: " + statusCode);
 
-                List<Order> orders = response.body();
-
-
-                if (orders != null) {
-
-                    // strings = orders.map(_.toString())
-                    strings = new ArrayList<>();
-                    for (Order o : orders) {
-                        strings.add(o.toStringKitchenFormat());
-                    }
-
-                    setAdapter();
-                    setSwipeListener();
-                    setScrollListener();
+                                 orders = response.body();
 
 
+                                 if (orders != null) {
+
+                                     // strings = orders.map(_.toString())
+
+                                     for (int i = 0; i < orders.size(); i++) {
+                                         List<Group> temp = orders.get(i).groups;
+                                         for (int j = 0; j < temp.size(); j++) {
+                                             groups.add(temp.get(j));
+
+                                         }
+                                     }
 
 
-/*
-                        // create simple ArrayAdapter to hold the strings for the ListView
-                        ArrayAdapter<String> ordersAdapter =
-                                new ArrayAdapter<String>(KitchenActivity.this, android.R.layout.simple_list_item_1, strings);
+                                     setAdapter();
+                                     setSwipeListener();
+                                     setScrollListener();
 
-                        // pass the adapter to the ListView
-                        ListView list = (ListView) findViewById(R.id.ordersListView);
-                        list.setAdapter(ordersAdapter);
-                    */
-                    }
-                }
 
-                @Override
-                public void onFailure (Throwable t){
-                    Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
-                }
-            }
+                                 }
+                             }
+
+                             @Override
+                             public void onFailure(Throwable t) {
+                                 Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                             }
+                         }
 
             );
 
-        }
+    }
 
-    void setAdapter()
-    {
+    void setAdapter() {
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
             public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(android.R.layout.simple_list_item_1
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_kitchen_group_layout
                         , viewGroup, false);
                 view.setBackgroundResource(android.R.drawable.list_selector_background);
                 return new CustomViewHolder(view);
@@ -110,13 +128,39 @@ public class KitchenActivity extends AppCompatActivity{
 
             @Override
             public void onBindViewHolder(CustomViewHolder viewHolder, int i) {
-                viewHolder.mTextView.setText(strings.get(i));
-                viewHolder.mTextView.setPressed(false);
+
+                Map<Item, Integer> frequency = new HashMap<>();
+
+                // This should be table number instead of group id
+                viewHolder.groupnumber.append(groups.get(i).getId());
+
+                List<String> occur = new ArrayList<>();
+                for (Item it : groups.get(i).items) {
+                    occur.add(it.name);
+                }
+
+                Set<String> nodub = new HashSet<>();
+
+                for (String s : occur)
+                    nodub.add(s);
+
+                for (String name : nodub) {
+                    int occurrences = Collections.frequency(occur, name);
+
+                    if (occurrences == 1)
+                        viewHolder.itemname.append("\n" + "   " + name);
+                    else
+                        viewHolder.itemname.append("\n" + occurrences + " " + name);
+                }
+
+
+                viewHolder.groupnumber.setPressed(false);
+                viewHolder.itemname.setPressed(false);
             }
 
             @Override
             public int getItemCount() {
-                return strings.size();
+                return groups.size();
             }
         };
         mRecyclerView.setAdapter(mAdapter);
@@ -124,8 +168,8 @@ public class KitchenActivity extends AppCompatActivity{
 
     }
 
-    void setSwipeListener()
-    {
+
+    void setSwipeListener() {
         touchListener =
                 new SwipeDismissRecyclerViewTouchListener(
                         mRecyclerView,
@@ -137,23 +181,36 @@ public class KitchenActivity extends AppCompatActivity{
 
                             @Override
                             public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
+
+                                undodeletebtn.setVisibility(View.VISIBLE);
+
                                 for (int position : reverseSortedPositions) {
                                     final int originalHeight = recyclerView.getHeight();
 
-                                    //orders.remove(position);
-                                    strings.remove(position);
+                                    groups.get(position).items.clear();
+                                    groups.remove(position);
                                 }
 
                                 setAdapter();
                                 // do not call notifyItemRemoved for every item, it will cause gaps on deleting items
                                 mAdapter.notifyDataSetChanged();
+
+
+                                undodeletebtn.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        undodeletebtn.startAnimation(animfadeout);
+                                        undodeletebtn.setVisibility(View.INVISIBLE);
+                                    }
+                                }, millisecondstoshowbutton);
+
                             }
                         });
         mRecyclerView.setOnTouchListener(touchListener);
     }
 
-    void setScrollListener()
-    {
+
+    void setScrollListener() {
         // Setting this scroll listener is required to ensure that during ListView scrolling,
         // we don't look for swipes.
         mRecyclerView.setOnScrollListener(touchListener.makeScrollListener());
@@ -161,45 +218,19 @@ public class KitchenActivity extends AppCompatActivity{
                 new OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(KitchenActivity.this, "Clicked " + strings.get(position), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(KitchenActivity.this, "Clicked " + groups.get(position), Toast.LENGTH_SHORT).show();
                     }
                 }));
     }
-/*
-    @Override
-    public ListView getListView() {
-        return mListView;
-    }
 
-    // See SwipeListViewActivity
-    @Override
-    public void deleteSwipedItem(boolean isLeft, int position) {
 
-        if(isLeft)
-        {
-            String item = orders.get(position);
-            deletedorders.add(item);
-            orders.remove(item);
-            mAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1, orders);
-            mListView.setAdapter(mAdapter);
-            Databas.getInstance().orders.remove(position);
-           // oldposition = position;
-        }
-    }*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_kitchen, menu);
         return true;
-    }/*
-    @Override
-    // Single tap on each item.
-    public void onItemClickListener(ListAdapter adapter, int position) {
-        //Toast.makeText(this, "Single tap on item position " + position,
-         //       Toast.LENGTH_SHORT).show();
     }
-    */
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -213,18 +244,20 @@ public class KitchenActivity extends AppCompatActivity{
         }
 
         return super.onOptionsItemSelected(item);
-    }/*
+    }
 
-*/
 
     private class CustomViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mTextView;
+        public TextView itemname;
+        // Change this to tablenumber later
+        public TextView groupnumber;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
 
-            mTextView = (TextView) itemView.findViewById(android.R.id.text1);
+            itemname = (TextView) itemView.findViewById(R.id.itemname);
+            groupnumber = (TextView) itemView.findViewById(R.id.groupnum);
         }
     }
 
