@@ -22,6 +22,6 @@ public class Order {
         for(Group g : groups) {
             temp += g.toStringKitchenFormat();
         }
-        return  "\n" + "Order No." + id  + "\n\n" + temp;
+        return  "\n" + "Order No." + id  + "\n" + temp;
     }
 }
