@@ -7,6 +7,7 @@ import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -51,5 +52,8 @@ public interface ApiInterface {
 
     @POST("order")
     Call<Void> createOrder(@Body Order order);
+
+    @PUT("order/{order_id}/group/{group_id}")
+    Call<Void> changeStatus(@Body Group group, @Path("order_id") int orderId, @Path("group_id") int groupId);
 }
 
