@@ -53,7 +53,7 @@ public class KitchenActivity extends AppCompatActivity {
     private Button undodeletebtn;
     private Animation animfadeout;
     private int millisecondstoshowbutton;
-    private int oldposition;
+    private List<Integer> oldpositions = new ArrayList<>();
     SwipeDismissRecyclerViewTouchListener touchListener;
 
 
@@ -117,17 +117,18 @@ public class KitchenActivity extends AppCompatActivity {
 
             );
 
+        // Listener for the undo button.
+        // When pressed, removed groups is fetched from deletedgroups and inserted
+        // at the old position
         View.OnClickListener buttonListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!deletedgroups.isEmpty()){
-                    Group g = deletedgroups.get(0);
+                    Group g = deletedgroups.get(deletedgroups.size()-1);
                     Group gtemp = deletedgroups.get(deletedgroups.size()-1);
-
-
-
-                    groups.add(oldposition, gtemp);
+                    groups.add(oldpositions.get(oldpositions.size()-1), gtemp);
                     deletedgroups.remove(deletedgroups.size() - 1);
+                    oldpositions.remove(oldpositions.size()-1);
                     setAdapter();
                 }
 
@@ -210,7 +211,7 @@ public class KitchenActivity extends AppCompatActivity {
 
                                 undodeletebtn.setVisibility(View.VISIBLE);
                                 for (int position : reverseSortedPositions) {
-                                    oldposition = position;
+                                    oldpositions.add(position);
 
                                     Group gtemp = groups.get(position);
                                     deletedgroups.add(gtemp);
