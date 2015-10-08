@@ -52,10 +52,17 @@ public class KitchenActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
     private Button undodeletebtn;
+
+    // Animation for the undo button
     private Animation animfadeout;
+    // Time to show the undobutton after a group has been dismissed
     private int millisecondstoshowbutton;
+
+    // To store the old positions of deleted groups
     private List<Integer> oldpositions = new ArrayList<>();
     SwipeDismissRecyclerViewTouchListener touchListener;
+
+    // To handle the animation
     private ComponentRemover componentRemover;
 
 
@@ -66,10 +73,10 @@ public class KitchenActivity extends AppCompatActivity {
 
 
         undodeletebtn = (Button) findViewById(R.id.undodeletebutton);
+
+        // Set the animation specs
         animfadeout = AnimationUtils.loadAnimation(this, R.anim.abc_fade_out);
         animfadeout.setDuration(500);
-
-
         millisecondstoshowbutton = 5000;
 
         mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
@@ -92,22 +99,17 @@ public class KitchenActivity extends AppCompatActivity {
 
                                  if (orders != null) {
 
-                                     // strings = orders.map(_.toString())
-
+                                     // Iterate through every order and add its group/groups to groups list
                                      for (int i = 0; i < orders.size(); i++) {
                                          List<Group> temp = orders.get(i).groups;
                                          for (int j = 0; j < temp.size(); j++) {
                                              groups.add(temp.get(j));
-
                                          }
                                      }
-
 
                                      setAdapter();
                                      setSwipeListener();
                                      setScrollListener();
-
-
                                  }
                              }
 
@@ -116,33 +118,33 @@ public class KitchenActivity extends AppCompatActivity {
                                  Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
                              }
                          }
-
             );
 
         // Listener for the undo button.
-        // When pressed, removed groups is fetched from deletedgroups and inserted
-        // at the old position
+        // When pressed, removed groups is fetched from deletedgroups
+        // inserted at the old position
         View.OnClickListener buttonListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!deletedgroups.isEmpty()){
-                    Group g = deletedgroups.get(deletedgroups.size()-1);
-                    Group gtemp = deletedgroups.get(deletedgroups.size()-1);
-                    groups.add(oldpositions.get(oldpositions.size()-1), gtemp);
+                if (!deletedgroups.isEmpty()) {
+
+                    // Add the last deleted group to its previous position
+                    groups.add(oldpositions.get(oldpositions.size() - 1), deletedgroups.get(deletedgroups.size() - 1));
+
+                    // Then remove the previous deleted group and its old position
                     deletedgroups.remove(deletedgroups.size() - 1);
-                    oldpositions.remove(oldpositions.size()-1);
+                    oldpositions.remove(oldpositions.size() - 1);
                     setAdapter();
                 }
-
             }
         };
         undodeletebtn.setOnClickListener(buttonListener);
-
     }
 
     void setAdapter() {
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
+            // Set the layout for the view
             public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_kitchen_group_layout
                         , viewGroup, false);
@@ -151,38 +153,48 @@ public class KitchenActivity extends AppCompatActivity {
             }
 
             @Override
+            // Binds each element to the viewholder
             public void onBindViewHolder(CustomViewHolder viewHolder, int i) {
 
+                // To store the frequency of a item
                 Map<Item, Integer> frequency = new HashMap<>();
 
+                // Reset the itemname and groupnumber textviews
                 viewHolder.itemname.setText("");
                 viewHolder.groupnumber.setText("");
-                // This should be table number instead of group id
+
+                // This should be table number instead of group id later on
                 viewHolder.groupnumber.setText("Bord: " + groups.get(i).getId());
 
+                // Add all the item.name (strings) that occur in the group
                 List<String> occur = new ArrayList<>();
                 for (Item it : groups.get(i).items) {
                     occur.add(it.name);
                 }
 
+                // To store each item.name (with no dublicates)
                 Set<String> nodub = new HashSet<>();
 
+                // For each string in occur, add it to nodub
+                // Each item.name will be store just once
                 for (String s : occur)
                     nodub.add(s);
 
+                // For each string in dub, check its frequency in the occur list
                 for (String name : nodub) {
                     int occurrences = Collections.frequency(occur, name);
 
+                    // If occurences is 1, just print the item.name
+                    // Otherwise, print the frequency and item.name
                     if (occurrences == 1)
                         viewHolder.itemname.append("\n" + "   " + name);
                     else
                         viewHolder.itemname.append("\n" + occurrences + " " + name);
                 }
 
-
+                // This may or may not be necessary
                 viewHolder.groupnumber.setPressed(false);
                 viewHolder.itemname.setPressed(false);
-
             }
 
             @Override
@@ -193,8 +205,6 @@ public class KitchenActivity extends AppCompatActivity {
         };
         mAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapter);
-
-
     }
 
 
@@ -211,28 +221,31 @@ public class KitchenActivity extends AppCompatActivity {
                             @Override
                             public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
 
+                                // When group is swipe, show the undodeletebutton
                                 undodeletebtn.setVisibility(View.VISIBLE);
+
+                                // reverseSortedPositions is a List that store the positions of all swiped groups
                                 for (int position : reverseSortedPositions) {
+                                    // Store the old position
                                     oldpositions.add(position);
 
-                                    Group gtemp = groups.get(position);
-                                    deletedgroups.add(gtemp);
+                                    // Add the group to deletedgroups
+                                    deletedgroups.add(groups.get(position));
 
-                                    //groups.get(position).items.clear();
+                                    // Remove the group and notify the adapter
                                     groups.remove(position);
                                     mAdapter.notifyItemRemoved(position);
                                 }
 
-
-
-
                                 setAdapter();
-                                // do not call notifyItemRemoved for every item, it will cause gaps on deleting items
-                                if(componentRemover != null){
+
+                                // Check if the animation of button is set
+                                // If the animation is set, set the runnable to null (stops the animation)
+                                if (componentRemover != null) {
                                     componentRemover.r = null;
                                 }
+                                // Then start the animation and set timer
                                 componentRemover = new ComponentRemover();
-                                // After millisecondstoshowbutton has ended, status should change to readyFordelivery
                                 undodeletebtn.postDelayed(componentRemover, millisecondstoshowbutton);
 
                             }
@@ -240,7 +253,7 @@ public class KitchenActivity extends AppCompatActivity {
         mRecyclerView.setOnTouchListener(touchListener);
     }
 
-    class ComponentRemover implements Runnable{
+    class ComponentRemover implements Runnable {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -249,34 +262,31 @@ public class KitchenActivity extends AppCompatActivity {
                 r = null;
             }
         };
+
         @Override
-        public void run(){
-            if ( r != null ) {
+        public void run() {
+            if (r != null) {
                 r.run();
 
             }
         }
-
     }
+
     void setScrollListener() {
         // Setting this scroll listener is required to ensure that during ListView scrolling,
-        // we don't look for swipes.
+        // Swipe has no effect
         mRecyclerView.setOnScrollListener(touchListener.makeScrollListener());
 
-
+        // Listener for if item (group) is clicked
+        // Maybee this is not necessary either
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(mRecyclerView,
                 new OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        setAdapter();
                         //Toast.makeText(KitchenActivity.this, "Clicked " + groups.get(position), Toast.LENGTH_SHORT).show();
                     }
                 }));
     }
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
