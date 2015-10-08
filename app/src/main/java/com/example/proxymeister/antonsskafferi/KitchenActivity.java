@@ -48,6 +48,7 @@ public class KitchenActivity extends AppCompatActivity {
 
 
     private RecyclerView mRecyclerView;
+
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
     private Button undodeletebtn;
@@ -55,6 +56,7 @@ public class KitchenActivity extends AppCompatActivity {
     private int millisecondstoshowbutton;
     private List<Integer> oldpositions = new ArrayList<>();
     SwipeDismissRecyclerViewTouchListener touchListener;
+    private ComponentRemover componentRemover;
 
 
     @Override
@@ -226,23 +228,36 @@ public class KitchenActivity extends AppCompatActivity {
 
                                 setAdapter();
                                 // do not call notifyItemRemoved for every item, it will cause gaps on deleting items
-
-
+                                if(componentRemover != null){
+                                    componentRemover.r = null;
+                                }
+                                componentRemover = new ComponentRemover();
                                 // After millisecondstoshowbutton has ended, status should change to readyFordelivery
-                                undodeletebtn.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        undodeletebtn.startAnimation(animfadeout);
-                                        undodeletebtn.setVisibility(View.GONE);
-                                    }
-                                }, millisecondstoshowbutton);
+                                undodeletebtn.postDelayed(componentRemover, millisecondstoshowbutton);
 
                             }
                         });
         mRecyclerView.setOnTouchListener(touchListener);
     }
 
+    class ComponentRemover implements Runnable{
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                undodeletebtn.startAnimation(animfadeout);
+                undodeletebtn.setVisibility(View.GONE);
+                r = null;
+            }
+        };
+        @Override
+        public void run(){
+            if ( r != null ) {
+                r.run();
 
+            }
+        }
+
+    }
     void setScrollListener() {
         // Setting this scroll listener is required to ensure that during ListView scrolling,
         // we don't look for swipes.
