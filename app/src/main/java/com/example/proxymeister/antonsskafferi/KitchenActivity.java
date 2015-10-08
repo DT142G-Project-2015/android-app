@@ -46,12 +46,14 @@ public class KitchenActivity extends AppCompatActivity {
     private List<Group> groups = new ArrayList<>();
     private List<Group> deletedgroups = new ArrayList<>();
 
+
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
     private Button undodeletebtn;
     private Animation animfadeout;
     private int millisecondstoshowbutton;
+    private int oldposition;
     SwipeDismissRecyclerViewTouchListener touchListener;
 
 
@@ -119,10 +121,14 @@ public class KitchenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!deletedgroups.isEmpty()){
-                    groups.add(deletedgroups.get(deletedgroups.size()-1));
-                    deletedgroups.remove(deletedgroups.size()-1);
-                    mAdapter.notifyDataSetChanged();
+                    Group g = deletedgroups.get(0);
+                    Group gtemp = deletedgroups.get(deletedgroups.size()-1);
 
+
+
+                    groups.add(oldposition, gtemp);
+                    deletedgroups.remove(deletedgroups.size() - 1);
+                    setAdapter();
                 }
 
             }
@@ -146,8 +152,10 @@ public class KitchenActivity extends AppCompatActivity {
 
                 Map<Item, Integer> frequency = new HashMap<>();
 
+                viewHolder.itemname.setText("");
+                viewHolder.groupnumber.setText("");
                 // This should be table number instead of group id
-                viewHolder.groupnumber.append(groups.get(i).getId());
+                viewHolder.groupnumber.setText("Bord: " + groups.get(i).getId());
 
                 List<String> occur = new ArrayList<>();
                 for (Item it : groups.get(i).items) {
@@ -171,13 +179,16 @@ public class KitchenActivity extends AppCompatActivity {
 
                 viewHolder.groupnumber.setPressed(false);
                 viewHolder.itemname.setPressed(false);
+
             }
 
             @Override
             public int getItemCount() {
                 return groups.size();
             }
+
         };
+        mAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -198,24 +209,30 @@ public class KitchenActivity extends AppCompatActivity {
                             public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
 
                                 undodeletebtn.setVisibility(View.VISIBLE);
-
                                 for (int position : reverseSortedPositions) {
-                                    Group deleted = groups.get(position);
-                                    deletedgroups.add(deleted);
-                                    groups.get(position).items.clear();
+                                    oldposition = position;
+
+                                    Group gtemp = groups.get(position);
+                                    deletedgroups.add(gtemp);
+
+                                    //groups.get(position).items.clear();
                                     groups.remove(position);
+                                    mAdapter.notifyItemRemoved(position);
                                 }
+
+
+
 
                                 setAdapter();
                                 // do not call notifyItemRemoved for every item, it will cause gaps on deleting items
-                                mAdapter.notifyDataSetChanged();
 
 
+                                // After millisecondstoshowbutton has ended, status should change to readyFordelivery
                                 undodeletebtn.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         undodeletebtn.startAnimation(animfadeout);
-                                        undodeletebtn.setVisibility(View.INVISIBLE);
+                                        undodeletebtn.setVisibility(View.GONE);
                                     }
                                 }, millisecondstoshowbutton);
 
@@ -229,10 +246,13 @@ public class KitchenActivity extends AppCompatActivity {
         // Setting this scroll listener is required to ensure that during ListView scrolling,
         // we don't look for swipes.
         mRecyclerView.setOnScrollListener(touchListener.makeScrollListener());
+
+
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(mRecyclerView,
                 new OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        setAdapter();
                         //Toast.makeText(KitchenActivity.this, "Clicked " + groups.get(position), Toast.LENGTH_SHORT).show();
                     }
                 }));
