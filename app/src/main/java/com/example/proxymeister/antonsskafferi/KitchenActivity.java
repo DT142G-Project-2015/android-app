@@ -17,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+
 import android.widget.Toast;
 
 import java.util.Timer;
@@ -43,7 +44,7 @@ import retrofit.Retrofit;
 public class KitchenActivity extends AppCompatActivity {
     private List<Order> orders;
     private List<Group> groups = new ArrayList<>();
-    private List<String> deletedorders = new ArrayList<>();
+    private List<Group> deletedgroups = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -113,6 +114,20 @@ public class KitchenActivity extends AppCompatActivity {
                          }
 
             );
+
+        View.OnClickListener buttonListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!deletedgroups.isEmpty()){
+                    groups.add(deletedgroups.get(deletedgroups.size()-1));
+                    deletedgroups.remove(deletedgroups.size()-1);
+                    mAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+        };
+        undodeletebtn.setOnClickListener(buttonListener);
 
     }
 
@@ -185,8 +200,8 @@ public class KitchenActivity extends AppCompatActivity {
                                 undodeletebtn.setVisibility(View.VISIBLE);
 
                                 for (int position : reverseSortedPositions) {
-                                    final int originalHeight = recyclerView.getHeight();
-
+                                    Group deleted = groups.get(position);
+                                    deletedgroups.add(deleted);
                                     groups.get(position).items.clear();
                                     groups.remove(position);
                                 }
@@ -222,6 +237,9 @@ public class KitchenActivity extends AppCompatActivity {
                     }
                 }));
     }
+
+
+
 
 
     @Override
