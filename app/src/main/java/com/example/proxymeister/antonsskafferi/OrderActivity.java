@@ -100,13 +100,15 @@ public class OrderActivity extends AppCompatActivity{
         private TextView mOrderTextView;
         private TextView mTotPriceTextView;
         public LinearLayout ll;
+        public Button mAddItemButton;
+        public boolean expanded = false;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
             mOrderTextView = (TextView) itemView.findViewById(R.id.order);
             mTotPriceTextView = (TextView) itemView.findViewById(R.id.totalPrice);
+            mAddItemButton = (Button) itemView.findViewById(R.id.addItemToOrder);
             ll = (LinearLayout) itemView.findViewById(R.id.item_holder);
-
         }
     }
 
@@ -121,12 +123,12 @@ public class OrderActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onBindViewHolder(CustomViewHolder viewHolder, int i) {
+            public void onBindViewHolder(final CustomViewHolder viewHolder, int i) {
                 viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).id);
                 orders.get(i).getTotalPrice();
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(OrderActivity.LAYOUT_INFLATER_SERVICE);
-                LinearLayout parent = (LinearLayout) viewHolder.ll;
+                final LinearLayout parent = (LinearLayout) viewHolder.ll;
 
                 for (Item it : groups.get(i).items) {
                     View custom = inflater.inflate(R.layout.activity_item_view, null);
@@ -139,6 +141,33 @@ public class OrderActivity extends AppCompatActivity{
                 /*for (Item it : groups.get(i).items) {
                     viewHolder.mItemTextView.append("\n" + "   " + it.name);
                 }*/
+
+                //EXPANDING CODE
+                OnClickListener oclbtn = new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!viewHolder.expanded) {
+                            parent.setVisibility(View.VISIBLE);
+                            viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
+                            viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
+                            viewHolder.mAddItemButton.setVisibility(View.VISIBLE);
+                            viewHolder.expanded = true;
+
+                        }else{
+                            parent.setVisibility(View.GONE);
+                            viewHolder.mTotPriceTextView.setVisibility(View.GONE);
+                            viewHolder.mOrderTextView.setPadding(20, 20, 20, 20);
+                            viewHolder.mAddItemButton.setVisibility(View.GONE);
+                            viewHolder.expanded = false;
+
+                        }
+                    }
+                };
+
+                viewHolder.mOrderTextView.setOnClickListener(oclbtn);
+                //END EXPAND
+
+
                 viewHolder.mOrderTextView.setPressed(true);
             }
 
