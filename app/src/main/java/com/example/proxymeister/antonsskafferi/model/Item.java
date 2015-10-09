@@ -10,6 +10,7 @@ public class Item {
     public int type;
 
 
+
     @Override
     public String toString() {
         return name + ", " + description + ", " + price.toString() + " kr";

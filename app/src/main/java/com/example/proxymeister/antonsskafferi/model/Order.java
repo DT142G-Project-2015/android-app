@@ -6,6 +6,7 @@ import java.util.List;
 public class Order {
     public List<Group> groups;
     public int id;
+    public int booth;
 
     @Override
     public String toString() {

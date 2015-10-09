@@ -82,6 +82,7 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
 
         o.groups = new ArrayList<>();
         g.status = "readyForKitchen";
+        o.booth = 9999;
         o.groups.add(g);
         Call<Void> call = Utils.getApi().createOrder(o);
         call.enqueue(new Callback<Void>() {

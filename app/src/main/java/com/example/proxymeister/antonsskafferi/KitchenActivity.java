@@ -99,11 +99,17 @@ public class KitchenActivity extends AppCompatActivity {
 
                                  if (orders != null) {
 
-                                     // Iterate through every order and add its group/groups to groups list
+                                     // Iterate through every order and add its group(s) to groups list
                                      for (int i = 0; i < orders.size(); i++) {
+                                         Log.e("", "table: "+ orders.get(i).booth);
                                          List<Group> temp = orders.get(i).groups;
+
                                          for (int j = 0; j < temp.size(); j++) {
-                                             groups.add(temp.get(j));
+                                             Group go = new Group();
+
+                                             go = temp.get(j);
+                                             go.tablenum = orders.get(i).booth;
+                                             groups.add(go);
                                          }
                                      }
 
@@ -177,8 +183,8 @@ public class KitchenActivity extends AppCompatActivity {
                 viewHolder.itemname.setText("");
                 viewHolder.groupnumber.setText("");
 
-                // This should be table number instead of group id later on
-                viewHolder.groupnumber.setText("Bord: " + groups.get(i).getId());
+                // Print tablenumber
+                viewHolder.groupnumber.setText("Bord: " + groups.get(i).tablenum);
 
                 // Add all the item.name (strings) that occur in the group
                 List<String> occur = new ArrayList<>();

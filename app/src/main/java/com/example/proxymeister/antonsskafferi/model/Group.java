@@ -18,6 +18,7 @@ public class Group {
 
     public String status;
     public int id;
+    public int tablenum;
 
     class CustomComparator implements Comparator<Item> {
         @Override
