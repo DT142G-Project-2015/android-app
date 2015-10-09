@@ -58,8 +58,8 @@ public class OrderActivity extends AppCompatActivity{
 
         btn.setOnClickListener(oclbtn);
 
-    //___________________TILLFÄLIGT_____________________________________
-        Call<List<Order>> call = Utils.getApi().getOrdersByStatus("readyForKitchen");
+        // Get all orders ready to serve
+        Call<List<Order>> call = Utils.getApi().getOrdersByStatus(getString(R.string.StatusReadyToServe));
 
         call.enqueue(new Callback<List<Order>>() {
                          @Override

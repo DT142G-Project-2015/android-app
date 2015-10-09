@@ -16,7 +16,6 @@
     <string name="title_activity_lager">Lager</string>
     <string name="work_in_progress">Work in progress...</string>
     <string name="order_label">Beställningar</string>
-    <string name="demo_order">Fläskfile \nPotatisklyftor \nWhiskeysås</string>
     <string name="title_activity_menu_list">Meny</string>
 
     //Variabler till login rutan
@@ -26,7 +25,8 @@
     <string name="email">Email</string>
     <string name="pwd">Password</string>
     <string name="title_activity_handle_lager">Lagerhantering</string>
-    <string name="Statusreadyforkittchen">readyForKitchen</string>
+    <string name="StatusReadyToServe">readyToServe</string>
+    <string name="StatusReadyForKitchen">readyForKitchen</string>
 
 
 </resources>

@@ -81,7 +81,7 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
         g.items = itemAdapter.temporder;
 
         o.groups = new ArrayList<>();
-        g.status = "readyForKitchen";
+        g.status = getString(R.string.StatusReadyForKitchen);
         o.booth = 9999;
         o.groups.add(g);
         Call<Void> call = Utils.getApi().createOrder(o);

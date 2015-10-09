@@ -84,8 +84,8 @@ public class KitchenActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(KitchenActivity.this, DividerItemDecoration.VERTICAL_LIST));
 
-
-        Call<List<Order>> call = Utils.getApi().getOrdersByStatus("readyForKitchen");
+        // Get all orders ready for kitchen
+        Call<List<Order>> call = Utils.getApi().getOrdersByStatus(getString(R.string.StatusReadyForKitchen));
         if (call != null)
             call.enqueue(new Callback<List<Order>>() {
                              @Override
@@ -101,7 +101,6 @@ public class KitchenActivity extends AppCompatActivity {
 
                                      // Iterate through every order and add its group(s) to groups list
                                      for (int i = 0; i < orders.size(); i++) {
-                                         Log.e("", "table: "+ orders.get(i).booth);
                                          List<Group> temp = orders.get(i).groups;
 
                                          for (int j = 0; j < temp.size(); j++) {
@@ -281,7 +280,7 @@ public class KitchenActivity extends AppCompatActivity {
                 undodeletebtn.setVisibility(View.GONE);
                 animationthread = null;
                 for (Group group : deletedgroups) {
-                    group.status="readyToServe";
+                    group.status=getString(R.string.StatusReadyToServe);
                     Call<Void> call = Utils.getApi().changeStatus(group, group.orderId, group.id);
                     call.enqueue(new Callback<Void>() {
                         @Override
