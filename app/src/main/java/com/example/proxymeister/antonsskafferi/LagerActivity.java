@@ -3,44 +3,64 @@ package com.example.proxymeister.antonsskafferi;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.proxymeister.antonsskafferi.model.Article;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+
 public class LagerActivity extends AppCompatActivity  {
-    private List<String> lager_entry;
-    private ListView lager_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lager);
-        lager_list = (ListView)findViewById(R.id.lagerList);
-
-        lager_entry = new ArrayList<>();
-        {
-            lager_entry.add("Renkött    |   6 (kg)    |    15 dagar ");
-            lager_entry.add("Drakfilé    | 10 (gram) |  31708 dagar ");
-            lager_entry.add("Revbenspjäll    |   17 (kg)    |   5 dagar  ");
-        }
 
 
-        /* used with URL-fetch
-        for (Item p : entries) {
-            strings.add(p.toString());
-        }
-        */
+        //int id = getIntent().getIntExtra("article-id", 1); //PNU
 
-        // stores entries
-        ArrayAdapter<String> entry_keeper =
-                new ArrayAdapter<>(LagerActivity.this, android.R.layout.simple_list_item_1, lager_entry);
+        Call<List<Article>> call = Utils.getApi().getArticles();
 
-        // pass entries to the ListView
-        lager_list.setAdapter(entry_keeper);
+        call.enqueue(new Callback<List<Article>>() {
+            @Override
+            public void onResponse(Response<List<Article>> response, Retrofit retrofit) {
+                int statusCode = response.code();
+                Log.i(MainActivity.class.getName(), "Status: " + statusCode);
+
+                List<Article> articles = response.body();
+
+                if (articles != null) {
+                    // strings = items.map(_.toString())
+                    List<String> strings = new ArrayList<String>();
+                    for (Article p : articles) {
+                        strings.add(p.toString());
+                    }
+
+                    // create simple ArrayAdapter to hold the strings for the ListView
+                    ArrayAdapter<String> itemsAdapter =
+                            new ArrayAdapter<String>(LagerActivity.this, android.R.layout.simple_list_item_1, strings);
+
+                    // pass the adapter to the ListView
+                   ListView list = (ListView) findViewById(R.id.lagerList);
+                    list.setAdapter(itemsAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+            }
+        });
     }
 
     @Override

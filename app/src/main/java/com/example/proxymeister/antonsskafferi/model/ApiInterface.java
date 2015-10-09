@@ -24,7 +24,6 @@ public interface ApiInterface {
     Call<Item> removeMenuItem(@Path("menu_id") int menuId, @Path("item_id") int itemId);
 
 
-
     //// Item Resource
 
     // Get item by id
@@ -55,5 +54,19 @@ public interface ApiInterface {
 
     @PUT("order/{order_id}/group/{group_id}")
     Call<Void> changeStatus(@Body Group group, @Path("order_id") int orderId, @Path("group_id") int groupId);
+
+    //// Article Resource
+
+    @GET("storage")
+    Call<List<Article>> getArticles();
+
+    @GET("storage/{article_id}")
+    Call<List<Article>> getArticle (@Path("article_id") int articleId);
+
+    @PUT("storage/{storage_id}")
+    Call<Void> changeArticle(@Path("order_id") int orderId, @Path("group_id") int groupId);
+
+    @DELETE("storage/{storage_id}")
+    Call<Item> removeArticle(@Path("article_id") int articleId);
 }
 
