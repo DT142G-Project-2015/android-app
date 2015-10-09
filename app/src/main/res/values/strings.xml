@@ -26,6 +26,7 @@
     <string name="email">Email</string>
     <string name="pwd">Password</string>
     <string name="title_activity_handle_lager">Lagerhantering</string>
+    <string name="Statusreadyforkittchen">readyForKitchen</string>
 
 
 </resources>

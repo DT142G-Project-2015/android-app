@@ -280,6 +280,22 @@ public class KitchenActivity extends AppCompatActivity {
                 undodeletebtn.startAnimation(animfadeout);
                 undodeletebtn.setVisibility(View.GONE);
                 animationthread = null;
+                for (Group group : deletedgroups) {
+                    group.status="readyToServe";
+                    Call<Void> call = Utils.getApi().changeStatus(group, group.orderId, group.id);
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Response<Void> response, Retrofit retrofit) {
+                            System.out.println("working");
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            System.out.println("not working");
+
+                        }
+                    });
+                }
             }
         };
 

@@ -20,6 +20,8 @@ public class Group {
     public int id;
     public int tablenum;
 
+    public int orderId;
+
     class CustomComparator implements Comparator<Item> {
         @Override
         public int compare(Item o1, Item o2) {
