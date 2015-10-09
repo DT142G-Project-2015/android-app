@@ -63,7 +63,7 @@ public class KitchenActivity extends AppCompatActivity {
     SwipeDismissRecyclerViewTouchListener touchListener;
 
     // To handle the animation
-    private ComponentRemover componentRemover;
+    private AnimationHandler animationhandler;
 
 
     @Override
@@ -241,32 +241,32 @@ public class KitchenActivity extends AppCompatActivity {
 
                                 // Check if the animation of button is set
                                 // If the animation is set, set the runnable to null (stops the animation)
-                                if (componentRemover != null) {
-                                    componentRemover.r = null;
+                                if (animationhandler != null) {
+                                    animationhandler.animationthread = null;
                                 }
                                 // Then start the animation and set timer
-                                componentRemover = new ComponentRemover();
-                                undodeletebtn.postDelayed(componentRemover, millisecondstoshowbutton);
+                                animationhandler = new AnimationHandler();
+                                undodeletebtn.postDelayed(animationhandler, millisecondstoshowbutton);
 
                             }
                         });
         mRecyclerView.setOnTouchListener(touchListener);
     }
 
-    class ComponentRemover implements Runnable {
-        Runnable r = new Runnable() {
+    class AnimationHandler implements Runnable {
+        Runnable animationthread = new Runnable() {
             @Override
             public void run() {
                 undodeletebtn.startAnimation(animfadeout);
                 undodeletebtn.setVisibility(View.GONE);
-                r = null;
+                animationthread = null;
             }
         };
 
         @Override
         public void run() {
-            if (r != null) {
-                r.run();
+            if (animationthread != null) {
+                animationthread.run();
 
             }
         }
@@ -278,7 +278,7 @@ public class KitchenActivity extends AppCompatActivity {
         mRecyclerView.setOnScrollListener(touchListener.makeScrollListener());
 
         // Listener for if item (group) is clicked
-        // Maybee this is not necessary either
+        // This may not be necessary
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(mRecyclerView,
                 new OnItemClickListener() {
                     @Override
