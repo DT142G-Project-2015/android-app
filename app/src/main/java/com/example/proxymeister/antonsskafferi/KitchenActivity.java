@@ -126,7 +126,8 @@ public class KitchenActivity extends AppCompatActivity {
         View.OnClickListener buttonListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!deletedgroups.isEmpty()) {
+                //if (!deletedgroups.isEmpty()) {
+                if(deletedgroups.size() > 1){
 
                     // Add the last deleted group to its previous position
                     groups.add(oldpositions.get(oldpositions.size() - 1), deletedgroups.get(deletedgroups.size() - 1));
@@ -135,6 +136,19 @@ public class KitchenActivity extends AppCompatActivity {
                     deletedgroups.remove(deletedgroups.size() - 1);
                     oldpositions.remove(oldpositions.size() - 1);
                     setAdapter();
+                }
+                //Deletes the undo button when no more groups can be undone
+                else if(deletedgroups.size() == 1){
+
+                    // Add the last deleted group to its previous position
+                    groups.add(oldpositions.get(oldpositions.size() - 1), deletedgroups.get(deletedgroups.size() - 1));
+
+                    // Then remove the previous deleted group and its old position
+                    deletedgroups.remove(deletedgroups.size() - 1);
+                    oldpositions.remove(oldpositions.size() - 1);
+                    setAdapter();
+                    animationhandler = new AnimationHandler();
+                    undodeletebtn.postDelayed(animationhandler, 500);
                 }
             }
         };
