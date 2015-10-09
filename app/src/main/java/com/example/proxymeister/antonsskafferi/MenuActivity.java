@@ -2,16 +2,13 @@ package com.example.proxymeister.antonsskafferi;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-import com.example.proxymeister.antonsskafferi.model.Item;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.proxymeister.antonsskafferi.model.Menu;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -20,37 +17,52 @@ import retrofit.Retrofit;
 
 public class MenuActivity extends AppCompatActivity {
 
+    private MenuAdapter adapter;
+    private RecyclerView rv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_menu);
 
-        int id = getIntent().getIntExtra("menu-id", 1);
+        rv = (RecyclerView)findViewById(R.id.rv);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rv.setLayoutManager(llm);
 
-        Call<List<Item>> call = Utils.getApi().getMenuItems(id);
+        ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
-        call.enqueue(new Callback<List<Item>>() {
             @Override
-            public void onResponse(Response<List<Item>> response, Retrofit retrofit) {
-                int statusCode = response.code();
-                Log.i(MainActivity.class.getName(), "Status: " + statusCode);
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
 
-                List<Item> items = response.body();
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                adapter.notifyItemChanged(viewHolder.getAdapterPosition()); // restore
+            }
+        };
+        ItemTouchHelper touchHelper = new ItemTouchHelper(touchCallback);
+        touchHelper.attachToRecyclerView(rv);
 
-                if (items != null) {
-                    // strings = items.map(_.toString())
-                    List<String> strings = new ArrayList<String>();
-                    for (Item p : items) {
-                        strings.add(p.toString());
-                    }
+        setTitle("...");
+        refreshMenu();
+    }
 
-                    // create simple ArrayAdapter to hold the strings for the ListView
-                    ArrayAdapter<String> itemsAdapter =
-                            new ArrayAdapter<String>(MenuActivity.this, android.R.layout.simple_list_item_1, strings);
+    private void refreshMenu() {
+        int id = getIntent().getIntExtra("menu-id", 1);
+        Call<Menu> call = Utils.getApi().getMenu(id);
 
-                    // pass the adapter to the ListView
-                    ListView list = (ListView) findViewById(R.id.list);
-                    list.setAdapter(itemsAdapter);
+        call.enqueue(new Callback<Menu>() {
+            @Override
+            public void onResponse(Response<Menu> response, Retrofit retrofit) {
+
+                Menu menu = response.body();
+
+                if (menu != null) {
+                    setTitle(menu.name);
+                    adapter = new MenuAdapter(menu);
+                    rv.setAdapter(adapter);
                 }
             }
 
@@ -62,7 +74,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_menu, menu);
         return true;

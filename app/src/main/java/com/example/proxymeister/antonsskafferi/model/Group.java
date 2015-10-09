@@ -4,12 +4,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Created by Viktor on 2015-09-29.
- */
+
 public class Group {
     public List<Item> items;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getId() {
+        return Integer.toString(id);
+    }
+
     public String status;
+    public int id;
 
     class CustomComparator implements Comparator<Item> {
         @Override
@@ -66,6 +74,6 @@ public class Group {
             temp += i.toStringKitchenFormat() + "\n";
         }
 */
-        return temp;
+        return "Group No." + id + "\n" + temp;
     }
 }
