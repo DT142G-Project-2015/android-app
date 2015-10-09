@@ -31,7 +31,7 @@ public class Utils {
 
         return buf.toString();
     }
-
+    //http://46.254.15.8/api/http://10.0.2.2:8080/web-app/api/
     public static ApiInterface getApi() {
         String BASE_URL = "http://46.254.15.8/api/";
         Retrofit retrofit = new Retrofit.Builder()

@@ -65,12 +65,12 @@ public interface ApiInterface {
     Call<List<Article>> getArticles();
 
     @GET("storage/{article_id}")
-    Call<List<Article>> getArticle (@Path("article_id") int articleId);
+    Call<Article> getArticle (@Path("article_id") int articleId);
 
-    @PUT("storage/{storage_id}")
-    Call<Void> changeArticle(@Path("order_id") int orderId, @Path("group_id") int groupId);
+    @PUT("storage/{article_id}")
+    Call<Void> changeArticle(@Path("article_id") int articleId);
 
-    @DELETE("storage/{storage_id}")
+    @DELETE("storage/{article_id}")
     Call<Item> removeArticle(@Path("article_id") int articleId);
 }
 

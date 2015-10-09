@@ -27,24 +27,24 @@ public class LagerActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_lager);
 
 
-        //int id = getIntent().getIntExtra("article-id", 1); //PNU
+        int id = getIntent().getIntExtra("article_id", 1);
 
-        Call<List<Article>> call = Utils.getApi().getArticles();
+        Call<Article> call = Utils.getApi().getArticle(id);
 
-        call.enqueue(new Callback<List<Article>>() {
+        call.enqueue(new Callback<Article>() {
             @Override
-            public void onResponse(Response<List<Article>> response, Retrofit retrofit) {
+            public void onResponse(Response<Article> response, Retrofit retrofit) {
                 int statusCode = response.code();
                 Log.i(MainActivity.class.getName(), "Status: " + statusCode);
 
-                List<Article> articles = response.body();
+                Article entry = response.body();
 
-                if (articles != null) {
+                if (entry != null) {
                     // strings = items.map(_.toString())
                     List<String> strings = new ArrayList<String>();
-                    for (Article p : articles) {
-                        strings.add(p.toString());
-                    }
+                    //for (Article p : entry) {
+                        strings.add(entry.toString());
+                    //}
 
                     // create simple ArrayAdapter to hold the strings for the ListView
                     ArrayAdapter<String> itemsAdapter =
