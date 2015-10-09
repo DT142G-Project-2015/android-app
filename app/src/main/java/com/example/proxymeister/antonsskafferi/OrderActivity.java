@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
@@ -29,13 +31,12 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 public class OrderActivity extends AppCompatActivity{
-    //______________TILLFÄLLIGT______________________
+
     private List<Order> orders;
     private List<Group> groups = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
-    //________________END_________________________________
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +59,7 @@ public class OrderActivity extends AppCompatActivity{
 
         btn.setOnClickListener(oclbtn);
 
-        // Get all orders ready to serve
-        Call<List<Order>> call = Utils.getApi().getOrdersByStatus(getString(R.string.StatusReadyToServe));
+        Call<List<Order>> call = Utils.getApi().getOrdersByStatus("readyForKitchen");
 
         call.enqueue(new Callback<List<Order>>() {
                          @Override
@@ -71,9 +71,12 @@ public class OrderActivity extends AppCompatActivity{
                              orders = response.body();
 
                              if (orders != null) {
-                                 for(Order o : orders){
-                                     for(Group g : o.groups)
-                                         groups.add(g);
+                                 for (int i = 0; i < orders.size(); i++) {
+                                     List<Group> temp = orders.get(i).groups;
+                                     for (int j = 0; j < temp.size(); j++) {
+                                         groups.add(temp.get(j));
+
+                                     }
                                  }
                                  mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
                                  mLayoutManager = new LinearLayoutManager(OrderActivity.this);
@@ -90,19 +93,20 @@ public class OrderActivity extends AppCompatActivity{
                      }
 
         );
-        //______________________________END____________________________________________
 
     }
-    //________________________Tillfälligt___________________________________
     private class CustomViewHolder extends RecyclerView.ViewHolder {
         public List<Item> items = new ArrayList<>();
         private TextView mOrderTextView;
-        private TextView mGroupTextView;
+        private TextView mTotPriceTextView;
+        public LinearLayout ll;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
             mOrderTextView = (TextView) itemView.findViewById(R.id.order);
-            mGroupTextView = (TextView) itemView.findViewById(R.id.group);
+            mTotPriceTextView = (TextView) itemView.findViewById(R.id.totalPrice);
+            ll = (LinearLayout) itemView.findViewById(R.id.item_holder);
+
         }
     }
 
@@ -119,6 +123,22 @@ public class OrderActivity extends AppCompatActivity{
             @Override
             public void onBindViewHolder(CustomViewHolder viewHolder, int i) {
                 viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).id);
+                orders.get(i).getTotalPrice();
+
+                LayoutInflater inflater = (LayoutInflater) getSystemService(OrderActivity.LAYOUT_INFLATER_SERVICE);
+                LinearLayout parent = (LinearLayout) viewHolder.ll;
+
+                for (Item it : groups.get(i).items) {
+                    View custom = inflater.inflate(R.layout.activity_item_view, null);
+                    TextView tv = (TextView) custom.findViewById(R.id.item);
+                    tv.setText(it.name + ", " + it.price + ":-");
+                    parent.addView(custom);
+                }
+
+                viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(orders.get(i).totPrice) + ":-");
+                /*for (Item it : groups.get(i).items) {
+                    viewHolder.mItemTextView.append("\n" + "   " + it.name);
+                }*/
                 viewHolder.mOrderTextView.setPressed(true);
             }
 
@@ -129,8 +149,6 @@ public class OrderActivity extends AppCompatActivity{
         };
         mRecyclerView.setAdapter(mAdapter);
     }
-
-    //____________________________END________________________________
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

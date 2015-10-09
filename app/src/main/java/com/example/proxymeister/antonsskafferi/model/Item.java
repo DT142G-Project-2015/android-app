@@ -6,14 +6,14 @@ public class Item {
     public int id;
     public String name;
     public String description;
-    public BigDecimal price;
+    public double price; // ändra inte datatyp här
     public int type;
 
 
 
     @Override
     public String toString() {
-        return name + ", " + description + ", " + price.toString() + " kr";
+        return name + ", " + description;
     }
 
 
