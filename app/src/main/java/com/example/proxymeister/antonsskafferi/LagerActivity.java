@@ -26,33 +26,29 @@ public class LagerActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lager);
 
-
-        int id = getIntent().getIntExtra("article_id", 1);
-
-        Call<Article> call = Utils.getApi().getArticle(id);
-
-        call.enqueue(new Callback<Article>() {
+        Call<List<Article>> call = Utils.getApi().getArticles();
+        call.enqueue(new Callback<List<Article>>() {
             @Override
-            public void onResponse(Response<Article> response, Retrofit retrofit) {
+            public void onResponse(Response<List<Article>> response, Retrofit retrofit) {
                 int statusCode = response.code();
                 Log.i(MainActivity.class.getName(), "Status: " + statusCode);
 
-                Article entry = response.body();
+                List<Article> articles = response.body();
 
-                if (entry != null) {
+                if (articles != null) {
                     // strings = items.map(_.toString())
                     List<String> strings = new ArrayList<String>();
-                    //for (Article p : entry) {
-                        strings.add(entry.toString());
-                    //}
+                    for (Article p : articles) {
+                        strings.add(p.toString());
+                    }
 
                     // create simple ArrayAdapter to hold the strings for the ListView
-                    ArrayAdapter<String> itemsAdapter =
+                    ArrayAdapter<String> articleAdapter =
                             new ArrayAdapter<String>(LagerActivity.this, android.R.layout.simple_list_item_1, strings);
 
                     // pass the adapter to the ListView
-                   ListView list = (ListView) findViewById(R.id.lagerList);
-                    list.setAdapter(itemsAdapter);
+                    ListView list = (ListView) findViewById(R.id.lagerList);
+                    list.setAdapter(articleAdapter);
                 }
             }
 
