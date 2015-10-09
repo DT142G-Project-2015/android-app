@@ -18,4 +18,16 @@
     </style>
 
 
+    <style name="CustomListviewLayout" parent="AppTheme">
+        <item name="android:textColor">#000</item>
+        <item name="android:background">#E0D8E0</item>
+
+        <item name="android:paddingLeft">6dip</item>
+        <item name="android:paddingRight">6dip</item>
+    </style>
+
+    <style name="CustomListviewRibbonBackground" parent="CustomListviewLayout">
+        <item name="android:background">@drawable/listview_gradient</item>
+    </style>
+
 </resources>
