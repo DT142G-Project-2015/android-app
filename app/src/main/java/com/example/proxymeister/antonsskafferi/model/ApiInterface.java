@@ -72,5 +72,8 @@ public interface ApiInterface {
 
     @DELETE("storage/{article_id}")
     Call<Item> removeArticle(@Path("article_id") int articleId);
+
+    @POST("storage")
+    Call<Void> createArticle(@Body Article article);
 }
 

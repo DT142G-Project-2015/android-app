@@ -35,4 +35,7 @@ public class Order {
         }
         return  "\n" + "Order No." + id  + "\n" + temp;
     }
+
+    public final int getBooth() { return booth; }
+    public final int getId() { return id; }
 }
