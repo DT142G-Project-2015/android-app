@@ -3,13 +3,14 @@ package com.example.proxymeister.antonsskafferi;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.example.proxymeister.antonsskafferi.model.Article;
+import com.example.proxymeister.antonsskafferi.model.LagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,24 @@ import retrofit.Retrofit;
 
 public class LagerActivity extends AppCompatActivity  {
 
+    private RecyclerView rv;
+    private RecyclerView.Adapter lAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private  ArrayList<String> strings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lager);
+
+        // 1. get a reference to recyclerView
+        rv = (RecyclerView) findViewById(R.id.lager_recycler_view);
+        rv.setHasFixedSize(true);
+
+        mLayoutManager = new LinearLayoutManager(this);
+        rv.setLayoutManager(mLayoutManager);
+
+        strings = new ArrayList<>();
 
         Call<List<Article>> call = Utils.getApi().getArticles();
         call.enqueue(new Callback<List<Article>>() {
@@ -36,27 +51,26 @@ public class LagerActivity extends AppCompatActivity  {
                 List<Article> articles = response.body();
 
                 if (articles != null) {
-                    // strings = items.map(_.toString())
-                    List<String> strings = new ArrayList<String>();
                     for (Article p : articles) {
                         strings.add(p.toString());
                     }
-
-                    // create simple ArrayAdapter to hold the strings for the ListView
-                    ArrayAdapter<String> articleAdapter =
-                            new ArrayAdapter<String>(LagerActivity.this, android.R.layout.simple_list_item_1, strings);
-
-                    // pass the adapter to the ListView
-                    ListView list = (ListView) findViewById(R.id.lagerList);
-                    list.setAdapter(articleAdapter);
+                }
+                else
+                {
+                    strings.add("Inga varor hittades ...");
                 }
             }
+
 
             @Override
             public void onFailure(Throwable t) {
                 Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
             }
         });
+
+        lAdapter = new LagerAdapter(strings);
+
+        rv.setAdapter(lAdapter);
     }
 
     @Override
