@@ -86,7 +86,8 @@
         <activity
             android:name=".LagerActivity"
             android:label="@string/title_activity_lager"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.proxymeister.antonsskafferi.MainActivity" />
