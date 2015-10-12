@@ -27,15 +27,6 @@ public class Order {
         return  id + ", " + temp;
     }
 
-
-    public String toStringKitchenFormat() {
-        String temp = new String();
-        for(Group g : groups) {
-            temp += g.toStringKitchenFormat();
-        }
-        return  "\n" + "Order No." + id  + "\n" + temp;
-    }
-
     public final int getBooth() { return booth; }
     public final int getId() { return id; }
 }

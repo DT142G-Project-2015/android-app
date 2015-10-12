@@ -1,6 +1,7 @@
 package com.example.proxymeister.antonsskafferi.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Item {
     public int id;
@@ -8,6 +9,7 @@ public class Item {
     public String description;
     public double price; // ändra inte datatyp här
     public int type;
+    public List<Item> subitems;
 
 
 
@@ -17,7 +19,4 @@ public class Item {
     }
 
 
-    public String toStringKitchenFormat() {
-        return name;
-    }
 }
