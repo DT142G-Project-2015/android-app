@@ -268,31 +268,33 @@ public class KitchenActivity extends AppCompatActivity {
 
             // Check for any notes for items.
             for (Item item : group.items) {
-                if (specialitems.contains(item)) {
-                    int occurrencesspecial = Collections.frequency(specialitems, item);
-                    if (occurrencesspecial == 1) {
-                        viewHolder.itemname.append("\n" + "   " + itemname);
-                    } else
-                        viewHolder.itemname.append("\n" + occurrencesspecial + " " + itemname);
-                    if (!item.notes.isEmpty())
-                        viewHolder.itemname.append(": ");
-                    for (int j = 0; j < item.notes.size(); j++) {
-                        viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
-                        if (j != item.notes.size() - 1)
-                            viewHolder.itemname.append(", ");
-                    }
-                    for (Item subitem : item.subItems) {
-                        viewHolder.itemname.append("\n" + "     ");
-                        viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
-                        if (!subitem.notes.isEmpty())
+                if (item.type == 0) {
+                    if (specialitems.contains(item)) {
+                        int occurrencesspecial = Collections.frequency(specialitems, item);
+                        if (occurrencesspecial == 1) {
+                            viewHolder.itemname.append("\n" + "   " + itemname);
+                        } else
+                            viewHolder.itemname.append("\n" + occurrencesspecial + " " + itemname);
+                        if (!item.notes.isEmpty())
                             viewHolder.itemname.append(": ");
-                        for (int k = 0; k < subitem.notes.size(); k++) {
-                            viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
-                            if (k != subitem.notes.size() - 1)
+                        for (int j = 0; j < item.notes.size(); j++) {
+                            viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
+                            if (j != item.notes.size() - 1)
                                 viewHolder.itemname.append(", ");
                         }
+                        for (Item subitem : item.subItems) {
+                            viewHolder.itemname.append("\n" + "     ");
+                            viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
+                            if (!subitem.notes.isEmpty())
+                                viewHolder.itemname.append(": ");
+                            for (int k = 0; k < subitem.notes.size(); k++) {
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
+                                if (k != subitem.notes.size() - 1)
+                                    viewHolder.itemname.append(", ");
+                            }
+                        }
+                        specialitems.remove(item);
                     }
-                    specialitems.remove(item);
                 }
             }
         }

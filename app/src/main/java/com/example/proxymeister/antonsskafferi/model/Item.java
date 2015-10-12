@@ -9,7 +9,7 @@ public class Item {
     public String name;
     public String description;
     public double price; // ändra inte datatyp här
-    public String type;
+    public int type;
     public List<Note> notes;
     public List<Item> subItems;
 
