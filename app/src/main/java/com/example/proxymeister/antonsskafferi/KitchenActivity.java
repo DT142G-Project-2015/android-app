@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -94,7 +95,7 @@ public class KitchenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //if (!deletedgroups.isEmpty()) {
-                if(deletedgroups.size() > 1){
+                if (deletedgroups.size() > 1) {
 
                     // Add the last deleted group to its previous position
                     groups.add(oldpositions.get(oldpositions.size() - 1), deletedgroups.get(deletedgroups.size() - 1));
@@ -174,31 +175,31 @@ public class KitchenActivity extends AppCompatActivity {
         Call<List<Order>> call = Utils.getApi().getOrdersByStatus(getString(R.string.StatusReadyForKitchen));
 
         call.enqueue(new SimpleCallback<List<Order>>()
-             {
-                 @Override
-                 public void override(List<Order> orders)
-                 {
-                     // Iterate through every order and add its group(s) to groups list
-                     for (Order order : orders)
                      {
-                         for (Group group : order.groups)
+                         @Override
+                         public void override(List<Order> orders)
                          {
-                             group.tablenum = order.booth;
-
-                             //Check if group exists in groups
-                             if(!groups.contains(group))
+                             // Iterate through every order and add its group(s) to groups list
+                             for (Order order : orders)
                              {
-                                 groups.add(group);
-                                 sound();
+                                 for (Group group : order.groups)
+                                 {
+                                     group.tablenum = order.booth;
+
+                                     //Check if group exists in groups
+                                     if(!groups.contains(group))
+                                     {
+                                         groups.add(group);
+                                         sound();
+                                     }
+                                 }
                              }
+
+                             setAdapter();
+                             setSwipeListener();
+                             setScrollListener();
                          }
                      }
-
-                     setAdapter();
-                     setSwipeListener();
-                     setScrollListener();
-                 }
-             }
         );
     }
 
@@ -242,17 +243,41 @@ public class KitchenActivity extends AppCompatActivity {
                     nodub.add(s);
 
                 // For each string in dub, check its frequency in the occur list
-                for (String name : nodub) {
-                    int occurrences = Collections.frequency(occur, name);
+                for (String itemname : nodub) {
+                    int occurrences = Collections.frequency(occur, itemname);
 
                     // If occurences is 1, just print the item.name
                     // Otherwise, print the frequency and item.name
-                    if (occurrences == 1)
-                        viewHolder.itemname.append("\n" + "   " + name);
-                    else
-                        viewHolder.itemname.append("\n" + occurrences + " " + name);
-                }
+                    if (occurrences == 1) {
+                        viewHolder.itemname.append("\n" + "   " + itemname);
+                    } else
+                        viewHolder.itemname.append("\n" + occurrences + " " + itemname);
 
+                    // Check for any notes for items.
+                    for (Item item : groups.get(i).items) {
+                        if (item.name.equals(itemname)) {
+                            if (!item.notes.isEmpty())
+                                viewHolder.itemname.append(": ");
+                            for (int j = 0; j < item.notes.size(); j++) {
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
+                                if (j != item.notes.size() - 1)
+                                    viewHolder.itemname.append(", ");
+                            }
+                            for (Item subitem : item.subItems) {
+                                viewHolder.itemname.append("\n" + "     ");
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
+                                if (!subitem.notes.isEmpty())
+                                    viewHolder.itemname.append(": ");
+                                for (int k = 0; k < subitem.notes.size(); k++) {
+                                    viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
+                                    if (k != subitem.notes.size() - 1)
+                                        viewHolder.itemname.append(", ");
+
+                                }
+                            }
+                        }
+                    }
+                }
                 // This may or may not be necessary
                 viewHolder.groupnumber.setPressed(false);
                 viewHolder.itemname.setPressed(false);
@@ -476,5 +501,3 @@ public class KitchenActivity extends AppCompatActivity {
         }
     }
 }
-
-
