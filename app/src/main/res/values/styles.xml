@@ -18,6 +18,15 @@
     </style>
 
 
+    <style name="ButtonNote" parent="ButtonTheme">
+        <item name="android:drawableEnd">@drawable/note</item>
+    </style>
+
+    <style name="ButtonDelete" parent="ButtonTheme">
+        <item name="android:drawableEnd">@drawable/delete</item>
+    </style>
+
+
     <style name="CustomListviewLayout" parent="AppTheme">
         <item name="android:textColor">#000</item>
         <item name="android:background">#E0D8E0</item>
