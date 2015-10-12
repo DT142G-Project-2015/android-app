@@ -1,5 +1,8 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -30,7 +33,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class OrderActivity extends AppCompatActivity{
+public class OrderActivity extends AppCompatActivity {
 
     private List<Order> orders;
     private List<Group> groups = new ArrayList<>();
@@ -49,52 +52,54 @@ public class OrderActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 /*Intent intent = new Intent(OrderActivity.this, OrderListActivity.class);
-                startActivity(intent);*/
+                startActivity(intent);
 
                 Intent intent = new Intent(OrderActivity.this, OrderMealActivity.class);
                 intent.putExtra("menu-id", 1);
-                startActivity(intent);
+                startActivity(intent);*/
+                showOrderDialog();
             }
         };
 
         btn.setOnClickListener(oclbtn);
-
-        Call<List<Order>> call = Utils.getApi().getOrdersByStatus("readyForKitchen");
-
-        call.enqueue(new Callback<List<Order>>() {
-                         @Override
-                         public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
-
-                             int statusCode = response.code();
-                             Log.i(MainActivity.class.getName(), "Status: " + statusCode);
-
-                             orders = response.body();
-
-                             if (orders != null) {
-                                 for (int i = 0; i < orders.size(); i++) {
-                                     List<Group> temp = orders.get(i).groups;
-                                     for (int j = 0; j < temp.size(); j++) {
-                                         groups.add(temp.get(j));
-
-                                     }
-                                 }
-                                 mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
-                                 mLayoutManager = new LinearLayoutManager(OrderActivity.this);
-                                 mRecyclerView.setLayoutManager(mLayoutManager);
-                                 mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
-                                 setOrderAdapter();
-                             }
-                         }
-
-                         @Override
-                         public void onFailure(Throwable t) {
-                             Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
-                         }
-                     }
-
-        );
+        getAllOrders();
 
     }
+
+public void getAllOrders(){
+    Call<List<Order>> call = Utils.getApi().getOrdersByStatus("readyForKitchen");
+    call.enqueue(new Callback<List<Order>>() {
+        @Override
+        public void onResponse (Response < List < Order >> response, Retrofit retrofit){
+
+            int statusCode = response.code();
+            Log.i(MainActivity.class.getName(), "Status: " + statusCode);
+
+            orders = response.body();
+
+            if (orders != null) {
+                for (int i = 0; i < orders.size(); i++) {
+                    List<Group> temp = orders.get(i).groups;
+                    for (int j = 0; j < temp.size(); j++) {
+                        groups.add(temp.get(j));
+
+                    }
+                }
+                mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
+                mLayoutManager = new LinearLayoutManager(OrderActivity.this);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
+                setOrderAdapter();
+            }
+        }
+
+        @Override
+        public void onFailure (Throwable t){
+            Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+        }
+    });
+}
+
     private class CustomViewHolder extends RecyclerView.ViewHolder {
         public List<Item> items = new ArrayList<>();
         private TextView mOrderTextView;
@@ -124,7 +129,7 @@ public class OrderActivity extends AppCompatActivity{
 
             @Override
             public void onBindViewHolder(final CustomViewHolder viewHolder, int i) {
-                viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).id);
+                viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).booth);
                 orders.get(i).getTotalPrice();
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(OrderActivity.LAYOUT_INFLATER_SERVICE);
@@ -136,8 +141,8 @@ public class OrderActivity extends AppCompatActivity{
                     tv.setText(it.name + ", " + it.price + ":-");
                     parent.addView(custom);
                 }
-
-                viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(orders.get(i).totPrice) + ":-");
+                if( orders.get(i).totPrice != 0 )
+                    viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(orders.get(i).totPrice) + ":-");
                 /*for (Item it : groups.get(i).items) {
                     viewHolder.mItemTextView.append("\n" + "   " + it.name);
                 }*/
@@ -177,6 +182,45 @@ public class OrderActivity extends AppCompatActivity{
             }
         };
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+
+    public void showOrderDialog(){
+        CharSequence tabels[] = new CharSequence[] {"Bord 1", "Bord 2", "Bord 3", "Bord 4", "Bord 5"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Välj ett bord");
+        builder.setItems(tabels, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int table) {
+                Order o = new Order();
+                Group g = new Group();
+                o.booth = table + 1;
+                o.groups = new ArrayList<>();
+                g.status = getString(R.string.StatusReadyForKitchen);
+                g.items = new ArrayList<Item>();
+                o.groups.add(g);
+                Call<Void> call = Utils.getApi().createOrder(o);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Response<Void> response, Retrofit retrofit) {
+                        Log.i("idg", "Response succesfull");
+                        //getAllOrders();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.i("idg", "MEGA FAIL");
+                    }
+                });
+            }
+        });
+        builder.setPositiveButton("Avbryt", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     @Override
