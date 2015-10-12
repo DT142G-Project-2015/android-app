@@ -1,10 +1,12 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -18,10 +20,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
-import android.widget.Toast;
-
-import java.util.Timer;
-
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
 import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Item;
@@ -34,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import retrofit.Call;
@@ -42,6 +41,9 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 public class KitchenActivity extends AppCompatActivity {
+    //Checks for new orders
+    private Timer timer = new Timer();
+
     private List<Order> orders;
     private List<Group> groups = new ArrayList<>();
     private List<Group> deletedgroups = new ArrayList<>();
@@ -65,7 +67,6 @@ public class KitchenActivity extends AppCompatActivity {
     // To handle the animation
     private AnimationHandler animationhandler;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,46 +85,7 @@ public class KitchenActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(KitchenActivity.this, DividerItemDecoration.VERTICAL_LIST));
 
-        // Get all orders ready for kitchen
-        Call<List<Order>> call = Utils.getApi().getOrdersByStatus(getString(R.string.StatusReadyForKitchen));
-        if (call != null)
-            call.enqueue(new Callback<List<Order>>() {
-                             @Override
-                             public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
-
-                                 int statusCode = response.code();
-                                 Log.i(MainActivity.class.getName(), "Status: " + statusCode);
-
-                                 orders = response.body();
-
-
-                                 if (orders != null) {
-
-                                     // Iterate through every order and add its group(s) to groups list
-                                     for (int i = 0; i < orders.size(); i++) {
-                                         List<Group> temp = orders.get(i).groups;
-
-                                         for (int j = 0; j < temp.size(); j++) {
-                                             Group go = new Group();
-
-                                             go = temp.get(j);
-                                             go.tablenum = orders.get(i).booth;
-                                             groups.add(go);
-                                         }
-                                     }
-
-                                     setAdapter();
-                                     setSwipeListener();
-                                     setScrollListener();
-                                 }
-                             }
-
-                             @Override
-                             public void onFailure(Throwable t) {
-                                 Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
-                             }
-                         }
-            );
+        ready();
 
         // Listener for the undo button.
         // When pressed, removed groups is fetched from deletedgroups
@@ -158,6 +120,86 @@ public class KitchenActivity extends AppCompatActivity {
             }
         };
         undodeletebtn.setOnClickListener(buttonListener);
+
+        //Listener for new orders
+        timer.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                ready();
+            }
+        }, 0, 5000);
+    }
+
+    void sound()
+    {
+        try
+        {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        }
+
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
+    abstract class SimpleCallback<T> implements retrofit.Callback<T> {
+        @Override
+        public void onResponse(Response<T> response, Retrofit retrofit)
+        {
+            if (response.body() != null)
+            {
+                override(response.body());
+            }
+        }
+
+        @Override
+        public void onFailure(Throwable t) {
+
+        }
+
+        public abstract void override(T body);
+    }
+
+
+
+    void ready()
+    {
+        // Get all orders ready for kitchen
+        Call<List<Order>> call = Utils.getApi().getOrdersByStatus(getString(R.string.StatusReadyForKitchen));
+
+        call.enqueue(new SimpleCallback<List<Order>>()
+             {
+                 @Override
+                 public void override(List<Order> orders)
+                 {
+                     // Iterate through every order and add its group(s) to groups list
+                     for (Order order : orders)
+                     {
+                         for (Group group : order.groups)
+                         {
+                             group.tablenum = order.booth;
+
+                             //Check if group exists in groups
+                             if(!groups.contains(group))
+                             {
+                                 groups.add(group);
+                                 sound();
+                             }
+                         }
+                     }
+
+                     setAdapter();
+                     setSwipeListener();
+                     setScrollListener();
+                 }
+             }
+        );
     }
 
     void setAdapter() {

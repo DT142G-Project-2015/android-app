@@ -38,4 +38,12 @@ public class Group {
         return status + temp;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Group))
+            return false;
+        Group other = (Group)o;
+
+        return id == other.id;
+    }
 }
