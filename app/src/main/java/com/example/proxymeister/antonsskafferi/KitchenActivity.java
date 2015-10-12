@@ -106,7 +106,7 @@ public class KitchenActivity extends AppCompatActivity {
                     setAdapter();
                 }
                 //Deletes the undo button when no more groups can be undone
-                else if(deletedgroups.size() == 1){
+                else if (deletedgroups.size() == 1) {
 
                     // Add the last deleted group to its previous position
                     groups.add(oldpositions.get(oldpositions.size() - 1), deletedgroups.get(deletedgroups.size() - 1));
@@ -123,27 +123,20 @@ public class KitchenActivity extends AppCompatActivity {
         undodeletebtn.setOnClickListener(buttonListener);
 
         //Listener for new orders
-        timer.schedule(new TimerTask()
-        {
+        timer.schedule(new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 ready();
             }
         }, 0, 5000);
     }
 
-    void sound()
-    {
-        try
-        {
+    void sound() {
+        try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
             r.play();
-        }
-
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -151,10 +144,8 @@ public class KitchenActivity extends AppCompatActivity {
 
     abstract class SimpleCallback<T> implements retrofit.Callback<T> {
         @Override
-        public void onResponse(Response<T> response, Retrofit retrofit)
-        {
-            if (response.body() != null)
-            {
+        public void onResponse(Response<T> response, Retrofit retrofit) {
+            if (response.body() != null) {
                 override(response.body());
             }
         }
@@ -168,27 +159,20 @@ public class KitchenActivity extends AppCompatActivity {
     }
 
 
-
-    void ready()
-    {
+    void ready() {
         // Get all orders ready for kitchen
         Call<List<Order>> call = Utils.getApi().getOrdersByStatus(getString(R.string.StatusReadyForKitchen));
 
-        call.enqueue(new SimpleCallback<List<Order>>()
-                     {
+        call.enqueue(new SimpleCallback<List<Order>>() {
                          @Override
-                         public void override(List<Order> orders)
-                         {
+                         public void override(List<Order> orders) {
                              // Iterate through every order and add its group(s) to groups list
-                             for (Order order : orders)
-                             {
-                                 for (Group group : order.groups)
-                                 {
+                             for (Order order : orders) {
+                                 for (Group group : order.groups) {
                                      group.tablenum = order.booth;
 
                                      //Check if group exists in groups
-                                     if(!groups.contains(group))
-                                     {
+                                     if (!groups.contains(group)) {
                                          groups.add(group);
                                          sound();
                                      }
@@ -218,8 +202,15 @@ public class KitchenActivity extends AppCompatActivity {
             // Binds each element to the viewholder
             public void onBindViewHolder(CustomViewHolder viewHolder, int i) {
 
-                // To store the frequency of a item
-                Map<Item, Integer> frequency = new HashMap<>();
+                // Stores each item.name from a group(with no dublicates)
+                Set<String> nodub = new HashSet<>();
+
+                // Stores items that has subitems or notes
+                List<Item> specialitems = new ArrayList<>();
+
+                // Stores all the items (with dublicates)
+                // This is used to calculate the frequency of a items name
+                List<String> occur = new ArrayList<>();
 
                 // Reset the itemname and groupnumber textviews
                 viewHolder.itemname.setText("");
@@ -228,59 +219,31 @@ public class KitchenActivity extends AppCompatActivity {
                 // Print tablenumber
                 viewHolder.groupnumber.setText("Bord: " + groups.get(i).tablenum);
 
-                // Add all the item.name (strings) that occur in the group
-                List<String> occur = new ArrayList<>();
-                for (Item it : groups.get(i).items) {
-                    occur.add(it.name);
-                }
 
-                // To store each item.name (with no dublicates)
-                Set<String> nodub = new HashSet<>();
+                // If the item has subitems or notes, the item is added to specialitems
+                // Else add it to occur
+                for (Item it : groups.get(i).items) {
+                    if (!it.subItems.isEmpty() || !it.notes.isEmpty())
+                        specialitems.add(it);
+                    else {
+                        occur.add(it.name);
+                    }
+                }
 
                 // For each string in occur, add it to nodub
                 // Each item.name will be store just once
                 for (String s : occur)
                     nodub.add(s);
 
-                // For each string in dub, check its frequency in the occur list
-                for (String itemname : nodub) {
-                    int occurrences = Collections.frequency(occur, itemname);
+                // Appends items name and items with subitem,
+                // Items with notes and subitems with notes
+                appendItemTextView(nodub, specialitems, occur, viewHolder, groups.get(i));
 
-                    // If occurences is 1, just print the item.name
-                    // Otherwise, print the frequency and item.name
-                    if (occurrences == 1) {
-                        viewHolder.itemname.append("\n" + "   " + itemname);
-                    } else
-                        viewHolder.itemname.append("\n" + occurrences + " " + itemname);
-
-                    // Check for any notes for items.
-                    for (Item item : groups.get(i).items) {
-                        if (item.name.equals(itemname)) {
-                            if (!item.notes.isEmpty())
-                                viewHolder.itemname.append(": ");
-                            for (int j = 0; j < item.notes.size(); j++) {
-                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
-                                if (j != item.notes.size() - 1)
-                                    viewHolder.itemname.append(", ");
-                            }
-                            for (Item subitem : item.subItems) {
-                                viewHolder.itemname.append("\n" + "     ");
-                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
-                                if (!subitem.notes.isEmpty())
-                                    viewHolder.itemname.append(": ");
-                                for (int k = 0; k < subitem.notes.size(); k++) {
-                                    viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
-                                    if (k != subitem.notes.size() - 1)
-                                        viewHolder.itemname.append(", ");
-                                }
-                            }
-                        }
-                    }
-                }
                 // This may or may not be necessary
                 viewHolder.groupnumber.setPressed(false);
                 viewHolder.itemname.setPressed(false);
             }
+
             @Override
             public int getItemCount() {
                 return groups.size();
@@ -289,6 +252,50 @@ public class KitchenActivity extends AppCompatActivity {
         };
         mAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    void appendItemTextView(Set<String> nodub, List<Item> specialitems, List<String> occur, CustomViewHolder viewHolder, Group group) {
+        // For each string in dub, check its frequency in the occur list
+        for (String itemname : nodub) {
+            int occurrences = Collections.frequency(occur, itemname);
+
+            // If occurences is 1, just print the item.name
+            // Otherwise, print the frequency and item.name
+            if (occurrences == 1) {
+                viewHolder.itemname.append("\n" + "   " + itemname);
+            } else
+                viewHolder.itemname.append("\n" + occurrences + " " + itemname);
+
+            // Check for any notes for items.
+            for (Item item : group.items) {
+                if (specialitems.contains(item)) {
+                    int occurrencesspecial = Collections.frequency(specialitems, item);
+                    if (occurrencesspecial == 1) {
+                        viewHolder.itemname.append("\n" + "   " + itemname);
+                    } else
+                        viewHolder.itemname.append("\n" + occurrencesspecial + " " + itemname);
+                    if (!item.notes.isEmpty())
+                        viewHolder.itemname.append(": ");
+                    for (int j = 0; j < item.notes.size(); j++) {
+                        viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
+                        if (j != item.notes.size() - 1)
+                            viewHolder.itemname.append(", ");
+                    }
+                    for (Item subitem : item.subItems) {
+                        viewHolder.itemname.append("\n" + "     ");
+                        viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
+                        if (!subitem.notes.isEmpty())
+                            viewHolder.itemname.append(": ");
+                        for (int k = 0; k < subitem.notes.size(); k++) {
+                            viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
+                            if (k != subitem.notes.size() - 1)
+                                viewHolder.itemname.append(", ");
+                        }
+                    }
+                    specialitems.remove(item);
+                }
+            }
+        }
     }
 
 
@@ -345,7 +352,7 @@ public class KitchenActivity extends AppCompatActivity {
                 undodeletebtn.setVisibility(View.GONE);
                 animationthread = null;
                 for (Group group : deletedgroups) {
-                    group.status=getString(R.string.StatusReadyToServe);
+                    group.status = getString(R.string.StatusReadyToServe);
                     Call<Void> call = Utils.getApi().changeStatus(group, group.orderId, group.id);
                     call.enqueue(new Callback<Void>() {
                         @Override
@@ -387,6 +394,7 @@ public class KitchenActivity extends AppCompatActivity {
                     }
                 }));
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
