@@ -4,11 +4,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +24,8 @@ import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
 import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Item;
 import com.example.proxymeister.antonsskafferi.model.Order;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,11 +68,11 @@ public class OrderActivity extends AppCompatActivity {
 
     }
 
-public void getAllOrders(){
-    Call<List<Order>> call = Utils.getApi().getOrdersByStatus("readyForKitchen");
+    public void getAllOrders(){
+    Call<List<Order>> call = Utils.getApi().getOrders();
     call.enqueue(new Callback<List<Order>>() {
         @Override
-        public void onResponse (Response < List < Order >> response, Retrofit retrofit){
+        public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
 
             int statusCode = response.code();
             Log.i(MainActivity.class.getName(), "Status: " + statusCode);
@@ -94,7 +96,7 @@ public void getAllOrders(){
         }
 
         @Override
-        public void onFailure (Throwable t){
+        public void onFailure(Throwable t) {
             Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
         }
     });
@@ -104,16 +106,16 @@ public void getAllOrders(){
         public List<Item> items = new ArrayList<>();
         private TextView mOrderTextView;
         private TextView mTotPriceTextView;
-        public LinearLayout ll;
-        public Button mAddItemButton;
+        public LinearLayout groupHolder;
+        public Button mAddGroupButton;
         public boolean expanded = false;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
             mOrderTextView = (TextView) itemView.findViewById(R.id.order);
             mTotPriceTextView = (TextView) itemView.findViewById(R.id.totalPrice);
-            mAddItemButton = (Button) itemView.findViewById(R.id.addItemToOrder);
-            ll = (LinearLayout) itemView.findViewById(R.id.item_holder);
+            mAddGroupButton = (Button) itemView.findViewById(R.id.addGroup);
+            groupHolder = (LinearLayout) itemView.findViewById(R.id.group_holder);
         }
     }
 
@@ -121,7 +123,7 @@ public void getAllOrders(){
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
             public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_order_item
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_order_view
                         , viewGroup, false);
                 view.setBackgroundResource(android.R.drawable.list_selector_background);
                 return new CustomViewHolder(view);
@@ -131,15 +133,58 @@ public void getAllOrders(){
             public void onBindViewHolder(final CustomViewHolder viewHolder, int i) {
                 viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).booth);
                 orders.get(i).getTotalPrice();
+                final int orderId = orders.get(i).getId();
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(OrderActivity.LAYOUT_INFLATER_SERVICE);
-                final LinearLayout parent = (LinearLayout) viewHolder.ll;
+                final LinearLayout groupHolder = (LinearLayout) viewHolder.groupHolder;
+                groupHolder.removeAllViews();
 
-                for (Item it : groups.get(i).items) {
-                    View custom = inflater.inflate(R.layout.activity_item_view, null);
-                    TextView tv = (TextView) custom.findViewById(R.id.item);
-                    tv.setText(it.name + ", " + it.price + ":-");
-                    parent.addView(custom);
+                for (Group g : orders.get(i).groups) {
+                    View groupView = inflater.inflate(R.layout.recyclerview_group_view, null);
+
+                    TextView groupStatus = (TextView) groupView.findViewById(R.id.group_status);
+                    Button mAddItemButton = (Button) groupView.findViewById(R.id.addItemToGroup);
+
+                    // ADD ITEM TO ORDER
+                    OnClickListener additem = new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(OrderActivity.this, OrderMealActivity.class);
+                            intent.putExtra("order-id", orderId);
+                            startActivity(intent);
+                        }
+                    };
+                    mAddItemButton.setOnClickListener(additem);
+                    //END
+                    if(g.getStatus().equals("readyForKitchen"))
+                        groupView.setBackgroundColor(Color.parseColor("#FFC726"));
+                    if(g.getStatus().equals("done"))
+                        groupView.setBackgroundColor(Color.parseColor("#609040"));
+                    if(g.getStatus().equals("initial"))
+                        groupView.setBackgroundColor(Color.WHITE);
+                    //groupStatus.setText(g.status);
+
+                    final LinearLayout itemHolder = (LinearLayout) groupView.findViewById(R.id.item_holder);
+                    for(Item it : g.items) {
+                        View itemView = inflater.inflate(R.layout.recyclerview_item_view, null);
+                        TextView tv = (TextView) itemView.findViewById(R.id.item);
+                        if(g.getStatus().equals("readyForKitchen")) {
+                            itemView.setBackgroundColor(Color.parseColor("#FFC726"));
+                            tv.setBackgroundColor(Color.parseColor("#FFC726"));
+                        }
+                        if(g.getStatus().equals("done")) {
+                            itemView.setBackgroundColor(Color.parseColor("#609040"));
+                            tv.setBackgroundColor(Color.parseColor("#609040"));
+                        }
+                        if(g.getStatus().equals("initial")){
+                            itemView.setBackgroundColor(Color.WHITE);
+                            tv.setBackgroundColor(Color.WHITE);
+                        }
+                        tv.setText(it.name + ", " + it.price + ":-");
+                        itemHolder.addView(itemView);
+                    }
+                    groupHolder.addView(groupView);
+
                 }
                 if( orders.get(i).totPrice != 0 )
                     viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(orders.get(i).totPrice) + ":-");
@@ -152,23 +197,22 @@ public void getAllOrders(){
                     @Override
                     public void onClick(View v) {
                         if(!viewHolder.expanded) {
-                            parent.setVisibility(View.VISIBLE);
+                            groupHolder.setVisibility(View.VISIBLE);
                             viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
                             viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
-                            viewHolder.mAddItemButton.setVisibility(View.VISIBLE);
+                            viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
                             viewHolder.expanded = true;
 
                         }else{
-                            parent.setVisibility(View.GONE);
+                            groupHolder.setVisibility(View.GONE);
                             viewHolder.mTotPriceTextView.setVisibility(View.GONE);
                             viewHolder.mOrderTextView.setPadding(20, 20, 20, 20);
-                            viewHolder.mAddItemButton.setVisibility(View.GONE);
+                            viewHolder.mAddGroupButton.setVisibility(View.GONE);
                             viewHolder.expanded = false;
 
                         }
                     }
                 };
-
                 viewHolder.mOrderTextView.setOnClickListener(oclbtn);
                 //END EXPAND
 
@@ -184,7 +228,6 @@ public void getAllOrders(){
         mRecyclerView.setAdapter(mAdapter);
     }
 
-
     public void showOrderDialog(){
         CharSequence tabels[] = new CharSequence[] {"Bord 1", "Bord 2", "Bord 3", "Bord 4", "Bord 5"};
 
@@ -197,8 +240,8 @@ public void getAllOrders(){
                 Group g = new Group();
                 o.booth = table + 1;
                 o.groups = new ArrayList<>();
-                g.status = getString(R.string.StatusReadyForKitchen);
                 g.items = new ArrayList<Item>();
+                g.status = getString(R.string.StatusReadyForKitchen);
                 o.groups.add(g);
                 Call<Void> call = Utils.getApi().createOrder(o);
                 call.enqueue(new Callback<Void>() {

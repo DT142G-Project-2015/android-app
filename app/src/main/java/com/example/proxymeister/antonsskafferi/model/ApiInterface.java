@@ -59,6 +59,11 @@ public interface ApiInterface {
     @PUT("order/{order_id}/group/{group_id}")
     Call<Void> changeStatus(@Body Group group, @Path("order_id") int orderId, @Path("group_id") int groupId);
 
+    @POST("order/{order_id}/group/{group_id}/item")
+    Call<Void> addItem(@Body Item item, @Path("order_id") int orderId, @Path("group_id") int groupId);
+
+    @POST("order/{order_id}/group")
+    Call<Group> createOrderGroup(@Body Group group, @Path("order_id") int orderId);
     //// Article Resource
 
     @GET("storage")

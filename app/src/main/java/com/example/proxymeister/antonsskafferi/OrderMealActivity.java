@@ -47,6 +47,7 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
 
 
         int id = getIntent().getIntExtra("menu-id", 1);
+        final int orderId = getIntent().getIntExtra("order-id", 1);
 
         Call<List<Item>> call = Utils.getApi().getMenuItems(id);
 
@@ -60,7 +61,12 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
                 List<Item> items = response.body();
 
                 if (items != null) {
-                    itemAdapter = new ItemAdapter(OrderMealActivity.this, items);
+                    itemAdapter = new ItemAdapter(OrderMealActivity.this, items, orderId, new ItemAdapter.Callback() {
+                        @Override
+                        public void itemAdded() {
+                            finish();
+                        }
+                    });
                     list.setAdapter(itemAdapter);
                 }
             }
@@ -75,7 +81,7 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
 
 
     public void onAddOrderClick(){
-        Order o = new Order();
+        /*Order o = new Order();
         Group g = new Group();
 
         g.items = itemAdapter.temporder;
@@ -95,7 +101,7 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
             public void onFailure(Throwable t) {
                 Log.i("idg", "MEGA FAIL");
             }
-        });
+        });*/
 
         Intent intent = new Intent(this, OrderActivity.class);
         startActivity(intent);
