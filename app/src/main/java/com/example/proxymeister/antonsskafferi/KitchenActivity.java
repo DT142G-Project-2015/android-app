@@ -272,7 +272,6 @@ public class KitchenActivity extends AppCompatActivity {
                                     viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
                                     if (k != subitem.notes.size() - 1)
                                         viewHolder.itemname.append(", ");
-
                                 }
                             }
                         }
@@ -282,7 +281,6 @@ public class KitchenActivity extends AppCompatActivity {
                 viewHolder.groupnumber.setPressed(false);
                 viewHolder.itemname.setPressed(false);
             }
-
             @Override
             public int getItemCount() {
                 return groups.size();
