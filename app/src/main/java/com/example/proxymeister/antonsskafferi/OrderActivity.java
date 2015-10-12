@@ -188,6 +188,8 @@ public class OrderActivity extends AppCompatActivity {
                         groupView.setBackgroundColor(Color.parseColor("#FFC726"));
                     if(g.getStatus().equals("done"))
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
+                    if(g.getStatus().equals("readyToServe"))
+                        groupView.setBackgroundColor(Color.parseColor("#609040"));
                     if(g.getStatus().equals("initial")) {
                         groupView.setBackgroundColor(Color.WHITE);
                         mSendToKitchenButton.setVisibility(View.VISIBLE);
@@ -206,6 +208,10 @@ public class OrderActivity extends AppCompatActivity {
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
                         }
                         if(g.getStatus().equals("done")) {
+                            itemView.setBackgroundColor(Color.parseColor("#609040"));
+                            tv.setBackgroundColor(Color.parseColor("#609040"));
+                        }
+                        if(g.getStatus().equals("readyToServe")) {
                             itemView.setBackgroundColor(Color.parseColor("#609040"));
                             tv.setBackgroundColor(Color.parseColor("#609040"));
                         }
