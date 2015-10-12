@@ -11,6 +11,14 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.example.proxymeister.antonsskafferi.model.Article;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+
+import android.util.Log;
 
 import com.example.proxymeister.antonsskafferi.R;
 
@@ -22,6 +30,20 @@ public class HandleLagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_handle_lager);
 
         alterDialog();
+
+        Article testArticle = new Article(5, "Kycklingklubbor", "Kött", 700, "kg", "2020-01-01");
+        Call<Void> call = Utils.getApi().createArticle(testArticle);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                Log.i("idg", "Response succesfull");
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i("idg", "Fail");
+            }
+        });
     }
 
 
