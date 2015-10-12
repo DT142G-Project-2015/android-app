@@ -48,6 +48,7 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
 
         int id = getIntent().getIntExtra("menu-id", 1);
         final int orderId = getIntent().getIntExtra("order-id", 1);
+        final int groupId = getIntent().getIntExtra("group-id", 1);
 
         Call<List<Item>> call = Utils.getApi().getMenuItems(id);
 
@@ -61,7 +62,7 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
                 List<Item> items = response.body();
 
                 if (items != null) {
-                    itemAdapter = new ItemAdapter(OrderMealActivity.this, items, orderId, new ItemAdapter.Callback() {
+                    itemAdapter = new ItemAdapter(OrderMealActivity.this, items, orderId, groupId, new ItemAdapter.Callback() {
                         @Override
                         public void itemAdded() {
                             finish();

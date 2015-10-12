@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
 import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Item;
+import com.example.proxymeister.antonsskafferi.model.ItemHolder;
 import com.example.proxymeister.antonsskafferi.model.Order;
 
 import org.w3c.dom.Text;
@@ -123,6 +124,7 @@ public class OrderActivity extends AppCompatActivity {
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
             public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
+
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_order_view
                         , viewGroup, false);
                 view.setBackgroundResource(android.R.drawable.list_selector_background);
@@ -130,7 +132,7 @@ public class OrderActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onBindViewHolder(final CustomViewHolder viewHolder, int i) {
+            public void onBindViewHolder(final CustomViewHolder viewHolder, final int i) {
                 viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).booth);
                 orders.get(i).getTotalPrice();
                 final int orderId = orders.get(i).getId();
@@ -139,32 +141,63 @@ public class OrderActivity extends AppCompatActivity {
                 final LinearLayout groupHolder = (LinearLayout) viewHolder.groupHolder;
                 groupHolder.removeAllViews();
 
-                for (Group g : orders.get(i).groups) {
+                for (final Group g : orders.get(i).groups) {
                     View groupView = inflater.inflate(R.layout.recyclerview_group_view, null);
+                    final int groupID = g.id;
 
-                    TextView groupStatus = (TextView) groupView.findViewById(R.id.group_status);
-                    Button mAddItemButton = (Button) groupView.findViewById(R.id.addItemToGroup);
+                    //SEND TO KITCHEN
+                    Button mSendToKitchenButton = (Button) groupView.findViewById(R.id.sendToKitchen);
+                    OnClickListener sendGroup = new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            g.status="readyForKitchen";
+                            Call<Void> call = Utils.getApi().changeStatus(g, orderId, groupID);
+                            call.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Response<Void> response, Retrofit retrofit) {
+                                    System.out.println("working");
+                                    g.status = "readyForKitchen";
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    System.out.println("not working");
+
+                                }
+                            });
+                        }
+                    };
+                    mSendToKitchenButton.setOnClickListener(sendGroup);
+                    //END SENDTOKITCHEN
 
                     // ADD ITEM TO ORDER
+                    Button mAddItemButton = (Button) groupView.findViewById(R.id.addItemToGroup);
                     OnClickListener additem = new OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(OrderActivity.this, OrderMealActivity.class);
                             intent.putExtra("order-id", orderId);
+                            intent.putExtra("group-id", groupID);
                             startActivity(intent);
                         }
                     };
                     mAddItemButton.setOnClickListener(additem);
                     //END
+
                     if(g.getStatus().equals("readyForKitchen"))
                         groupView.setBackgroundColor(Color.parseColor("#FFC726"));
                     if(g.getStatus().equals("done"))
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
-                    if(g.getStatus().equals("initial"))
+                    if(g.getStatus().equals("initial")) {
                         groupView.setBackgroundColor(Color.WHITE);
-                    //groupStatus.setText(g.status);
+                        mSendToKitchenButton.setVisibility(View.VISIBLE);
+                    }
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                    lp.setMargins(0, 4, 0, 4);
+                    groupView.setLayoutParams(lp);
 
                     final LinearLayout itemHolder = (LinearLayout) groupView.findViewById(R.id.item_holder);
+
                     for(Item it : g.items) {
                         View itemView = inflater.inflate(R.layout.recyclerview_item_view, null);
                         TextView tv = (TextView) itemView.findViewById(R.id.item);
@@ -179,6 +212,7 @@ public class OrderActivity extends AppCompatActivity {
                         if(g.getStatus().equals("initial")){
                             itemView.setBackgroundColor(Color.WHITE);
                             tv.setBackgroundColor(Color.WHITE);
+                            tv.setTextColor(Color.BLACK);
                         }
                         tv.setText(it.name + ", " + it.price + ":-");
                         itemHolder.addView(itemView);
@@ -186,6 +220,29 @@ public class OrderActivity extends AppCompatActivity {
                     groupHolder.addView(groupView);
 
                 }
+
+                //ADD GROUP
+                viewHolder.mAddGroupButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Group gr = new Group();
+                        gr.status = "initial";
+                        final Call<Group> call = Utils.getApi().createOrderGroup(gr, orderId);
+                        call.enqueue(new retrofit.Callback<Group>() {
+                            @Override
+                            public void onResponse(Response<Group> response, Retrofit retrofit) {
+                                Log.i(MainActivity.class.getName(), "NICE");
+                            }
+
+                            @Override
+                            public void onFailure(Throwable t) {
+                                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                            }
+                        });
+                    }
+                });
+                //END ADDGROUP
+
                 if( orders.get(i).totPrice != 0 )
                     viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(orders.get(i).totPrice) + ":-");
                 /*for (Item it : groups.get(i).items) {

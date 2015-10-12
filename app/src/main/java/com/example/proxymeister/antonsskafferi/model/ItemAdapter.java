@@ -29,10 +29,12 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
     private final Callback callback;
     public List<Item> temporder = new ArrayList<>();
     public int orderID;
-    public ItemAdapter(Context context, List<Item> items, int orderId, Callback callback) {
+    public int groupID;
+    public ItemAdapter(Context context, List<Item> items, int orderId, int groupId, Callback callback) {
         super(context, 0);
         this.callback = callback;
         orderID = orderId;
+        groupID = groupId;
         for (Item i : items) {
             add(new ItemHolder(i));
         }
@@ -66,7 +68,7 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
             @Override
             public void onClick(View v) {
                 ItemHolder holder = getItem(position);
-                final Call<Void> call = Utils.getApi().addItem(holder.item, orderID, 2);
+                final Call<Void> call = Utils.getApi().addItem(holder.item, orderID, groupID);
                 call.enqueue(new retrofit.Callback<Void>() {
                     @Override
                     public void onResponse(Response<Void> response, Retrofit retrofit) {
