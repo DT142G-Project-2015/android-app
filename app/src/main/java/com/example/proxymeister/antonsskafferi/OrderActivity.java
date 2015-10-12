@@ -141,8 +141,8 @@ public void getAllOrders(){
                     tv.setText(it.name + ", " + it.price + ":-");
                     parent.addView(custom);
                 }
-
-                viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(orders.get(i).totPrice) + ":-");
+                if( orders.get(i).totPrice != 0 )
+                    viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(orders.get(i).totPrice) + ":-");
                 /*for (Item it : groups.get(i).items) {
                     viewHolder.mItemTextView.append("\n" + "   " + it.name);
                 }*/
@@ -195,13 +195,10 @@ public void getAllOrders(){
             public void onClick(DialogInterface dialog, int table) {
                 Order o = new Order();
                 Group g = new Group();
-                Item i = new Item();
-                i.id = 1;
                 o.booth = table + 1;
                 o.groups = new ArrayList<>();
                 g.status = getString(R.string.StatusReadyForKitchen);
                 g.items = new ArrayList<Item>();
-                g.items.add(i);
                 o.groups.add(g);
                 Call<Void> call = Utils.getApi().createOrder(o);
                 call.enqueue(new Callback<Void>() {
