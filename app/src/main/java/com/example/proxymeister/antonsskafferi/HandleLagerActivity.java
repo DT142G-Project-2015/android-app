@@ -30,29 +30,46 @@ public class HandleLagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_handle_lager);
 
         alterDialog();
-
-        Article testArticle = new Article(5, "Kycklingklubbor", "Kött", 700, "kg", "2020-01-01");
-        Call<Void> call = Utils.getApi().createArticle(testArticle);
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Response<Void> response, Retrofit retrofit) {
-                Log.i("idg", "Response succesfull");
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.i("idg", "Fail");
-            }
-        });
+        //createArticle();
+        //deleteArticle();
     }
-
-
-
 
 
     //~~~~~~~~~~~~~~Self-made functions~~~~~~~~~~~~~~~~~~~~/
 
-    private String smt = "";
+    public void deleteArticle() {
+
+        Call<Void> call = Utils.getApi().deleteArticle(8);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                Log.i("DELETE", response.message());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i(HandleLagerActivity.class.getName(), "Failed to delete data " + t.getMessage());
+            }
+        });
+    }
+
+    public void createArticle() {
+        Article testArticle = new Article("Renspjäll", "Kött", 40, "kg", "2033-01-01");
+        Call<Void> call = Utils.getApi().createArticle(testArticle);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                Log.i("CREATE", response.message());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i("CREATE", t.getMessage());
+            }
+        });
+    }
+
 
     public void deleteDialog()
     {
@@ -75,7 +92,6 @@ public class HandleLagerActivity extends AppCompatActivity {
         {
             public void onClick(DialogInterface dialog, int id)
             {
-                smt = input.getText().toString();
                 dialog.dismiss();
             }
         });

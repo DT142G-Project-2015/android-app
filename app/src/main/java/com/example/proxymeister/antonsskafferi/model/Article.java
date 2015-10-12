@@ -10,8 +10,7 @@ public class Article {
     public String exp_date;     // public String days_to_exp ( depending on solution )
 
     //Constructor
-    public Article(int startid, String startname, String startcategory, double startamount, String startunit, String startexp_date) {
-        id = startid;
+    public Article(String startname, String startcategory, double startamount, String startunit, String startexp_date) {
         name = startname;
         category = startcategory;
         amount = startamount;
