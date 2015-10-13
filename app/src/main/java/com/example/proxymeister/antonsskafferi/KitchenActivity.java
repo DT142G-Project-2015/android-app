@@ -182,8 +182,9 @@ public class KitchenActivity extends AppCompatActivity {
                                  for (Group group : order.groups) {
                                      group.tablenum = order.booth;
 
-                                     //Check if group exists in groups
-                                     if (!groups.contains(group)) {
+                                     //Check if group exists in groups & deletedgroups
+                                     if (!groups.contains(group) && !deletedgroups.contains(group))
+                                     {
                                          groups.add(group);
                                          notice();
                                      }
