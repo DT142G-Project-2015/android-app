@@ -14,17 +14,21 @@
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:text="Lunch"
+        android:gravity="center"
         android:id="@+id/button5"
+        android:textSize="32sp"
         android:layout_marginTop="100dp"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:textAlignment="center"/>
 
     <Button
+        android:textSize="32sp"
+        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:text="Middag"
         android:textAlignment="center"
         android:id="@+id/button6"
