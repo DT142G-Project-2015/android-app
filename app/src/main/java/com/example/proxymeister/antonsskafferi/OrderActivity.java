@@ -134,7 +134,7 @@ public class OrderActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(final CustomViewHolder viewHolder, final int i) {
                 viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).booth);
-                orders.get(i).getTotalPrice();
+                double totPrice = orders.get(i).getTotalPrice();
                 final int orderId = orders.get(i).getId();
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(OrderActivity.LAYOUT_INFLATER_SERVICE);
@@ -255,8 +255,8 @@ public class OrderActivity extends AppCompatActivity {
                 });
                 //END ADDGROUP
 
-                if( orders.get(i).totPrice != 0 )
-                    viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(orders.get(i).totPrice) + ":-");
+                if( totPrice != 0 )
+                    viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(totPrice) + ":-");
                 /*for (Item it : groups.get(i).items) {
                     viewHolder.mItemTextView.append("\n" + "   " + it.name);
                 }*/
