@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/item"
-        android:textSize="15dp"
+        android:textSize="@dimen/small_buttons_textsize"
         android:text="test"
+        android:layout_weight="2"
 
         android:layout_alignBottom="@+id/itemNoteId"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:paddingBottom="12dp"
+        android:paddingBottom="20dp"
         android:paddingLeft="10dp"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+
         android:id="@+id/itemNoteId"
         android:text="@string/notes_button"
         style="@style/ButtonNote"
+        android:layout_weight="1"
 
         android:layout_gravity="right"
         android:layout_alignParentTop="true"
@@ -30,15 +34,16 @@
         android:layout_toStartOf="@+id/itemRemoveId" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/itemRemoveId"
         android:text="@string/delete_button"
         style="@style/ButtonDelete"
+        android:layout_weight="1"
 
         android:layout_gravity="right"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-</RelativeLayout>
+</LinearLayout>

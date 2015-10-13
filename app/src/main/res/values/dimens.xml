@@ -5,6 +5,6 @@
     <dimen name="orderlabel_tex0size">30sp</dimen>
 
     <!-- Custom margins -->
-    <dimen name="main_buttons_textsize">20dip</dimen>
-    <dimen name="small_buttons_textsize">16dip</dimen>
+    <dimen name="main_buttons_textsize">20sp</dimen>
+    <dimen name="small_buttons_textsize">16sp</dimen>
 </resources>
