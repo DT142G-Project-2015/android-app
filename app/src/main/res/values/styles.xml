@@ -17,12 +17,16 @@
         <item name="android:textColor">#fff</item>
     </style>
 
+    <!-- Smaller button style -->
+    <style name="ButtonThemeSmall" parent="ButtonTheme">
+        <item name="android:textSize">@dimen/small_buttons_textsize</item>
+    </style>
 
-    <style name="ButtonNote" parent="ButtonTheme">
+    <style name="ButtonNote" parent="ButtonThemeSmall">
         <item name="android:drawableEnd">@drawable/note</item>
     </style>
 
-    <style name="ButtonDelete" parent="ButtonTheme">
+    <style name="ButtonDelete" parent="ButtonThemeSmall">
         <item name="android:drawableEnd">@drawable/delete</item>
     </style>
 

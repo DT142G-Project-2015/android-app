@@ -8,7 +8,8 @@
         android:id="@+id/sendToKitchen"
         android:padding="10dp"
         android:visibility="gone"
-        android:text="Skicka till köket"/>
+        style="@style/ButtonThemeSmall"
+        android:text="@string/text_send_kitchen"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,8 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/addItemToGroup"
-        android:padding="10dp"
-        android:text="Add item"
+        style="@style/ButtonThemeSmall"
+        android:text="@string/text_add_item"
         android:layout_marginLeft="19dp"
         android:layout_marginBottom="20dp"/>
     <Button
