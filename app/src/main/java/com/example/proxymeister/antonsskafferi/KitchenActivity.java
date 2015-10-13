@@ -1,9 +1,11 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.content.Context;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -131,12 +133,21 @@ public class KitchenActivity extends AppCompatActivity {
         }, 0, 5000);
     }
 
-    void sound() {
-        try {
+    void notice()
+    {
+        try
+        {
+            //Sound
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
             r.play();
-        } catch (Exception e) {
+            //Vibration
+            Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(250);
+        }
+
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
@@ -174,7 +185,7 @@ public class KitchenActivity extends AppCompatActivity {
                                      //Check if group exists in groups
                                      if (!groups.contains(group)) {
                                          groups.add(group);
-                                         sound();
+                                         notice();
                                      }
                                  }
                              }

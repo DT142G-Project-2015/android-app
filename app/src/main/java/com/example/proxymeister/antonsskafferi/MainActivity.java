@@ -2,8 +2,12 @@ package com.example.proxymeister.antonsskafferi;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.*;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -104,8 +108,13 @@ public class MainActivity extends AppCompatActivity {
                             if (!(readyOrder.isEmpty() || readyOrder == null)) {
                                 dflag = 2;
                                 showDialog(Integer.toString(readyOrder.get(0).getId()), Integer.toString(readyOrder.get(0).getBooth()));
+
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                                // get wrecket
+                                v.vibrate(2500);
+                                sound();
                             } else {
-                                System.out.println("cc");
                                 dflag = 3;
                             }
                         }
@@ -143,6 +152,16 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
             }
+        }
+    }
+
+    void sound() {
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
