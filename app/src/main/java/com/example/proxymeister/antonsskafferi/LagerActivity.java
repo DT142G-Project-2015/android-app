@@ -32,14 +32,22 @@ public class LagerActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lager);
 
-        // 1. get a reference to recyclerView
+        // get a reference to recyclerView
         rv = (RecyclerView) findViewById(R.id.lager_recycler_view);
-        rv.setHasFixedSize(true);
 
+        // sets layout for recyclerviewer
         mLayoutManager = new LinearLayoutManager(this);
         rv.setLayoutManager(mLayoutManager);
 
+        // used to store data for recyclerview
         strings = new ArrayList<>();
+
+        // create recyclerviewer
+        setRecyclerview();
+    }
+
+    public void setRecyclerview()
+    {
 
         Call<List<Article>> call = Utils.getApi().getArticles();
         call.enqueue(new Callback<List<Article>>() {
@@ -50,8 +58,10 @@ public class LagerActivity extends AppCompatActivity  {
 
                 List<Article> articles = response.body();
 
-                if (articles != null) {
-                    for (Article p : articles) {
+                if (articles != null)
+                {
+                    for (Article p : articles)
+                    {
                         strings.add(p.toString());
                     }
                 }
@@ -59,19 +69,23 @@ public class LagerActivity extends AppCompatActivity  {
                 {
                     strings.add("Inga varor hittades ...");
                 }
+                lAdapter = new LagerAdapter(strings);
+                rv.setAdapter(lAdapter);
             }
 
 
             @Override
             public void onFailure(Throwable t) {
                 Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                strings.add("Kunde inte nå databasen... ");
+                lAdapter = new LagerAdapter(strings);
+                rv.setAdapter(lAdapter);
             }
         });
 
-        lAdapter = new LagerAdapter(strings);
 
-        rv.setAdapter(lAdapter);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,11 +101,13 @@ public class LagerActivity extends AppCompatActivity  {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // lagerhanterings alternativ
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, HandleLagerActivity.class);
-            startActivity(intent);
-            return true;
+        switch(id) {
+            case (R.id.lagethantering_add): { System.out.println("a");}
+            break;
+            case (R.id.lagethantering_remove): { System.out.println("b");}
+            break;
+            case (R.id.lagethantering_change): { System.out.println("c");}
+            break;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -2,6 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.proxymeister.antonsskafferi.LagerActivity">
-    <item android:id="@+id/action_settings" android:title="@string/actionbar_hantera"
+    <item android:id="@+id/lagethantering_add" android:title="Lägg till vara"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/lagethantering_remove" android:title="Ta bort vara"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/lagethantering_change" android:title="Ändra vara"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

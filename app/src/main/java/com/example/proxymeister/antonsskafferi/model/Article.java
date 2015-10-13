@@ -21,6 +21,6 @@ public class Article {
     @Override
     public String toString()
     {
-        return name + " / " + Double.toString(amount) + " " + unit + " / " +  exp_date;
+        return Integer.toString(id) + " / " + name + " / " + Double.toString(amount) + " " + unit + " / " +  exp_date;
     }
 }
