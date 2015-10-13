@@ -213,9 +213,10 @@ public class OrderActivity extends AppCompatActivity {
 
                     final LinearLayout itemHolder = (LinearLayout) groupView.findViewById(R.id.item_holder);
 
-                    for(Item it : g.items) {
+                    for(final Item it : g.items) {
                         View itemView = inflater.inflate(R.layout.recyclerview_item_view, null);
                         TextView tv = (TextView) itemView.findViewById(R.id.item);
+                        Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
                         if(g.getStatus().equals("readyForKitchen")) {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
@@ -235,6 +236,25 @@ public class OrderActivity extends AppCompatActivity {
                         }
                         tv.setText(it.name + ", " + it.price + ":-");
                         itemHolder.addView(itemView);
+
+
+                        OnClickListener deletebuttonListener = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                g.items.remove(it);
+
+                                deleteItem(orderId, g.id, it.id);
+
+                                mAdapter.notifyItemRemoved(i);
+                                getAllOrders(i);
+
+
+
+
+                            }
+                        };
+                        deletebtn.setOnClickListener(deletebuttonListener);
+
                     }
                     groupHolder.addView(groupView);
 
@@ -364,4 +384,24 @@ public class OrderActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-}
+
+    public void deleteItem(int orderId, int groupId, int itemId) {
+
+
+        Call<Void> call = Utils.getApi().deleteItem(orderId, groupId, itemId);
+
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                Log.i("DELETE", "Success");
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i(LagerActivity.class.getName(), "Failed to delete data " + t.getMessage());
+            }
+        });
+    }
+
+    }
