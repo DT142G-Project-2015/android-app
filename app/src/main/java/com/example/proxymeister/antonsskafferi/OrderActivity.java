@@ -264,12 +264,7 @@ public class OrderActivity extends AppCompatActivity {
                         OnClickListener deletebuttonListener = new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                g.items.remove(it);
-
-                                deleteItem(orderId, g.id, it.id);
-
-                                mAdapter.notifyItemRemoved(i);
-                                getAllOrders(i);
+                                showSecureDialog(it, g, orderId, i);
                             }
                         };
                         deletebtn.setOnClickListener(deletebuttonListener);
@@ -357,6 +352,8 @@ public class OrderActivity extends AppCompatActivity {
 
     }
 
+
+
     public void showOrderDialog() {
         CharSequence tabels[] = new CharSequence[]{"Bord 1", "Bord 2", "Bord 3", "Bord 4", "Bord 5"};
 
@@ -394,6 +391,46 @@ public class OrderActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    public void showSecureDialog(final Item item, final Group group, final int orderId, final int position)
+    {
+        final Dialog dialog = new Dialog(OrderActivity.this);
+        dialog.setContentView(R.layout.activity_order_secure_remove);
+        dialog.setTitle("Ta bort");
+
+        // Set size of dialog to "max"
+        final WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+
+        final TextView itemtoremove = (TextView) dialog.findViewById(R.id.textSuretoremove);
+        itemtoremove.append(item.name + "?");
+
+        Button yesButton = (Button) dialog.findViewById(R.id.dialogButtonYES);
+        yesButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                group.items.remove(item);
+                deleteItem(orderId, group.id, item.id);
+                mAdapter.notifyItemRemoved(position);
+                getAllOrders(position);
+                dialog.dismiss();
+            }
+        });
+
+        Button noButton = (Button) dialog.findViewById(R.id.dialogButtonNO);
+
+        noButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 
 
