@@ -75,6 +75,12 @@ public interface ApiInterface {
     @PUT("storage/{article_id}")
     Call<Void> changeArticle(@Path("article_id") int articleId, @Body Article article);
 
+    @PUT("order/<id>/group/<id>/item/<id>")
+    Call<Void> addNote(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId, @Body Item item);
+
+
+
+
     @DELETE("storage/{article_id}")
     Call<Void> deleteArticle(@Path("article_id") int articleId);
 

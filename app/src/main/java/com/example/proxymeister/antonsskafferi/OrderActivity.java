@@ -1,11 +1,16 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,14 +21,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
 import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Item;
 import com.example.proxymeister.antonsskafferi.model.ItemHolder;
+import com.example.proxymeister.antonsskafferi.model.Note;
 import com.example.proxymeister.antonsskafferi.model.Order;
 
 import org.w3c.dom.Text;
@@ -41,6 +54,7 @@ public class OrderActivity extends AppCompatActivity {
     private List<Order> orders;
     private int activePosition;
     private List<Group> groups = new ArrayList<>();
+    private List<Note> notes = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
@@ -55,12 +69,7 @@ public class OrderActivity extends AppCompatActivity {
         OnClickListener oclbtn = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent(OrderActivity.this, OrderListActivity.class);
-                startActivity(intent);
 
-                Intent intent = new Intent(OrderActivity.this, OrderMealActivity.class);
-                intent.putExtra("menu-id", 1);
-                startActivity(intent);*/
                 showOrderDialog();
             }
         };
@@ -70,36 +79,36 @@ public class OrderActivity extends AppCompatActivity {
 
     }
 
-    public void getAllOrders(final int pos){
-    Call<List<Order>> call = Utils.getApi().getOrders();
-    call.enqueue(new Callback<List<Order>>() {
-        @Override
-        public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
+    public void getAllOrders(final int pos) {
+        Call<List<Order>> call = Utils.getApi().getOrders();
+        call.enqueue(new Callback<List<Order>>() {
+            @Override
+            public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
 
-            int statusCode = response.code();
-            Log.i(MainActivity.class.getName(), "Status: " + statusCode);
+                int statusCode = response.code();
+                Log.i(MainActivity.class.getName(), "Status: " + statusCode);
 
-            orders = response.body();
+                orders = response.body();
 
-            if (orders != null) {
-                for (int i = 0; i < orders.size(); i++) {
-                    List<Group> temp = orders.get(i).groups;
-                    for (int j = 0; j < temp.size(); j++) {
-                        groups.add(temp.get(j));
+                if (orders != null) {
+                    for (int i = 0; i < orders.size(); i++) {
+                        List<Group> temp = orders.get(i).groups;
+                        for (int j = 0; j < temp.size(); j++) {
+                            groups.add(temp.get(j));
 
+                        }
                     }
+                    mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
+                    mLayoutManager = new LinearLayoutManager(OrderActivity.this);
+                    mRecyclerView.setLayoutManager(mLayoutManager);
+                    mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
+                    setOrderAdapter(pos);
                 }
-                mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
-                mLayoutManager = new LinearLayoutManager(OrderActivity.this);
-                mRecyclerView.setLayoutManager(mLayoutManager);
-                mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
-                setOrderAdapter(pos);
             }
-        }
 
-        @Override
-        public void onFailure(Throwable t) {
-            Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
             }
         });
     }
@@ -130,7 +139,7 @@ public class OrderActivity extends AppCompatActivity {
         mRecyclerView.scrollToPosition(i);
     }
 
-    void setOrderAdapter(final int pos){
+    void setOrderAdapter(final int pos) {
         activePosition = pos;
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
@@ -151,7 +160,7 @@ public class OrderActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(OrderActivity.LAYOUT_INFLATER_SERVICE);
                 final LinearLayout groupHolder = (LinearLayout) viewHolder.groupHolder;
                 groupHolder.removeAllViews();
-                if(i == activePosition){
+                if (i == activePosition) {
                     groupHolder.setVisibility(View.VISIBLE);
                     viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
                     viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
@@ -168,7 +177,7 @@ public class OrderActivity extends AppCompatActivity {
                     OnClickListener sendGroup = new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            g.status="readyForKitchen";
+                            g.status = "readyForKitchen";
                             Call<Void> call = Utils.getApi().changeStatus(g, orderId, groupID);
                             call.enqueue(new Callback<Void>() {
                                 @Override
@@ -205,17 +214,17 @@ public class OrderActivity extends AppCompatActivity {
                     mAddItemButton.setOnClickListener(additem);
                     //END
 
-                    if(g.getStatus().equals("readyForKitchen"))
+                    if (g.getStatus().equals("readyForKitchen"))
                         groupView.setBackgroundColor(Color.parseColor("#FFC726"));
-                    if(g.getStatus().equals("done")) // Denna ska inte synas senare.
+                    if (g.getStatus().equals("done")) // Denna ska inte synas senare.
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
-                    if(g.getStatus().equals("readyToServe")) {
+                    if (g.getStatus().equals("readyToServe")) {
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
                         mAddItemButton.setVisibility(View.GONE);
                         Button mDoneButton = (Button) groupView.findViewById(R.id.done);
                         mDoneButton.setVisibility(View.VISIBLE);
                     }
-                    if(g.getStatus().equals("initial")) {
+                    if (g.getStatus().equals("initial")) {
                         groupView.setBackgroundColor(Color.WHITE);
                         mSendToKitchenButton.setVisibility(View.VISIBLE);
                     }
@@ -225,23 +234,25 @@ public class OrderActivity extends AppCompatActivity {
 
                     final LinearLayout itemHolder = (LinearLayout) groupView.findViewById(R.id.item_holder);
 
-                    for(final Item it : g.items) {
+                    for (final Item it : g.items) {
                         View itemView = inflater.inflate(R.layout.recyclerview_item_view, null);
                         TextView tv = (TextView) itemView.findViewById(R.id.item);
                         Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
-                        if(g.getStatus().equals("readyForKitchen")) {
+                        Button addnotebtn = (Button) itemView.findViewById(R.id.itemNoteId);
+
+                        if (g.getStatus().equals("readyForKitchen")) {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
                         }
-                        if(g.getStatus().equals("done")) {
+                        if (g.getStatus().equals("done")) {
                             itemView.setBackgroundColor(Color.parseColor("#609040"));
                             tv.setBackgroundColor(Color.parseColor("#609040"));
                         }
-                        if(g.getStatus().equals("readyToServe")) {
+                        if (g.getStatus().equals("readyToServe")) {
                             itemView.setBackgroundColor(Color.parseColor("#609040"));
                             tv.setBackgroundColor(Color.parseColor("#609040"));
                         }
-                        if(g.getStatus().equals("initial")){
+                        if (g.getStatus().equals("initial")) {
                             itemView.setBackgroundColor(Color.WHITE);
                             tv.setBackgroundColor(Color.WHITE);
                             tv.setTextColor(Color.BLACK);
@@ -259,13 +270,19 @@ public class OrderActivity extends AppCompatActivity {
 
                                 mAdapter.notifyItemRemoved(i);
                                 getAllOrders(i);
-
-
-
-
                             }
                         };
                         deletebtn.setOnClickListener(deletebuttonListener);
+
+
+                        OnClickListener addnotebuttonListener = new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                showNoteDialog(it, g, orderId);
+                            }
+                        };
+                        addnotebtn.setOnClickListener(addnotebuttonListener);
 
                     }
                     groupHolder.addView(groupView);
@@ -295,7 +312,7 @@ public class OrderActivity extends AppCompatActivity {
                 });
                 //END ADDGROUP
 
-                if( totPrice != 0 )
+                if (totPrice != 0)
                     viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(totPrice) + ":-");
                 /*for (Item it : groups.get(i).items) {
                     viewHolder.mItemTextView.append("\n" + "   " + it.name);
@@ -305,14 +322,14 @@ public class OrderActivity extends AppCompatActivity {
                 OnClickListener oclbtn = new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!viewHolder.expanded) {
+                        if (!viewHolder.expanded) {
                             groupHolder.setVisibility(View.VISIBLE);
                             viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
                             viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
                             viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
                             viewHolder.expanded = true;
 
-                        }else{
+                        } else {
                             groupHolder.setVisibility(View.GONE);
                             viewHolder.mTotPriceTextView.setVisibility(View.GONE);
                             viewHolder.mOrderTextView.setPadding(20, 20, 20, 20);
@@ -335,13 +352,14 @@ public class OrderActivity extends AppCompatActivity {
             }
         };
         mRecyclerView.setAdapter(mAdapter);
-        if(activePosition > 0)
+        if (activePosition > 0)
             onScroll(activePosition);
 
     }
 
-    public void showOrderDialog(){
-        CharSequence tabels[] = new CharSequence[] {"Bord 1", "Bord 2", "Bord 3", "Bord 4", "Bord 5"};
+    public void showOrderDialog() {
+        CharSequence tabels[] = new CharSequence[]{"Bord 1", "Bord 2", "Bord 3", "Bord 4", "Bord 5"};
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Välj ett bord");
@@ -352,7 +370,7 @@ public class OrderActivity extends AppCompatActivity {
                 Group g = new Group();
                 o.booth = table + 1;
                 o.groups = new ArrayList<>();
-                g.items = new ArrayList<Item>();
+                g.items = new ArrayList<>();
                 g.status = "initial";
                 o.groups.add(g);
                 Call<Void> call = Utils.getApi().createOrder(o);
@@ -377,6 +395,114 @@ public class OrderActivity extends AppCompatActivity {
         });
         builder.show();
     }
+
+
+    // Show dialogs for creating notes to an item
+    public void showNoteDialog(final Item item, Group group, int orderId) {
+        // Recent notes, should be fetched from database
+        final List<String> recentnotes = new ArrayList<>();
+        recentnotes.add("Välstekt");
+        recentnotes.add("Medium");
+        recentnotes.add("Blodig");
+        recentnotes.add("Välstekt");
+        recentnotes.add("Medium");
+        recentnotes.add("Blodig");
+        recentnotes.add("Välstekt");
+        recentnotes.add("Medium");
+        recentnotes.add("Blodig");
+        recentnotes.add("Välstekt");
+        recentnotes.add("Medium");
+        recentnotes.add("Blodig");
+
+        // Outer dialog
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.activity_order_add_note);
+        dialog.setTitle("Notering för " + item.name);
+
+        // Set size of dialog to "max"
+        final WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+
+        // Listview contains recentnotes
+        ListView lv = (ListView) dialog.findViewById(R.id.recentnoteslistview);
+        ListAdapter theAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                recentnotes);
+
+        lv.setAdapter(theAdapter);
+
+        // If a note is selected, close the dialog
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                String notepicked = "You selected " +
+                        String.valueOf(adapterView.getItemAtPosition(i));
+                Note n = new Note();
+                n.text = String.valueOf(adapterView.getItemAtPosition(i));
+                item.notes.add(n);
+
+                Toast.makeText(OrderActivity.this, notepicked, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        // If button is pressed, dialog is closed
+        Button okButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+        // if button is clicked, close the custom dialog
+        okButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        // This button creates an inner dialog to create an own note
+        Button newnoteButton = (Button) dialog.findViewById(R.id.dialogButtonNEWNOTE);
+        // if button is clicked, close the custom dialog
+        newnoteButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final Dialog innerdialog = new Dialog(OrderActivity.this);
+                innerdialog.setContentView(R.layout.activity_order_add_new_note);
+                innerdialog.setTitle("Ny notering");
+
+                // This button closes the inner dialog
+                Button cancelButton = (Button) innerdialog.findViewById(R.id.dialogButtonCANCEL);
+                // if button is clicked, close the custom dialog
+                cancelButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        innerdialog.dismiss();
+                    }
+                });
+
+                // Edit text for own note
+                final EditText newnote = (EditText) innerdialog.findViewById(R.id.newnotetext);
+
+                // When button is pressed, add the created note to recent notes and close the inner and outer dialog
+                Button doneButton = (Button) innerdialog.findViewById(R.id.dialogButtonDONE);
+                doneButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String thenewnote = newnote.getText().toString();
+
+                        Toast.makeText(OrderActivity.this, newnote.getText().toString(), Toast.LENGTH_SHORT).show();
+                        recentnotes.add(thenewnote);
+                        innerdialog.dismiss();
+                        dialog.dismiss();
+                    }
+                });
+                innerdialog.show();
+                innerdialog.getWindow().setAttributes(lp);
+            }
+        });
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -405,7 +531,6 @@ public class OrderActivity extends AppCompatActivity {
 
         Call<Void> call = Utils.getApi().deleteItem(orderId, groupId, itemId);
 
-
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Response<Void> response, Retrofit retrofit) {
@@ -417,6 +542,7 @@ public class OrderActivity extends AppCompatActivity {
                 Log.i(LagerActivity.class.getName(), "Failed to delete data " + t.getMessage());
             }
         });
-    }
 
     }
+
+}
