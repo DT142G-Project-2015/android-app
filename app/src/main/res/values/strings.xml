@@ -23,6 +23,7 @@
     <string name="text_add_item">+</string>
     <string name="text_send_kitchen">Skicka till köket</string>
     <string name="text_add_group">Ny delbeställning</string>
+    <string name="text_done">Klar</string>
 
     //Variabler till login rutan
     <string name="title_activity_login">Login</string>
