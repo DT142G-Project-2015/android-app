@@ -100,9 +100,14 @@ public class OrderActivity extends AppCompatActivity {
         @Override
         public void onFailure(Throwable t) {
             Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
-        }
-    });
-}
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getAllOrders(data.getIntExtra("result", 1));
+    }
 
     private class CustomViewHolder extends RecyclerView.ViewHolder {
         public List<Item> items = new ArrayList<>();
@@ -192,7 +197,9 @@ public class OrderActivity extends AppCompatActivity {
                             Intent intent = new Intent(OrderActivity.this, OrderMealActivity.class);
                             intent.putExtra("order-id", orderId);
                             intent.putExtra("group-id", groupID);
-                            startActivity(intent);
+                            intent.putExtra("pos", i);
+                            startActivityForResult(intent, 1);
+
                         }
                     };
                     mAddItemButton.setOnClickListener(additem);

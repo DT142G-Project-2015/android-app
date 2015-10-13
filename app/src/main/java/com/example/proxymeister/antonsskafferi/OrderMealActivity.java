@@ -34,21 +34,12 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_meal);
         list = (ListView)findViewById(R.id.list);
-        addOrderButton = (Button) findViewById(R.id.AddItem);
-
-
-        addOrderButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                onAddOrderClick();
-            }
-        });
-
-
 
 
         int id = getIntent().getIntExtra("menu-id", 1);
         final int orderId = getIntent().getIntExtra("order-id", 1);
         final int groupId = getIntent().getIntExtra("group-id", 1);
+        final int pos = getIntent().getIntExtra("pos", 1);
 
         Call<List<Item>> call = Utils.getApi().getMenuItems(id);
 
@@ -62,9 +53,12 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
                 List<Item> items = response.body();
 
                 if (items != null) {
-                    itemAdapter = new ItemAdapter(OrderMealActivity.this, items, orderId, groupId, new ItemAdapter.Callback() {
+                    itemAdapter = new ItemAdapter(OrderMealActivity.this, items, orderId, groupId, pos, new ItemAdapter.Callback() {
                         @Override
                         public void itemAdded() {
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("result", pos);
+                            setResult(RESULT_OK,returnIntent);
                             finish();
                         }
                     });

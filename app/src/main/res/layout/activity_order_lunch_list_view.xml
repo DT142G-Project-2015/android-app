@@ -18,39 +18,9 @@
         android:id="@+id/price"
         android:padding="20dp"
         android:text="price 20 kr"
-        android:layout_below="@+id/description"
-        android:layout_toLeftOf="@+id/minusButton"
-        android:layout_toStartOf="@+id/minusButton" />
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/minusButton"
-        android:text="-"
-        android:layout_alignBottom="@+id/counter"
-        android:layout_toLeftOf="@+id/counter"
-        android:layout_toStartOf="@+id/counter" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/counter"
-        android:paddingTop="20dp"
-        android:paddingBottom="16dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text="0"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/plusButton"
-        android:layout_toStartOf="@+id/plusButton" />
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/plusButton"
-        android:text="+"
-        android:layout_marginRight="29dp"
-        android:layout_marginEnd="29dp"
-        android:layout_alignBottom="@+id/counter"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_toRightOf="@+id/name"
+        android:layout_toEndOf="@+id/name" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
