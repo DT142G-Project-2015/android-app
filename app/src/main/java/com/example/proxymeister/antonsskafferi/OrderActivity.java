@@ -157,6 +157,7 @@ public class OrderActivity extends AppCompatActivity {
                                 public void onResponse(Response<Void> response, Retrofit retrofit) {
                                     System.out.println("working");
                                     g.status = "readyForKitchen";
+                                    mAdapter.notifyDataSetChanged();
                                 }
 
                                 @Override
@@ -186,10 +187,14 @@ public class OrderActivity extends AppCompatActivity {
 
                     if(g.getStatus().equals("readyForKitchen"))
                         groupView.setBackgroundColor(Color.parseColor("#FFC726"));
-                    if(g.getStatus().equals("done"))
+                    if(g.getStatus().equals("done")) // Denna ska inte synas senare.
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
-                    if(g.getStatus().equals("readyToServe"))
+                    if(g.getStatus().equals("readyToServe")) {
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
+                        mAddItemButton.setVisibility(View.GONE);
+                        Button mDoneButton = (Button) groupView.findViewById(R.id.done);
+                        mDoneButton.setVisibility(View.VISIBLE);
+                    }
                     if(g.getStatus().equals("initial")) {
                         groupView.setBackgroundColor(Color.WHITE);
                         mSendToKitchenButton.setVisibility(View.VISIBLE);
@@ -238,6 +243,7 @@ public class OrderActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Response<Group> response, Retrofit retrofit) {
                                 Log.i(MainActivity.class.getName(), "NICE");
+                                mAdapter.notifyDataSetChanged();
                             }
 
                             @Override
@@ -304,14 +310,14 @@ public class OrderActivity extends AppCompatActivity {
                 o.booth = table + 1;
                 o.groups = new ArrayList<>();
                 g.items = new ArrayList<Item>();
-                g.status = getString(R.string.StatusReadyForKitchen);
+                g.status = "initial";
                 o.groups.add(g);
                 Call<Void> call = Utils.getApi().createOrder(o);
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Response<Void> response, Retrofit retrofit) {
                         Log.i("idg", "Response succesfull");
-                        //getAllOrders();
+                        getAllOrders();
                     }
 
                     @Override
@@ -350,4 +356,5 @@ public class OrderActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
