@@ -56,6 +56,7 @@ public class OrderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 /*Intent intent = new Intent(OrderActivity.this, OrderListActivity.class);
                 startActivity(intent);
+
                 Intent intent = new Intent(OrderActivity.this, OrderMealActivity.class);
                 intent.putExtra("menu-id", 1);
                 startActivity(intent);*/
@@ -64,11 +65,11 @@ public class OrderActivity extends AppCompatActivity {
         };
 
         btn.setOnClickListener(oclbtn);
-        getAllOrders();
+        getAllOrders(-1);
 
     }
 
-    public void getAllOrders(){
+    public void getAllOrders(final int pos){
     Call<List<Order>> call = Utils.getApi().getOrders();
     call.enqueue(new Callback<List<Order>>() {
         @Override
@@ -91,7 +92,7 @@ public class OrderActivity extends AppCompatActivity {
                 mLayoutManager = new LinearLayoutManager(OrderActivity.this);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
-                setOrderAdapter();
+                setOrderAdapter(pos);
             }
         }
 
@@ -119,7 +120,7 @@ public class OrderActivity extends AppCompatActivity {
         }
     }
 
-    void setOrderAdapter(){
+    void setOrderAdapter(final int pos){
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
             public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
@@ -140,6 +141,14 @@ public class OrderActivity extends AppCompatActivity {
                 final LinearLayout groupHolder = (LinearLayout) viewHolder.groupHolder;
                 groupHolder.removeAllViews();
 
+                if(i == pos){
+                    groupHolder.setVisibility(View.VISIBLE);
+                    viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
+                    viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
+                    viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
+                    viewHolder.expanded = true;
+                }
+
                 for (final Group g : orders.get(i).groups) {
                     View groupView = inflater.inflate(R.layout.recyclerview_group_view, null);
                     final int groupID = g.id;
@@ -156,7 +165,7 @@ public class OrderActivity extends AppCompatActivity {
                                 public void onResponse(Response<Void> response, Retrofit retrofit) {
                                     System.out.println("working");
                                     g.status = "readyForKitchen";
-                                    mAdapter.notifyDataSetChanged();
+                                    getAllOrders(i);
                                 }
 
                                 @Override
@@ -204,10 +213,9 @@ public class OrderActivity extends AppCompatActivity {
 
                     final LinearLayout itemHolder = (LinearLayout) groupView.findViewById(R.id.item_holder);
 
-                    for(final Item it : g.items) {
+                    for(Item it : g.items) {
                         View itemView = inflater.inflate(R.layout.recyclerview_item_view, null);
                         TextView tv = (TextView) itemView.findViewById(R.id.item);
-                        Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
                         if(g.getStatus().equals("readyForKitchen")) {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
@@ -227,30 +235,6 @@ public class OrderActivity extends AppCompatActivity {
                         }
                         tv.setText(it.name + ", " + it.price + ":-");
                         itemHolder.addView(itemView);
-
-
-                        OnClickListener buttonListener = new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                g.items.remove(it);
-
-                                deleteItem(orderId, g.id, it.id);
-
-
-                                if (!viewHolder.expanded) {
-                                    Log.e("", "not expanded");
-                                    viewHolder.expanded = true;
-                                } else {
-                                    Log.e("", "expanded");
-                                    viewHolder.expanded = true;
-                                }
-                                mAdapter.notifyItemRemoved(i);
-
-
-                            }
-                        };
-                        deletebtn.setOnClickListener(buttonListener);
-
                     }
                     groupHolder.addView(groupView);
 
@@ -267,7 +251,7 @@ public class OrderActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Response<Group> response, Retrofit retrofit) {
                                 Log.i(MainActivity.class.getName(), "NICE");
-                                mAdapter.notifyDataSetChanged();
+                                getAllOrders(i);
                             }
 
                             @Override
@@ -341,7 +325,7 @@ public class OrderActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Response<Void> response, Retrofit retrofit) {
                         Log.i("idg", "Response succesfull");
-                        getAllOrders();
+                        getAllOrders(-1);
                     }
 
                     @Override
@@ -380,25 +364,4 @@ public class OrderActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-    public void deleteItem(int orderId, int groupId, int itemId) {
-
-
-        Call<Void> call = Utils.getApi().deleteItem(orderId, groupId, itemId);
-
-
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Response<Void> response, Retrofit retrofit) {
-                Log.i("DELETE", "Success");
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.i(LagerActivity.class.getName(), "Failed to delete data " + t.getMessage());
-            }
-        });
-    }
-
 }
