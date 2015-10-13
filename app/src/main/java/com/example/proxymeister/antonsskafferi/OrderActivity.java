@@ -330,7 +330,7 @@ public class OrderActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         if(activePosition > 0)
             onScroll(activePosition);
-        activePosition = -1;
+
     }
 
     public void showOrderDialog(){
