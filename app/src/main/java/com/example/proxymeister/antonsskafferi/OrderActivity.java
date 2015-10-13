@@ -120,6 +120,10 @@ public class OrderActivity extends AppCompatActivity {
         }
     }
 
+    public void onScroll(int i) {
+        mRecyclerView.scrollToPosition(i);
+    }
+
     void setOrderAdapter(final int pos){
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
@@ -128,6 +132,7 @@ public class OrderActivity extends AppCompatActivity {
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_order_view
                         , viewGroup, false);
                 view.setBackgroundResource(android.R.drawable.list_selector_background);
+                mLayoutManager.scrollToPosition(10);
                 return new CustomViewHolder(view);
             }
 
@@ -140,7 +145,6 @@ public class OrderActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(OrderActivity.LAYOUT_INFLATER_SERVICE);
                 final LinearLayout groupHolder = (LinearLayout) viewHolder.groupHolder;
                 groupHolder.removeAllViews();
-
                 if(i == pos){
                     groupHolder.setVisibility(View.VISIBLE);
                     viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
@@ -323,6 +327,8 @@ public class OrderActivity extends AppCompatActivity {
             }
         };
         mRecyclerView.setAdapter(mAdapter);
+        if(pos > 0)
+            onScroll(pos);
     }
 
     public void showOrderDialog(){
