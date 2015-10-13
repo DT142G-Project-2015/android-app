@@ -56,7 +56,6 @@ public class OrderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 /*Intent intent = new Intent(OrderActivity.this, OrderListActivity.class);
                 startActivity(intent);
-
                 Intent intent = new Intent(OrderActivity.this, OrderMealActivity.class);
                 intent.putExtra("menu-id", 1);
                 startActivity(intent);*/
@@ -86,13 +85,7 @@ public class OrderActivity extends AppCompatActivity {
                     for (int j = 0; j < temp.size(); j++) {
                         groups.add(temp.get(j));
 
-                        }
                     }
-                    mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
-                    mLayoutManager = new LinearLayoutManager(OrderActivity.this);
-                    mRecyclerView.setLayoutManager(mLayoutManager);
-                    mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
-                    setOrderAdapter();
                 }
                 mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
                 mLayoutManager = new LinearLayoutManager(OrderActivity.this);
@@ -134,14 +127,13 @@ public class OrderActivity extends AppCompatActivity {
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_order_view
                         , viewGroup, false);
                 view.setBackgroundResource(android.R.drawable.list_selector_background);
-
                 return new CustomViewHolder(view);
             }
 
             @Override
             public void onBindViewHolder(final CustomViewHolder viewHolder, final int i) {
                 viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).booth);
-                orders.get(i).getTotalPrice();
+                double totPrice = orders.get(i).getTotalPrice();
                 final int orderId = orders.get(i).getId();
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(OrderActivity.LAYOUT_INFLATER_SERVICE);
@@ -212,9 +204,10 @@ public class OrderActivity extends AppCompatActivity {
 
                     final LinearLayout itemHolder = (LinearLayout) groupView.findViewById(R.id.item_holder);
 
-                    for(Item it : g.items) {
+                    for(final Item it : g.items) {
                         View itemView = inflater.inflate(R.layout.recyclerview_item_view, null);
                         TextView tv = (TextView) itemView.findViewById(R.id.item);
+                        Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
                         if(g.getStatus().equals("readyForKitchen")) {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
@@ -232,6 +225,9 @@ public class OrderActivity extends AppCompatActivity {
                             tv.setBackgroundColor(Color.WHITE);
                             tv.setTextColor(Color.BLACK);
                         }
+                        tv.setText(it.name + ", " + it.price + ":-");
+                        itemHolder.addView(itemView);
+
 
                         OnClickListener buttonListener = new View.OnClickListener() {
                             @Override
@@ -254,8 +250,7 @@ public class OrderActivity extends AppCompatActivity {
                             }
                         };
                         deletebtn.setOnClickListener(buttonListener);
-                        tv.setText(it.name + ", " + it.price + ":-");
-                        itemHolder.addView(itemView);
+
                     }
                     groupHolder.addView(groupView);
 
@@ -280,13 +275,12 @@ public class OrderActivity extends AppCompatActivity {
                                 Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
                             }
                         });
-
                     }
                 });
                 //END ADDGROUP
 
-                if( orders.get(i).totPrice != 0 )
-                    viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(orders.get(i).totPrice) + ":-");
+                if( totPrice != 0 )
+                    viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(totPrice) + ":-");
                 /*for (Item it : groups.get(i).items) {
                     viewHolder.mItemTextView.append("\n" + "   " + it.name);
                 }*/
@@ -324,7 +318,6 @@ public class OrderActivity extends AppCompatActivity {
                 return orders.size();
             }
         };
-
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -406,8 +399,6 @@ public class OrderActivity extends AppCompatActivity {
                 Log.i(LagerActivity.class.getName(), "Failed to delete data " + t.getMessage());
             }
         });
-
-
     }
 
 }
