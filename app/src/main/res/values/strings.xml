@@ -17,8 +17,12 @@
     <string name="work_in_progress">Work in progress...</string>
     <string name="order_label">Beställningar</string>
     <string name="title_activity_menu_list">Meny</string>
-    <string name="notes_button">Notes\t</string>
+
+    <string name="notes_button">Notering\t</string>
     <string name="delete_button">Ta bort\t</string>
+    <string name="text_add_item">+</string>
+    <string name="text_send_kitchen">Skicka till köket</string>
+    <string name="text_add_group">Ny delbeställning</string>
 
     //Variabler till login rutan
     <string name="title_activity_login">Login</string>
