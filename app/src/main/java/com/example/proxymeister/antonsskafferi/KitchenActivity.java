@@ -185,8 +185,22 @@ public class KitchenActivity extends AppCompatActivity {
                                      //Check if group exists in groups & deletedgroups
                                      if (!groups.contains(group) && !deletedgroups.contains(group))
                                      {
-                                         groups.add(group);
-                                         notice();
+                                         //Check if group contains relevant items
+                                         Boolean relevant = false;
+                                         for(Item item : group.items)
+                                         {
+                                             if(item.type == 0)
+                                             {
+                                                 relevant = true;
+                                                 break;
+                                             }
+                                         }
+
+                                         if(relevant)
+                                         {
+                                             groups.add(group);
+                                             notice();
+                                         }
                                      }
                                  }
                              }
