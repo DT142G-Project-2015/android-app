@@ -29,7 +29,7 @@ public class HandleLagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_handle_lager);
 
-        alterDialog();
+        changeArticleDialog();
         //createArticle();
         //deleteArticle();
     }
@@ -71,7 +71,7 @@ public class HandleLagerActivity extends AppCompatActivity {
     }
 
 
-    public void deleteDialog()
+    public void deleteArticleDialog()
     {
         final AlertDialog.Builder builder = new AlertDialog.Builder(HandleLagerActivity.this);
         builder.setTitle("");
@@ -108,10 +108,10 @@ public class HandleLagerActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void alterDialog()
+    public void createArticleDialog()
     {
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(HandleLagerActivity.this);
+
         builder.setTitle("   Mata in värden för varan");
 
         // defines layout
@@ -146,6 +146,84 @@ public class HandleLagerActivity extends AppCompatActivity {
 
         // insert to layout
         ll.addView(new TextView(this));
+        ll.addView(name_title);
+        ll.addView(name);
+        ll.addView(unit_title);
+        ll.addView(unit);
+        ll.addView(amount_title);
+        ll.addView(amount);
+        ll.addView(date_title);
+        ll.addView(date);
+        ll.addView(category_title);
+        ll.addView(category);
+
+        // set view for dialog
+        builder.setView(ll);
+
+        builder.setPositiveButton("Genmför", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void changeArticleDialog()
+    {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(HandleLagerActivity.this);
+
+        builder.setTitle(" Mata in ID och värden som skall ändras");
+
+        // defines layout
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.VERTICAL); //1 is for vertical orientation
+
+        // input objects
+        final EditText id = new EditText(this);
+        final EditText name = new EditText(this);
+        final EditText amount = new EditText(this);
+        final EditText unit = new EditText(this);
+        final EditText category = new EditText(this);
+        final EditText date = new EditText(this);
+
+        // constraints for input objects
+        id.setInputType(InputType.TYPE_CLASS_NUMBER);
+        name.setInputType(InputType.TYPE_CLASS_TEXT);
+        amount.setInputType(InputType.TYPE_CLASS_NUMBER);
+        unit.setInputType(InputType.TYPE_CLASS_TEXT);
+        category.setInputType(InputType.TYPE_CLASS_TEXT);
+        date.setInputType(InputType.TYPE_CLASS_DATETIME);
+
+        // title per input object
+        final TextView id_title = new TextView(this);
+        id_title.setText("  ID  (*)");
+        final TextView name_title = new TextView(this);
+        name_title.setText("  Namn");
+        final TextView unit_title = new TextView(this);
+        unit_title.setText("  Enhet");
+        final TextView amount_title = new TextView(this);
+        amount_title.setText("  Mängd");
+        final TextView date_title = new TextView(this);
+        date_title.setText("  Utgångsdatum (YYYY/MM/DD)");
+        final TextView category_title = new TextView(this);
+        category_title.setText("  Kategori");
+
+        // insert to layout
+        ll.addView(new TextView(this));
+        ll.addView(id_title);
+        ll.addView(id);
         ll.addView(name_title);
         ll.addView(name);
         ll.addView(unit_title);
