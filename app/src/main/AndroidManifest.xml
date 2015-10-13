@@ -101,15 +101,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.proxymeister.antonsskafferi.MainActivity" />
         </activity>
-        <activity
-            android:name=".HandleLagerActivity"
-            android:label="@string/title_activity_handle_lager"
-            android:parentActivityName=".LagerActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.proxymeister.antonsskafferi.LagerActivity" />
-        </activity>
     </application>
 
 </manifest>

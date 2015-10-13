@@ -9,6 +9,16 @@ public class Article {
     public String unit;
     public String exp_date;     // public String days_to_exp ( depending on solution )
 
+    public Article()
+    {
+        id = 0;
+        name = "";
+        category = "";
+        amount = 0;
+        unit = "";
+        exp_date = "";
+    }
+
     //Constructor
     public Article(String startname, String startcategory, double startamount, String startunit, String startexp_date) {
         name = startname;
@@ -22,5 +32,11 @@ public class Article {
     public String toString()
     {
         return Integer.toString(id) + " / " + name + " / " + Double.toString(amount) + " " + unit + " / " +  exp_date;
+    }
+
+    public boolean isVoid()
+    {
+        return ( id == 0 && name.equals("") && category.equals("")
+                && amount == 0 && unit.equals("") && exp_date.equals("") );
     }
 }
