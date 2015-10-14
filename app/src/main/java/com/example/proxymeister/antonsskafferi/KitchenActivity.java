@@ -30,10 +30,8 @@ import com.example.proxymeister.antonsskafferi.model.Order;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,6 +40,9 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static com.example.proxymeister.antonsskafferi.model.Group.Status.*;
+
 
 public class KitchenActivity extends AppCompatActivity {
     //Checks for new orders
@@ -373,7 +374,7 @@ public class KitchenActivity extends AppCompatActivity {
                 undodeletebtn.setVisibility(View.GONE);
                 animationthread = null;
                 for (Group group : deletedgroups) {
-                    group.status = getString(R.string.StatusReadyToServe);
+                    group.status = ReadyToServe;
                     Call<Void> call = Utils.getApi(KitchenActivity.this).changeStatus(group, group.orderId, group.id);
                     call.enqueue(new Callback<Void>() {
                         @Override

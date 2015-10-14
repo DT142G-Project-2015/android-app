@@ -1,17 +1,11 @@
 package com.example.proxymeister.antonsskafferi;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
-
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,25 +16,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
 import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Item;
-import com.example.proxymeister.antonsskafferi.model.ItemHolder;
 import com.example.proxymeister.antonsskafferi.model.Note;
 import com.example.proxymeister.antonsskafferi.model.Order;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +34,8 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static com.example.proxymeister.antonsskafferi.model.Group.Status.*;
 
 public class OrderActivity extends AppCompatActivity {
 
@@ -187,13 +174,13 @@ public class OrderActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
 
-                            g.status = "readyForKitchen";
+                            g.status = ReadyForKitchen;
                             Call<Void> call = Utils.getApi(OrderActivity.this).changeStatus(g, orderId, groupID);
                             call.enqueue(new Callback<Void>() {
                                 @Override
                                 public void onResponse(Response<Void> response, Retrofit retrofit) {
                                     System.out.println("working");
-                                    g.status = "readyForKitchen";
+                                    g.status = ReadyForKitchen;
                                     getAllOrders(i);
                                 }
 
@@ -229,13 +216,13 @@ public class OrderActivity extends AppCompatActivity {
                     OnClickListener markDone = new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            g.status = "done";
+                            g.status = Done;
                             Call<Void> call = Utils.getApi(OrderActivity.this).changeStatus(g, orderId, groupID);
                             call.enqueue(new Callback<Void>() {
                                 @Override
                                 public void onResponse(Response<Void> response, Retrofit retrofit) {
                                     System.out.println("working");
-                                    g.status = "done";
+                                    g.status = Done;
                                     if (orders.get(i).allDone())
                                         getAllOrders(-1);
                                     else
@@ -253,18 +240,18 @@ public class OrderActivity extends AppCompatActivity {
                     mDoneButton.setOnClickListener(markDone);
                     //END
 
-                    if (g.getStatus().equals("readyForKitchen"))
+                    if (g.status == ReadyForKitchen)
                         groupView.setBackgroundColor(Color.parseColor("#FFC726"));
-                    if (g.getStatus().equals("done")) { // Denna ska inte synas senare.
+                    if (g.status == Done) { // Denna ska inte synas senare.
                         groupView.setBackgroundColor(Color.parseColor("#CDCDCD"));
                         mAddItemButton.setVisibility(View.GONE);
                     }
-                    if (g.getStatus().equals("readyToServe")) {
+                    if (g.status == ReadyToServe) {
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
                         mAddItemButton.setVisibility(View.GONE);
                         mDoneButton.setVisibility(View.VISIBLE);
                     }
-                    if (g.getStatus().equals("initial")) {
+                    if (g.status == Initial) {
                         groupView.setBackgroundColor(Color.WHITE);
                         if (!g.items.isEmpty())
                             mSendToKitchenButton.setVisibility(View.VISIBLE);
@@ -281,19 +268,19 @@ public class OrderActivity extends AppCompatActivity {
                         Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
                         Button addnotebtn = (Button) itemView.findViewById(R.id.itemNoteId);
 
-                        if (g.getStatus().equals("readyForKitchen")) {
+                        if (g.status == ReadyForKitchen) {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
                         }
-                        if (g.getStatus().equals("done")) {
+                        if (g.status == Done) {
                             itemView.setBackgroundColor(Color.parseColor("#CDCDCD"));
                             tv.setBackgroundColor(Color.parseColor("#CDCDCD"));
                         }
-                        if (g.getStatus().equals("readyToServe")) {
+                        if (g.status == ReadyToServe) {
                             itemView.setBackgroundColor(Color.parseColor("#609040"));
                             tv.setBackgroundColor(Color.parseColor("#609040"));
                         }
-                        if (g.getStatus().equals("initial")) {
+                        if (g.status == Initial) {
                             itemView.setBackgroundColor(Color.WHITE);
                             tv.setBackgroundColor(Color.WHITE);
                             tv.setTextColor(Color.BLACK);
@@ -331,7 +318,7 @@ public class OrderActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Group gr = new Group();
-                        gr.status = "initial";
+                        gr.status = Initial;
                         final Call<Group> call = Utils.getApi(OrderActivity.this).createOrderGroup(gr, orderId);
                         call.enqueue(new retrofit.Callback<Group>() {
                             @Override
@@ -436,7 +423,7 @@ public class OrderActivity extends AppCompatActivity {
                 o.booth = table + 1;
                 o.groups = new ArrayList<>();
                 g.items = new ArrayList<>();
-                g.status = "initial";
+                g.status = Initial;
                 o.groups.add(g);
                 Call<Void> call = Utils.getApi(OrderActivity.this).createOrder(o);
                 call.enqueue(new Callback<Void>() {

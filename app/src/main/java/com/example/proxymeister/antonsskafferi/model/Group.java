@@ -1,22 +1,52 @@
 package com.example.proxymeister.antonsskafferi.model;
 
-import java.util.Collections;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Comparator;
 import java.util.List;
 
 
 public class Group {
-    public List<Item> items;
 
-    public String getStatus() {
-        return status;
+    public enum Status {
+        @SerializedName("initial") Initial,
+        @SerializedName("readyForKitchen") ReadyForKitchen,
+        @SerializedName("readyToServe") ReadyToServe,
+        @SerializedName("done") Done;
+
+        private String getText() {
+            try {
+                return getClass().getField(name()).getAnnotation(SerializedName.class).value();
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);  // IMPOSSIBLE
+            }
+        }
+
+        public static String getText(Status status) {
+            return (status == null ? Initial : status).getText();
+        }
+
+        public static Status fromText(String text) {
+            for (Status st : values()) {
+                if (st.getText().equals(text))
+                    return st;
+            }
+            return Initial;
+        }
+
+        public static String sanitize(String s) {
+            return fromText(s).getText();
+        }
     }
+
+    public List<Item> items;
 
     public String getId() {
         return Integer.toString(id);
     }
 
-    public String status;
+    @SerializedName("status")
+    public Status status;
     public int id;
     public int tablenum;
 
