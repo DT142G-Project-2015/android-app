@@ -187,7 +187,6 @@ public class KitchenActivity extends AppCompatActivity {
                                                  break;
                                              }
                                          }
-
                                          if (relevant) {
                                              groups.add(group);
                                              notice();
