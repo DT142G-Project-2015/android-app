@@ -18,6 +18,15 @@ public class Order {
         return totPrice;
     }
 
+    public boolean allDone(){
+        boolean done = true;
+        for(Group g : groups){
+            if(!g.status.equals("done"))
+                done = false;
+        }
+        return done;
+    }
+
     @Override
     public String toString() {
         String temp = new String();

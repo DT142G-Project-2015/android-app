@@ -87,21 +87,26 @@ public class OrderActivity extends AppCompatActivity {
 
                 int statusCode = response.code();
                 Log.i(MainActivity.class.getName(), "Status: " + statusCode);
-
                 orders = response.body();
 
                 if (orders != null) {
                     for (int i = 0; i < orders.size(); i++) {
-                        List<Group> temp = orders.get(i).groups;
-                        for (int j = 0; j < temp.size(); j++) {
-                            groups.add(temp.get(j));
+                        boolean done = orders.get(i).allDone();
+                        if(done)
+                            orders.remove(i--);
 
+                        else {
+                            List<Group> temp = orders.get(i).groups;
+                            for (int j = 0; j < temp.size(); j++) {
+                                groups.add(temp.get(j));
+                            }
                         }
                     }
                     mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
                     mLayoutManager = new LinearLayoutManager(OrderActivity.this);
                     mRecyclerView.setLayoutManager(mLayoutManager);
                     mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
+
                     setOrderAdapter(pos);
                 }
             }
@@ -214,19 +219,47 @@ public class OrderActivity extends AppCompatActivity {
                     mAddItemButton.setOnClickListener(additem);
                     //END
 
+                    //MARK DONE
+                    Button mDoneButton = (Button) groupView.findViewById(R.id.done);
+                    OnClickListener markDone = new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            g.status = "done";
+                            Call<Void> call = Utils.getApi().changeStatus(g, orderId, groupID);
+                            call.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Response<Void> response, Retrofit retrofit) {
+                                    System.out.println("working");
+                                    g.status = "done";
+                                    getAllOrders(i);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    System.out.println("not working");
+
+                                }
+                            });
+                        }
+                    };
+                    mDoneButton.setOnClickListener(markDone);
+                    //END
+
                     if (g.getStatus().equals("readyForKitchen"))
                         groupView.setBackgroundColor(Color.parseColor("#FFC726"));
-                    if (g.getStatus().equals("done")) // Denna ska inte synas senare.
-                        groupView.setBackgroundColor(Color.parseColor("#609040"));
+                    if (g.getStatus().equals("done")) { // Denna ska inte synas senare.
+                        groupView.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                        mAddItemButton.setVisibility(View.GONE);
+                    }
                     if (g.getStatus().equals("readyToServe")) {
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
                         mAddItemButton.setVisibility(View.GONE);
-                        Button mDoneButton = (Button) groupView.findViewById(R.id.done);
                         mDoneButton.setVisibility(View.VISIBLE);
                     }
                     if (g.getStatus().equals("initial")) {
                         groupView.setBackgroundColor(Color.WHITE);
-                        mSendToKitchenButton.setVisibility(View.VISIBLE);
+                        if(!g.items.isEmpty())
+                            mSendToKitchenButton.setVisibility(View.VISIBLE);
                     }
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     lp.setMargins(0, 4, 0, 4);
@@ -245,8 +278,8 @@ public class OrderActivity extends AppCompatActivity {
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
                         }
                         if (g.getStatus().equals("done")) {
-                            itemView.setBackgroundColor(Color.parseColor("#609040"));
-                            tv.setBackgroundColor(Color.parseColor("#609040"));
+                            itemView.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                            tv.setBackgroundColor(Color.parseColor("#CDCDCD"));
                         }
                         if (g.getStatus().equals("readyToServe")) {
                             itemView.setBackgroundColor(Color.parseColor("#609040"));
@@ -349,6 +382,8 @@ public class OrderActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         if (activePosition > 0)
             onScroll(activePosition);
+
+
 
     }
 
