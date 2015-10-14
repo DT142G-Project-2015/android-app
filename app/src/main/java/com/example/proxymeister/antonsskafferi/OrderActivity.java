@@ -352,8 +352,8 @@ public class OrderActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Order or = orders.get(i);
                         or.payed = true;
-                        final Call<Void> call = Utils.getApi().updateOrderStatus(or, orderId);
-                        call.enqueue(new retrofit.Callback<Void>() {
+                        final Call<Void> call = Utils.getApi(OrderActivity.this).updateOrderStatus(or, orderId);
+                        call.enqueue(new retrofit.Callbak<Void>() {
                             @Override
                             public void onResponse(Response<Void> response, Retrofit retrofit) {
                                 Log.i(MainActivity.class.getName(), "NICE");
