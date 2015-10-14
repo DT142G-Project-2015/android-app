@@ -41,7 +41,7 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
         final int groupId = getIntent().getIntExtra("group-id", 1);
         final int pos = getIntent().getIntExtra("pos", 1);
 
-        Call<List<Item>> call = Utils.getApi().getMenuItems(id);
+        Call<List<Item>> call = Utils.getApi(OrderMealActivity.this).getMenuItems(id);
 
         call.enqueue(new Callback<List<Item>>() {
             @Override

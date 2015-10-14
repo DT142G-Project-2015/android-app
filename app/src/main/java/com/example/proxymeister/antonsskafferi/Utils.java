@@ -1,16 +1,21 @@
 package com.example.proxymeister.antonsskafferi;
 
 
-import android.os.AsyncTask;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Base64;
 
 import com.example.proxymeister.antonsskafferi.model.ApiInterface;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
@@ -31,56 +36,47 @@ public class Utils {
 
         return buf.toString();
     }
+
     //http://46.254.15.8/api/http://10.0.2.2:8080/web-app/api/
-    public static ApiInterface getApi() {
+    public static ApiInterface getApi(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        String username = sp.getString("username", null);
+        String password = sp.getString("password", null);
         String BASE_URL = "http://46.254.15.8/api/";
+
+
+
+        final String basicAuth = "Basic " + new String(Base64.encode((username + ":" + password).getBytes(), Base64.NO_WRAP));
+
+        System.out.println(basicAuth);
+
+
+        OkHttpClient client = new OkHttpClient();
+        client.interceptors().add(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+
+                // Customize the request
+                Request request = original.newBuilder()
+                        .header("Authorization", basicAuth)
+                        .method(original.method(), original.body())
+                        .build();
+
+                Response response = chain.proceed(request);
+
+                // Customize or return the response
+                return response;
+            }
+        });
+
+
         Retrofit retrofit = new Retrofit.Builder()
+                .client(client)
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         return retrofit.create(ApiInterface.class);
-    }
-
-    // TODO: Remove this class:
-    static class FetchURL extends AsyncTask<URL, Void, String> {
-        private final Callback callback;
-
-        public interface Callback {
-            void onComplete(Object result);
-            void onError();
-        }
-
-        public FetchURL(Callback callback) {
-            this.callback = callback;
-        }
-
-        @Override
-        protected String doInBackground(URL... params) {
-            assert(params.length == 1);
-
-            HttpURLConnection conn = null;
-            try {
-
-                // Download URL(params[0]) into result
-                conn = (HttpURLConnection) params[0].openConnection();
-                InputStream inputStream = conn.getInputStream();
-                String result = Utils.toString(inputStream);
-
-                return result;
-            } catch (IOException e) {
-                return null;
-            } finally {
-                if (conn != null)
-                    conn.disconnect();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result != null)
-                callback.onComplete(result);
-            else
-                callback.onError();
-        }
     }
 }

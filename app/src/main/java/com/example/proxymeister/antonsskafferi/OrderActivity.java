@@ -81,7 +81,7 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     public void getAllOrders(final int pos) {
-        Call<List<Order>> call = Utils.getApi().getOrders();
+        Call<List<Order>> call = Utils.getApi(this).getOrders();
         call.enqueue(new Callback<List<Order>>() {
             @Override
             public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
@@ -185,7 +185,7 @@ public class OrderActivity extends AppCompatActivity {
                         public void onClick(View v) {
 
                             g.status = "readyForKitchen";
-                            Call<Void> call = Utils.getApi().changeStatus(g, orderId, groupID);
+                            Call<Void> call = Utils.getApi(OrderActivity.this).changeStatus(g, orderId, groupID);
                             call.enqueue(new Callback<Void>() {
                                 @Override
                                 public void onResponse(Response<Void> response, Retrofit retrofit) {
@@ -227,7 +227,7 @@ public class OrderActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             g.status = "done";
-                            Call<Void> call = Utils.getApi().changeStatus(g, orderId, groupID);
+                            Call<Void> call = Utils.getApi(OrderActivity.this).changeStatus(g, orderId, groupID);
                             call.enqueue(new Callback<Void>() {
                                 @Override
                                 public void onResponse(Response<Void> response, Retrofit retrofit) {
@@ -328,7 +328,7 @@ public class OrderActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Group gr = new Group();
                         gr.status = "initial";
-                        final Call<Group> call = Utils.getApi().createOrderGroup(gr, orderId);
+                        final Call<Group> call = Utils.getApi(OrderActivity.this).createOrderGroup(gr, orderId);
                         call.enqueue(new retrofit.Callback<Group>() {
                             @Override
                             public void onResponse(Response<Group> response, Retrofit retrofit) {
@@ -409,7 +409,7 @@ public class OrderActivity extends AppCompatActivity {
                 g.items = new ArrayList<>();
                 g.status = "initial";
                 o.groups.add(g);
-                Call<Void> call = Utils.getApi().createOrder(o);
+                Call<Void> call = Utils.getApi(OrderActivity.this).createOrder(o);
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Response<Void> response, Retrofit retrofit) {
@@ -519,7 +519,7 @@ public class OrderActivity extends AppCompatActivity {
                 Note n = new Note();
                 n.text = thenewnote;
 
-                Call<Void> call = Utils.getApi().addNote(orderId, group.id, item.id, n);
+                Call<Void> call = Utils.getApi(OrderActivity.this).addNote(orderId, group.id, item.id, n);
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Response<Void> response, Retrofit retrofit) {
@@ -608,7 +608,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 public void deleteItem(int orderId,int groupId,int itemId){
 
 
-        Call<Void>call=Utils.getApi().deleteItem(orderId,groupId,itemId);
+        Call<Void>call=Utils.getApi(this).deleteItem(orderId,groupId,itemId);
 
         call.enqueue(new Callback<Void>(){
 @Override

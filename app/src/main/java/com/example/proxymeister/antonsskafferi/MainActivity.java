@@ -89,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(id == android.R.id.home)
         {
-            client.interrupt();
+            if (client != null)
+                client.interrupt();
         }
 
         //noinspection SimplifiableIfStatement

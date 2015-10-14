@@ -59,7 +59,7 @@ public class LagerActivity extends AppCompatActivity  {
 
     public void setRecyclerview(final int cmd)
     {
-        Call<List<Article>> call = Utils.getApi().getArticles();
+        Call<List<Article>> call = Utils.getApi(this).getArticles();
         call.enqueue(new Callback<List<Article>>() {
             @Override
             public void onResponse(Response<List<Article>> response, Retrofit retrofit) {
@@ -436,7 +436,7 @@ public class LagerActivity extends AppCompatActivity  {
 
         public void deleteArticle() {
 
-            Call<Void> call = Utils.getApi().deleteArticle(deleteID);
+            Call<Void> call = Utils.getApi(LagerActivity.this).deleteArticle(deleteID);
 
             call.enqueue(new Callback<Void>() {
                 @Override
@@ -454,7 +454,7 @@ public class LagerActivity extends AppCompatActivity  {
         public void createArticle() {
 
             Article newArticle = new Article(body.name, body.category, body.amount, body.unit, body.exp_date);
-            Call<Void> call = Utils.getApi().createArticle(newArticle);
+            Call<Void> call = Utils.getApi(LagerActivity.this).createArticle(newArticle);
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Response<Void> response, Retrofit retrofit) {
@@ -471,7 +471,7 @@ public class LagerActivity extends AppCompatActivity  {
         public void changeArticle()
         {
             Article newArticle = new Article(body.name, body.category, body.amount, body.unit, body.exp_date);
-            Call<Void> call = Utils.getApi().changeArticle(body.id, newArticle);
+            Call<Void> call = Utils.getApi(LagerActivity.this).changeArticle(body.id, newArticle);
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Response<Void> response, Retrofit retrofit) {

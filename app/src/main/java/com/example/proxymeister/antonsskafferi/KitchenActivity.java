@@ -167,7 +167,7 @@ public class KitchenActivity extends AppCompatActivity {
 
     void ready() {
         // Get all orders ready for kitchen
-        Call<List<Order>> call = Utils.getApi().getOrdersByStatus(getString(R.string.StatusReadyForKitchen));
+        Call<List<Order>> call = Utils.getApi(this).getOrdersByStatus(getString(R.string.StatusReadyForKitchen));
 
         call.enqueue(new SimpleCallback<List<Order>>() {
                          @Override
@@ -381,7 +381,7 @@ public class KitchenActivity extends AppCompatActivity {
                 animationthread = null;
                 for (Group group : deletedgroups) {
                     group.status = getString(R.string.StatusReadyToServe);
-                    Call<Void> call = Utils.getApi().changeStatus(group, group.orderId, group.id);
+                    Call<Void> call = Utils.getApi(KitchenActivity.this).changeStatus(group, group.orderId, group.id);
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Response<Void> response, Retrofit retrofit) {

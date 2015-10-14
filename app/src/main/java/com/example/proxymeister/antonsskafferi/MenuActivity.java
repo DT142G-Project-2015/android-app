@@ -51,7 +51,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void refreshMenu() {
         int id = getIntent().getIntExtra("menu-id", 1);
-        Call<Menu> call = Utils.getApi().getMenu(id);
+        Call<Menu> call = Utils.getApi(this).getMenu(id);
 
         call.enqueue(new Callback<Menu>() {
             @Override
