@@ -124,6 +124,8 @@ public class LagerActivity extends AppCompatActivity  {
             break;
             case (R.id.lagethantering_change): { hl.changeArticleDialog();}
             break;
+            case (R.id.lagethantering_refresh): { setRecyclerview(1); }
+            break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -155,10 +157,28 @@ public class LagerActivity extends AppCompatActivity  {
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    deleteID=Integer.parseInt(input.getText().toString());
-                    deleteArticle();
-                    dialog.dismiss();
-                    setRecyclerview(1);
+                    try
+                    {
+                        if(input.getText().toString().equals("")) { throw new Throwable("Ange ID"); }
+                        deleteID = Integer.parseInt(input.getText().toString());
+
+                        if(idDoesNotExist()) { throw new Throwable("Varan med ID: " + deleteID + " existerar inte"); }
+
+
+                        deleteArticle();
+                        dialog.dismiss();
+                        Toast toast = Toast.makeText(getApplicationContext(), "Genomförd", Toast.LENGTH_LONG);
+                        toast.show();
+                        setRecyclerview(1);
+                    }
+                    catch (Throwable t)
+                    {
+                        dialog.dismiss();
+                        String s = t.getMessage();
+                        Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
+                        toast.show();
+                        deleteArticleDialog();
+                    }
                 }
             });
 
@@ -250,6 +270,8 @@ public class LagerActivity extends AppCompatActivity  {
 
                         createArticle();
                         dialog.dismiss();
+                        Toast toast = Toast.makeText(getApplicationContext(), "Genomförd", Toast.LENGTH_LONG);
+                        toast.show();
                         setRecyclerview(1);
                     }
                     catch (Throwable t)
@@ -348,6 +370,7 @@ public class LagerActivity extends AppCompatActivity  {
                                 retrievedArticle = articles.get(i);
                                 break;
                             }
+                            if(i == (articles.size()-1) ) { throw new Throwable("Varan med ID: " + deleteID + " existerar inte"); }
                         }
 
                         // if article is completely empty or corrupt, throw "Varan med id" + body.id "finns inte")
@@ -375,7 +398,6 @@ public class LagerActivity extends AppCompatActivity  {
                         else
                         {
                             body.exp_date = date.getText().toString();
-                            System.out.println("wut");
                             if (!(isValidDate(body.exp_date)) && !(body.exp_date.equals(""))) throw new Throwable("Fel format på utgångsdatum");
                         }
 
@@ -385,11 +407,12 @@ public class LagerActivity extends AppCompatActivity  {
 
                         changeArticle();
                         dialog.dismiss();
+                        Toast toast = Toast.makeText(getApplicationContext(), "Genomförd", Toast.LENGTH_LONG);
+                        toast.show();
                         setRecyclerview(1);
                     }
                     catch(Throwable t)
                     {
-                        Log.i("CHANGEARTICLEDIALOG ", t.getMessage());
                         dialog.dismiss();
                         String s = t.getMessage();
                         Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
@@ -462,24 +485,6 @@ public class LagerActivity extends AppCompatActivity  {
             });
         }
 
-        public void getArticle(int id)
-        {
-            Call<Article> call = Utils.getApi().getArticle(id);
-            call.enqueue(new Callback<Article>()
-            {
-                @Override
-                public void onResponse(Response<Article> response, Retrofit retrofit) {
-                    retrievedArticle = response.body();
-                    Log.i("GETARTICLEID", "Success");
-                }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    Log.i("GETARTICLEID", t.getMessage());
-                }
-            });
-        }
-
         public boolean isValidDate(String inDate) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             dateFormat.setLenient(false);
@@ -491,5 +496,13 @@ public class LagerActivity extends AppCompatActivity  {
             return true;
         }
 
+        public boolean idDoesNotExist() {
+            for (int i = 0; i < articles.size(); i++) {
+                if (articles.get(i).id == deleteID) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

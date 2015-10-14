@@ -8,4 +8,6 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/lagethantering_change" android:title="Ändra vara"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/lagethantering_refresh" android:title="Uppdatera"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>
