@@ -38,4 +38,11 @@
         android:paddingBottom="20dp"
         android:layout_marginLeft="20dp"
         android:visibility="gone"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Betald beställning"
+        android:layout_marginLeft="20dp"
+        android:visibility="gone"
+        android:id="@+id/doneOrder"/>
 </LinearLayout>

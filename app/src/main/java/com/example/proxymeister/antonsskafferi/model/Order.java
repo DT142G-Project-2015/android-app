@@ -8,6 +8,7 @@ public class Order {
     public List<Group> groups;
     public int id;
     public int booth;
+    public boolean payed;
     public double totPrice = 0.00;
 
     public double getTotalPrice(){

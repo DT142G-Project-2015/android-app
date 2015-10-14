@@ -92,10 +92,8 @@ public class OrderActivity extends AppCompatActivity {
 
                 if (orders != null) {
                     for (int i = 0; i < orders.size(); i++) {
-                        boolean done = orders.get(i).allDone();
-                        if(done)
+                        if(orders.get(i).payed)
                             orders.remove(i--);
-
                         else {
                             List<Group> temp = orders.get(i).groups;
                             for (int j = 0; j < temp.size(); j++) {
@@ -130,6 +128,7 @@ public class OrderActivity extends AppCompatActivity {
         private TextView mTotPriceTextView;
         public LinearLayout groupHolder;
         public Button mAddGroupButton;
+        public Button mPayedButton;
         public boolean expanded = false;
 
         public CustomViewHolder(View itemView) {
@@ -137,6 +136,7 @@ public class OrderActivity extends AppCompatActivity {
             mOrderTextView = (TextView) itemView.findViewById(R.id.order);
             mTotPriceTextView = (TextView) itemView.findViewById(R.id.totalPrice);
             mAddGroupButton = (Button) itemView.findViewById(R.id.addGroup);
+            mPayedButton = (Button) itemView.findViewById(R.id.doneOrder);
             groupHolder = (LinearLayout) itemView.findViewById(R.id.group_holder);
         }
     }
@@ -171,6 +171,7 @@ public class OrderActivity extends AppCompatActivity {
                     viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
                     viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
                     viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
+                    viewHolder.mPayedButton.setVisibility(View.VISIBLE);
                     viewHolder.expanded = true;
                 }
 
@@ -345,6 +346,31 @@ public class OrderActivity extends AppCompatActivity {
                 });
                 //END ADDGROUP
 
+                //PAYED ORDER
+                viewHolder.mPayedButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Order or = orders.get(i);
+                        or.payed = true;
+                        final Call<Void> call = Utils.getApi().updateOrderStatus(or, orderId);
+                        call.enqueue(new retrofit.Callback<Void>() {
+                            @Override
+                            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                                Log.i(MainActivity.class.getName(), "NICE");
+                                getAllOrders(-1);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable t) {
+                                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                            }
+                        });
+                    }
+                });
+                //END ADDGROUP
+
+
+
                 if (totPrice != 0)
                     viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(totPrice) + ":-");
                 /*for (Item it : groups.get(i).items) {
@@ -360,6 +386,7 @@ public class OrderActivity extends AppCompatActivity {
                             viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
                             viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
                             viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
+                            viewHolder.mPayedButton.setVisibility(View.VISIBLE);
                             viewHolder.expanded = true;
 
                         } else {
@@ -367,6 +394,7 @@ public class OrderActivity extends AppCompatActivity {
                             viewHolder.mTotPriceTextView.setVisibility(View.GONE);
                             viewHolder.mOrderTextView.setPadding(20, 20, 20, 20);
                             viewHolder.mAddGroupButton.setVisibility(View.GONE);
+                            viewHolder.mPayedButton.setVisibility(View.GONE);
                             viewHolder.expanded = false;
 
                         }
