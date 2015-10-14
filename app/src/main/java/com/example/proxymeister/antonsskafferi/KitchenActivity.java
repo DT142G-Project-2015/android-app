@@ -133,10 +133,8 @@ public class KitchenActivity extends AppCompatActivity {
         }, 0, 5000);
     }
 
-    void notice()
-    {
-        try
-        {
+    void notice() {
+        try {
             //Sound
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
@@ -144,10 +142,7 @@ public class KitchenActivity extends AppCompatActivity {
             //Vibration
             Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
             v.vibrate(250);
-        }
-
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -181,11 +176,22 @@ public class KitchenActivity extends AppCompatActivity {
                              for (Order order : orders) {
                                  for (Group group : order.groups) {
                                      group.tablenum = order.booth;
+
                                      //Check if group exists in groups & deletedgroups
-                                     if (!groups.contains(group) && !deletedgroups.contains(group))
-                                     {
-                                         groups.add(group);
-                                         notice();
+                                     if (!groups.contains(group) && !deletedgroups.contains(group)) {
+                                         //Check if group contains relevant items
+                                         Boolean relevant = false;
+                                         for (Item item : group.items) {
+                                             if (item.type == 0 || item.type == 2) {
+                                                 relevant = true;
+                                                 break;
+                                             }
+                                         }
+
+                                         if (relevant) {
+                                             groups.add(group);
+                                             notice();
+                                         }
                                      }
                                  }
                              }
@@ -197,6 +203,7 @@ public class KitchenActivity extends AppCompatActivity {
                      }
         );
     }
+
 
     void setAdapter() {
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
@@ -274,8 +281,11 @@ public class KitchenActivity extends AppCompatActivity {
             // Otherwise, print the frequency and item.name
             if (occurrences == 1) {
                 viewHolder.itemname.append("\n" + "   " + itemname);
-            } else
+                Log.e("error", "nodub" + "   " + itemname);
+            } else {
                 viewHolder.itemname.append("\n" + occurrences + " " + itemname);
+                Log.e("error", "nodub" +  occurrences + " " + itemname);
+            }
 
             // Check for any notes for items.
             for (Item item : group.items) {
@@ -285,24 +295,29 @@ public class KitchenActivity extends AppCompatActivity {
                         int occurrencesspecial = Collections.frequency(specialitems, item);
                         if (occurrencesspecial == 1) {
                             viewHolder.itemname.append("\n" + "   " + itemname);
-                        } else
+                            Log.e("error", "special" + "   " + itemname);
+                        } else {
                             viewHolder.itemname.append("\n" + occurrencesspecial + " " + itemname);
-                        if (!item.notes.isEmpty())
-                            viewHolder.itemname.append(": ");
-                        for (int j = 0; j < item.notes.size(); j++) {
-                            viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
-                            if (j != item.notes.size() - 1)
-                                viewHolder.itemname.append(", ");
+                            Log.e("error", "special" + occurrencesspecial + " " + itemname);
+
                         }
-                        for (Item subitem : item.subItems) {
-                            viewHolder.itemname.append("\n" + "     ");
-                            viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
-                            if (!subitem.notes.isEmpty())
-                                viewHolder.itemname.append(": ");
-                            for (int k = 0; k < subitem.notes.size(); k++) {
-                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
-                                if (k != subitem.notes.size() - 1)
+                        if (!item.notes.isEmpty()) {
+                            viewHolder.itemname.append(": ");
+                            for (int j = 0; j < item.notes.size(); j++) {
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
+                                if (j != item.notes.size() - 1)
                                     viewHolder.itemname.append(", ");
+                            }
+                            for (Item subitem : item.subItems) {
+                                viewHolder.itemname.append("\n" + "     ");
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
+                                if (!subitem.notes.isEmpty())
+                                    viewHolder.itemname.append(": ");
+                                for (int k = 0; k < subitem.notes.size(); k++) {
+                                    viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
+                                    if (k != subitem.notes.size() - 1)
+                                        viewHolder.itemname.append(", ");
+                                }
                             }
                         }
                         specialitems.remove(item);
