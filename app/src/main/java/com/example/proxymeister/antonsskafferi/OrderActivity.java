@@ -231,7 +231,10 @@ public class OrderActivity extends AppCompatActivity {
                                 public void onResponse(Response<Void> response, Retrofit retrofit) {
                                     System.out.println("working");
                                     g.status = "done";
-                                    getAllOrders(i);
+                                    if(orders.get(i).allDone())
+                                        getAllOrders(-1);
+                                    else
+                                        getAllOrders(i);
                                 }
 
                                 @Override
