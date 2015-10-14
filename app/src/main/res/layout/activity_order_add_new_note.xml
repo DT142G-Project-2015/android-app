@@ -3,15 +3,10 @@
     android:orientation="vertical" android:layout_width="300dp"
     android:layout_height="match_parent">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/addednotes"/>
-
     <EditText
         android:layout_width="match_parent"
-        android:layout_marginLeft="15dp"
-        android:layout_height="30dp"
+        android:layout_marginLeft="5dp"
+        android:layout_height="50dp"
         android:background="#fcffcf"
         android:gravity="top|left"
         android:maxLength="100"
@@ -49,7 +44,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/textmeat"
         android:text="Tillagning: "
-        android:padding="20dp"/>
+        android:paddingTop="10dp"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -82,5 +77,17 @@
             android:id="@+id/welldonemeatbtn"
             android:text="Välstekt"/>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addednotestext"
+        android:text="Tillagda noteringar: "
+        android:paddingBottom="20dp"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/addednotes"/>
 
 </LinearLayout>
