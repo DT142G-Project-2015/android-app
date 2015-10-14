@@ -181,26 +181,11 @@ public class KitchenActivity extends AppCompatActivity {
                              for (Order order : orders) {
                                  for (Group group : order.groups) {
                                      group.tablenum = order.booth;
-
                                      //Check if group exists in groups & deletedgroups
                                      if (!groups.contains(group) && !deletedgroups.contains(group))
                                      {
-                                         //Check if group contains relevant items
-                                         Boolean relevant = false;
-                                         for(Item item : group.items)
-                                         {
-                                             if(item.type == 0)
-                                             {
-                                                 relevant = true;
-                                                 break;
-                                             }
-                                         }
-
-                                         if(relevant)
-                                         {
-                                             groups.add(group);
-                                             notice();
-                                         }
+                                         groups.add(group);
+                                         notice();
                                      }
                                  }
                              }
@@ -294,7 +279,8 @@ public class KitchenActivity extends AppCompatActivity {
 
             // Check for any notes for items.
             for (Item item : group.items) {
-                if (item.type == 0) {
+                // Item type 1 is drink
+                if (item.type != 1) {
                     if (specialitems.contains(item)) {
                         int occurrencesspecial = Collections.frequency(specialitems, item);
                         if (occurrencesspecial == 1) {

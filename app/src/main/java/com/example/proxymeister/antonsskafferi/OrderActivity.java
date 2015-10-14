@@ -54,6 +54,7 @@ public class OrderActivity extends AppCompatActivity {
     private List<Order> orders;
     private int activePosition;
     private List<Group> groups = new ArrayList<>();
+    private ListView listviewaddednotes;
     private List<Note> notes = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -182,6 +183,7 @@ public class OrderActivity extends AppCompatActivity {
                     OnClickListener sendGroup = new OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
                             g.status = "readyForKitchen";
                             Call<Void> call = Utils.getApi().changeStatus(g, orderId, groupID);
                             call.enqueue(new Callback<Void>() {
@@ -391,7 +393,6 @@ public class OrderActivity extends AppCompatActivity {
     }
 
 
-
     public void showOrderDialog() {
         CharSequence tabels[] = new CharSequence[]{"Bord 1", "Bord 2", "Bord 3", "Bord 4", "Bord 5"};
 
@@ -431,8 +432,7 @@ public class OrderActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public void showSecureDialog(final Item item, final Group group, final int orderId, final int position)
-    {
+    public void showSecureDialog(final Item item, final Group group, final int orderId, final int position) {
         final Dialog dialog = new Dialog(OrderActivity.this);
         dialog.setContentView(R.layout.activity_order_secure_remove);
         dialog.setTitle("Ta bort");
@@ -473,151 +473,155 @@ public class OrderActivity extends AppCompatActivity {
 
 
     // Show dialogs for creating notes to an item
-    public void showNoteDialog(final Item item, Group group, int orderId) {
-        // Recent notes, should be fetched from database
-        final List<String> recentnotes = new ArrayList<>();
-        recentnotes.add("Välstekt");
-        recentnotes.add("Medium");
-        recentnotes.add("Blodig");
-        recentnotes.add("Välstekt");
-        recentnotes.add("Medium");
-        recentnotes.add("Blodig");
-        recentnotes.add("Välstekt");
-        recentnotes.add("Medium");
-        recentnotes.add("Blodig");
-        recentnotes.add("Välstekt");
-        recentnotes.add("Medium");
-        recentnotes.add("Blodig");
+    public void showNoteDialog(final Item item, final Group group, final int orderId) {
 
-        // Outer dialog
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.activity_order_add_note);
-        dialog.setTitle("Notering för " + item.name);
+        final Dialog dialog = new Dialog(OrderActivity.this);
+        dialog.setContentView(R.layout.activity_order_add_new_note);
+        dialog.setTitle("Ny notering");
 
-        // Set size of dialog to "max"
-        final WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-
-        // Listview contains recentnotes
-        ListView lv = (ListView) dialog.findViewById(R.id.recentnoteslistview);
-        ListAdapter theAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                recentnotes);
-
-        lv.setAdapter(theAdapter);
-
-        // If a note is selected, close the dialog
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // This button closes the inner dialog
+        Button cancelButton = (Button) dialog.findViewById(R.id.dialogButtonCANCEL);
+        // if button is clicked, close the custom dialog
+        cancelButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
-                String notepicked = "You selected " +
-                        String.valueOf(adapterView.getItemAtPosition(i));
+        final List<String> addednotes = new ArrayList<>();
+        final ListAdapter theAdapter = new ArrayAdapter<String>(OrderActivity.this, android.R.layout.simple_list_item_1,
+                addednotes);
+
+        listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
+
+        if(!item.notes.isEmpty()) {
+            for (Note note : item.notes) {
+                addednotes.add(note.text);
+            }
+
+                listviewaddednotes.setAdapter(theAdapter);
+        }
+
+
+
+
+
+        // Edit text for own note
+        final EditText newnote = (EditText) dialog.findViewById(R.id.newnotetext);
+
+        Button doneButton = (Button) dialog.findViewById(R.id.dialogButtonDONE);
+        doneButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String thenewnote = newnote.getText().toString();
+
                 Note n = new Note();
-                n.text = String.valueOf(adapterView.getItemAtPosition(i));
-                item.notes.add(n);
+                n.text = thenewnote;
 
-                Toast.makeText(OrderActivity.this, notepicked, Toast.LENGTH_SHORT).show();
+                Call<Void> call = Utils.getApi().addNote(orderId, group.id, item.id, n);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Response<Void> response, Retrofit retrofit) {
+                        Log.i("idg", "Response succesfull: " + response.code());
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.i("idg", "MEGA FAIL");
+                    }
+                });
+
+
+
+                addednotes.add(n.text);
+                listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
+                listviewaddednotes.setAdapter(theAdapter);
+
+
+                Toast.makeText(OrderActivity.this, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
+
                 dialog.dismiss();
             }
         });
 
-        // If button is pressed, dialog is closed
-        Button okButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-        // if button is clicked, close the custom dialog
-        okButton.setOnClickListener(new OnClickListener() {
+
+
+        final Button welldoneButton = (Button) dialog.findViewById(R.id.welldonemeatbtn);
+        welldoneButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                String thenewnote = welldoneButton.getText().toString();
+                Toast.makeText(OrderActivity.this, thenewnote, Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         });
 
-        // This button creates an inner dialog to create an own note
-        Button newnoteButton = (Button) dialog.findViewById(R.id.dialogButtonNEWNOTE);
-        // if button is clicked, close the custom dialog
-        newnoteButton.setOnClickListener(new OnClickListener() {
+        final Button mediumButton = (Button) dialog.findViewById(R.id.mediummeatbtn);
+        mediumButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                final Dialog innerdialog = new Dialog(OrderActivity.this);
-                innerdialog.setContentView(R.layout.activity_order_add_new_note);
-                innerdialog.setTitle("Ny notering");
-
-                // This button closes the inner dialog
-                Button cancelButton = (Button) innerdialog.findViewById(R.id.dialogButtonCANCEL);
-                // if button is clicked, close the custom dialog
-                cancelButton.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        innerdialog.dismiss();
-                    }
-                });
-
-                // Edit text for own note
-                final EditText newnote = (EditText) innerdialog.findViewById(R.id.newnotetext);
-
-                // When button is pressed, add the created note to recent notes and close the inner and outer dialog
-                Button doneButton = (Button) innerdialog.findViewById(R.id.dialogButtonDONE);
-                doneButton.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String thenewnote = newnote.getText().toString();
-
-                        Toast.makeText(OrderActivity.this, newnote.getText().toString(), Toast.LENGTH_SHORT).show();
-                        recentnotes.add(thenewnote);
-                        innerdialog.dismiss();
-                        dialog.dismiss();
-                    }
-                });
-                innerdialog.show();
-                innerdialog.getWindow().setAttributes(lp);
+                String thenewnote = mediumButton.getText().toString();
+                Toast.makeText(OrderActivity.this, thenewnote, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
+
+        final Button rareButton = (Button) dialog.findViewById(R.id.raremeatbtn);
+        rareButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String thenewnote = rareButton.getText().toString();
+                Toast.makeText(OrderActivity.this, thenewnote, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
         dialog.show();
-        dialog.getWindow().setAttributes(lp);
+
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+
+@Override
+public boolean onCreateOptionsMenu(Menu menu){
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_order, menu);
+        getMenuInflater().inflate(R.menu.menu_order,menu);
         return true;
-    }
+        }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+@Override
+public boolean onOptionsItemSelected(MenuItem item){
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        int id=item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if(id==R.id.action_settings){
+        return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
+        }
 
-    public void deleteItem(int orderId, int groupId, int itemId) {
+public void deleteItem(int orderId,int groupId,int itemId){
 
 
-        Call<Void> call = Utils.getApi().deleteItem(orderId, groupId, itemId);
+        Call<Void>call=Utils.getApi().deleteItem(orderId,groupId,itemId);
 
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Response<Void> response, Retrofit retrofit) {
-                Log.i("DELETE", "Success");
-            }
+        call.enqueue(new Callback<Void>(){
+@Override
+public void onResponse(Response<Void>response,Retrofit retrofit){
+        Log.i("DELETE","Success");
+        }
 
-            @Override
-            public void onFailure(Throwable t) {
-                Log.i(LagerActivity.class.getName(), "Failed to delete data " + t.getMessage());
-            }
+@Override
+public void onFailure(Throwable t){
+        Log.i(LagerActivity.class.getName(),"Failed to delete data "+t.getMessage());
+        }
         });
 
-    }
+        }
 
-}
+        }
