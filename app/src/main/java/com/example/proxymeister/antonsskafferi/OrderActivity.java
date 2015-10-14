@@ -265,8 +265,8 @@ public class OrderActivity extends AppCompatActivity {
                     for (final Item it : g.items) {
                         View itemView = inflater.inflate(R.layout.recyclerview_item_view, null);
                         TextView tv = (TextView) itemView.findViewById(R.id.item);
-                        Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
-                        Button addnotebtn = (Button) itemView.findViewById(R.id.itemNoteId);
+                        final Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
+                        final Button addnotebtn = (Button) itemView.findViewById(R.id.itemNoteId);
 
                         if (g.status == ReadyForKitchen) {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
@@ -288,6 +288,11 @@ public class OrderActivity extends AppCompatActivity {
                         tv.setText(it.name + ", " + it.price + ":-");
                         itemHolder.addView(itemView);
 
+                        if(!it.notes.isEmpty())
+                        {
+                            addnotebtn.setText("(" + it.notes.size() + ")" + " " + "Notering");
+                        }
+
 
                         OnClickListener deletebuttonListener = new View.OnClickListener() {
                             @Override
@@ -303,6 +308,11 @@ public class OrderActivity extends AppCompatActivity {
                             public void onClick(View v) {
 
                                 NoteDialogHandler handler = new NoteDialogHandler(it, g.id, orderId, OrderActivity.this);
+                                if(!it.notes.isEmpty())
+                                {
+                                    addnotebtn.setText("(" + it.notes.size() + ")" + " " + "Notering");
+                                }
+
                                 //showNoteDialog(it, g.id, orderId);
                             }
                         };

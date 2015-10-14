@@ -25,6 +25,7 @@
         android:id="@+id/itemNoteId"
         android:text="@string/notes_button"
         style="@style/ButtonNote"
+
         android:layout_weight="1"
 
         android:layout_gravity="right"

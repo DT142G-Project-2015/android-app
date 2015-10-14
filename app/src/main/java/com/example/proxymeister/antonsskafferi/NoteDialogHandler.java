@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.Item;
@@ -74,16 +75,16 @@ public class NoteDialogHandler extends AppCompatActivity {
         final ListAdapter theAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1,
                 addednotes);
 
-        //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
+        final ListView listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
 
-/*        if (!item.notes.isEmpty()) {
+        if (!item.notes.isEmpty()) {
             for (Note note : item.notes) {
                 addednotes.add(note.text);
             }
 
-            //listviewaddednotes.setAdapter(theAdapter);
+            listviewaddednotes.setAdapter(theAdapter);
         }
-*/
+
 
         // Edit text for own note
         final EditText newnote = (EditText) dialog.findViewById(R.id.newnotetext);
@@ -100,6 +101,7 @@ public class NoteDialogHandler extends AppCompatActivity {
 
                 addNote(orderId, groupId, item.id, n);
                 addednotes.add(n.text);
+                listviewaddednotes.setAdapter(theAdapter);
                 //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
                 // listviewaddednotes.setAdapter(theAdapter);
 
@@ -121,6 +123,7 @@ public class NoteDialogHandler extends AppCompatActivity {
 
                 addNote(orderId, groupId, item.id, n);
                 addednotes.add(n.text);
+                listviewaddednotes.setAdapter(theAdapter);
                 // listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
                 // listviewaddednotes.setAdapter(theAdapter);
 
@@ -142,8 +145,8 @@ public class NoteDialogHandler extends AppCompatActivity {
 
                 addNote(orderId, groupId, item.id, n);
                 addednotes.add(n.text);
-                //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-                // listviewaddednotes.setAdapter(theAdapter);
+                listviewaddednotes.setAdapter(theAdapter);
+
 
                 Toast.makeText(context, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
 
@@ -162,6 +165,7 @@ public class NoteDialogHandler extends AppCompatActivity {
 
                 addNote(orderId, groupId, item.id, n);
                 addednotes.add(n.text);
+                listviewaddednotes.setAdapter(theAdapter);
                 //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
                 //listviewaddednotes.setAdapter(theAdapter);
 
