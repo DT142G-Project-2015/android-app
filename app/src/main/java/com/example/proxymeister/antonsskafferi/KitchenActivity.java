@@ -252,9 +252,57 @@ public class KitchenActivity extends AppCompatActivity {
                 for (String s : occur)
                     nodub.add(s);
 
-                // Appends items name and items with subitem,
-                // Items with notes and subitems with notes
-                appendItemTextView(nodub, specialitems, occur, viewHolder, groups.get(i));
+                for (Item item : groups.get(i).items) {
+                    if (item.type != 1)  {
+                        if (specialitems.contains(item)) {
+                            int occurrencesspecial = Collections.frequency(specialitems, item);
+                            if (occurrencesspecial == 1) {
+                                viewHolder.itemname.append("\n" + "   " + item.name);
+                                Log.e("error", "special" + "   " + item.name);
+                            } else {
+                                viewHolder.itemname.append("\n" + occurrencesspecial + " " + item.name);
+                                Log.e("error", "special" + occurrencesspecial + " " + item.name);
+
+                            }
+                            if (!item.notes.isEmpty()) {
+                                viewHolder.itemname.append(": ");
+                                for (int j = 0; j < item.notes.size(); j++) {
+                                    viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
+                                    if (j != item.notes.size() - 1)
+                                        viewHolder.itemname.append(", ");
+                                }
+                                for (Item subitem : item.subItems) {
+                                    viewHolder.itemname.append("\n" + "     ");
+                                    viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
+                                    if (!subitem.notes.isEmpty())
+                                        viewHolder.itemname.append(": ");
+                                    for (int k = 0; k < subitem.notes.size(); k++) {
+                                        viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
+                                        if (k != subitem.notes.size() - 1)
+                                            viewHolder.itemname.append(", ");
+                                    }
+                                }
+                            }
+                            specialitems.remove(item);
+                        }
+                        else
+                        {
+                            int occurrences = Collections.frequency(occur, item.name);
+                            // If occurences is 1, just print the item.name
+                            // Otherwise, print the frequency and item.name
+                            if (occurrences == 1) {
+                                viewHolder.itemname.append("\n" + "   " + item.name);
+                                Log.e("error", "nodub" + "   " + item.name);
+                            } else {
+                                viewHolder.itemname.append("\n" + occurrences + " " + item.name);
+                                Log.e("error", "nodub" +  occurrences + " " + item.name);
+                            }
+                        }
+                    }
+
+
+                }
+
 
                 // This may or may not be necessary
                 viewHolder.groupnumber.setPressed(false);
@@ -269,61 +317,6 @@ public class KitchenActivity extends AppCompatActivity {
         };
         mAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapter);
-    }
-
-    void appendItemTextView(Set<String> nodub, List<Item> specialitems, List<String> occur, CustomViewHolder viewHolder, Group group) {
-        // For each string in dub, check its frequency in the occur list
-        for (String itemname : nodub) {
-            int occurrences = Collections.frequency(occur, itemname);
-
-            // If occurences is 1, just print the item.name
-            // Otherwise, print the frequency and item.name
-            if (occurrences == 1) {
-                viewHolder.itemname.append("\n" + "   " + itemname);
-                Log.e("error", "nodub" + "   " + itemname);
-            } else {
-                viewHolder.itemname.append("\n" + occurrences + " " + itemname);
-                Log.e("error", "nodub" +  occurrences + " " + itemname);
-            }
-
-            // Check for any notes for items.
-            for (Item item : group.items) {
-                // Item type 1 is drink
-                if (item.type != 1) {
-                    if (specialitems.contains(item)) {
-                        int occurrencesspecial = Collections.frequency(specialitems, item);
-                        if (occurrencesspecial == 1) {
-                            viewHolder.itemname.append("\n" + "   " + itemname);
-                            Log.e("error", "special" + "   " + itemname);
-                        } else {
-                            viewHolder.itemname.append("\n" + occurrencesspecial + " " + itemname);
-                            Log.e("error", "special" + occurrencesspecial + " " + itemname);
-
-                        }
-                        if (!item.notes.isEmpty()) {
-                            viewHolder.itemname.append(": ");
-                            for (int j = 0; j < item.notes.size(); j++) {
-                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
-                                if (j != item.notes.size() - 1)
-                                    viewHolder.itemname.append(", ");
-                            }
-                            for (Item subitem : item.subItems) {
-                                viewHolder.itemname.append("\n" + "     ");
-                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
-                                if (!subitem.notes.isEmpty())
-                                    viewHolder.itemname.append(": ");
-                                for (int k = 0; k < subitem.notes.size(); k++) {
-                                    viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
-                                    if (k != subitem.notes.size() - 1)
-                                        viewHolder.itemname.append(", ");
-                                }
-                            }
-                        }
-                        specialitems.remove(item);
-                    }
-                }
-            }
-        }
     }
 
 
