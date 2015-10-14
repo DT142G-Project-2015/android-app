@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.proxymeister.antonsskafferi.MainActivity;
+import com.example.proxymeister.antonsskafferi.NoteDialogHandler;
 import com.example.proxymeister.antonsskafferi.OrderActivity;
 import com.example.proxymeister.antonsskafferi.OrderMealActivity;
 import com.example.proxymeister.antonsskafferi.R;
@@ -27,6 +28,8 @@ import retrofit.Retrofit;
 
 public class ItemAdapter extends ArrayAdapter<ItemHolder> {
     private final Callback callback;
+    private Item itemclicked;
+    public boolean isClicked = false;
     public List<Item> temporder = new ArrayList<>();
     public int orderID;
     public int groupID;
@@ -48,6 +51,7 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v = convertView;
 
+
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.activity_order_lunch_list_view, null);
@@ -64,7 +68,11 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                itemclicked = getItem(position).item;
+                isClicked = true;
                 ItemHolder holder = getItem(position);
+
+
                 final Call<Void> call = Utils.getApi(getContext()).addItem(holder.item, orderID, groupID);
                 call.enqueue(new retrofit.Callback<Void>() {
                     @Override
@@ -87,6 +95,19 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
         description.setText(holder.item.description);
 
 
+        if(itemclicked != null)
+            if(itemclicked.type == 2)
+            {
+                NoteDialogHandler handler = new NoteDialogHandler(itemclicked, groupID, orderID, getContext());
+            }
+
+
         return v;
+    }
+
+
+    boolean getIsClicked()
+    {
+        return isClicked;
     }
 }

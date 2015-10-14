@@ -315,7 +315,8 @@ public class OrderActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
 
-                                showNoteDialog(it, g.id, orderId);
+                                NoteDialogHandler handler = new NoteDialogHandler(it, g.id, orderId, OrderActivity.this);
+                                //showNoteDialog(it, g.id, orderId);
                             }
                         };
                         addnotebtn.setOnClickListener(addnotebuttonListener);
@@ -491,7 +492,7 @@ public class OrderActivity extends AppCompatActivity {
 
         dialog.show();
     }
-
+/*
     // Show dialogs for creating notes to an item
     public void showNoteDialog(final Item item, final int groupId, final int orderId) {
 
@@ -641,7 +642,7 @@ public class OrderActivity extends AppCompatActivity {
         });
     }
 
-
+*/
 
 
     @Override
