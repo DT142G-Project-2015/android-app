@@ -93,5 +93,11 @@ public interface ApiInterface {
 
     @POST("storage")
     Call<Void> createArticle(@Body Article article);
+
+
+    // Staff
+    // Get all items
+    @GET("staff")
+    Call<List<Staff>> getStaffMembers();
 }
 

@@ -51,7 +51,7 @@
         android:orientation="horizontal"
         android:id="@+id/buttonsmeat"
         android:layout_height="wrap_content"
-        android:gravity="bottom"
+        android:gravity="top|right"
         android:paddingBottom="20dp">
 
 

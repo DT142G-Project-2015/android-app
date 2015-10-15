@@ -1,6 +1,7 @@
 package com.example.proxymeister.antonsskafferi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -58,6 +59,7 @@ public class KitchenActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
     private Button undodeletebtn;
+
 
     // Animation for the undo button
     private Animation animfadeout;
@@ -528,4 +530,13 @@ public class KitchenActivity extends AppCompatActivity {
         public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
         }
     }
+
+
+
+
+
+
+
+
+
 }

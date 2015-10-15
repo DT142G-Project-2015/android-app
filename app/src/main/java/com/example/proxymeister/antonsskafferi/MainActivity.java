@@ -12,9 +12,11 @@ import android.os.*;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.content.SharedPreferences;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.proxymeister.antonsskafferi.model.Order;
 
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static boolean threadNotRunning = true;
         private int dflag = 0;
         private Thread client;
-
+        Button logout;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO: get account info. if account is waiter, create thread.
 
 
-        //Gets current screen orientation value
+            //Gets current screen orientation value
         int screen = getResources().getConfiguration().orientation;
         //Switches layout depending on the screen orientation
         switch (screen) {
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        if (id == R.id.actionbar_exit) {
+        if (id == R.id.actionbarlog_out) {
             finish();
             return true;
         }
