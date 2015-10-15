@@ -10,7 +10,7 @@
         android:id="@+id/item"
         android:textSize="@dimen/small_buttons_textsize"
         android:text="test"
-        android:layout_weight="2"
+        android:layout_weight="22"
 
         android:layout_alignBottom="@+id/itemNoteId"
         android:layout_alignParentLeft="true"
@@ -21,30 +21,30 @@
     <Button
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:id="@+id/itemRemoveId"
+        android:text="@string/delete_button"
+        style="@style/ButtonDelete"
+        android:layout_weight="10"
+
+        android:layout_gravity="right"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
 
         android:id="@+id/itemNoteId"
         android:text="@string/notes_button"
         style="@style/ButtonNote"
 
-        android:layout_weight="1"
+        android:layout_weight="14"
 
         android:layout_gravity="right"
         android:layout_alignParentTop="true"
         android:layout_marginRight="5dip"
         android:layout_toLeftOf="@+id/itemRemoveId"
         android:layout_toStartOf="@+id/itemRemoveId" />
-
-    <Button
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/itemRemoveId"
-        android:text="@string/delete_button"
-        style="@style/ButtonDelete"
-        android:layout_weight="1"
-
-        android:layout_gravity="right"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
 
 </LinearLayout>

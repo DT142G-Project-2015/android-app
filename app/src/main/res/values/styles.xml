@@ -2,17 +2,21 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorButtonNormal">#333</item>
+        <item name="colorButtonNormal">#272121</item>
         <item name="android:colorBackground">#333</item>
-        <item name="android:background">#675757</item>
+        <item name="android:background">#4D4141</item>
         <item name="android:textColor">#fff</item>
 
     </style>
 
 
+    <style name="BackgroundGradient" parent="AppTheme">
+        <item name="android:background">@drawable/background_gradient</item>
+    </style>
+
    <!-- Base button style -->
     <style name="ButtonTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorButtonNormal">#333</item>
+        <item name="colorButtonNormal">#272121</item>
         <item name="android:textSize">@dimen/main_buttons_textsize</item>
         <item name="android:textColor">#fff</item>
     </style>
@@ -37,10 +41,6 @@
 
         <item name="android:paddingLeft">6dip</item>
         <item name="android:paddingRight">6dip</item>
-    </style>
-
-    <style name="CustomListviewRibbonBackground" parent="CustomListviewLayout">
-        <item name="android:background">@drawable/listview_gradient</item>
     </style>
 
 </resources>
