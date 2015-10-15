@@ -94,12 +94,18 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
         price.setText(Double.toString(holder.item.price) + ":-");
         description.setText(holder.item.description);
 
-
+/*
         if(itemclicked != null)
             if(itemclicked.type == 2)
             {
-                NoteDialogHandler handler = new NoteDialogHandler(itemclicked, groupID, orderID, getContext());
+                NoteDialogHandler handler = new NoteDialogHandler(holder.item, groupID, orderID, ItemAdapter.this, new NoteDialogHandler.Callback() {
+                    @Override
+                    public void onDone() {
+                        getAllOrders(i);
+                    }
+                });
             }
+*/
 
 
         return v;

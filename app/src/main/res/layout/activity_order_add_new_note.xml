@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="300dp"
-    android:layout_height="match_parent">
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_marginLeft="5dp"
+        android:layout_marginTop="12dp"
         android:layout_height="50dp"
-        android:background="#fcffcf"
+        android:background="#E0D8E0"
+        android:hint="@string/text_note_hint"
+        android:textColorHint="#A8A2A8"
         android:gravity="top|left"
         android:maxLength="100"
         android:id="@+id/newnotetext"
@@ -39,12 +49,25 @@
             android:id="@+id/dialogButtonDONE"
             android:text="Klar"/>
     </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textcommonnotes"
+            android:text="@string/text_common_notes"
+            android:paddingTop="10dp"
+            android:textSize="@dimen/kitchen_textsize"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="6dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textmeat"
-        android:text="Tillagning: "
-        android:paddingTop="10dp"/>
+        android:text="@string/text_notes_prep"
+        android:paddingTop="10dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginLeft="6dp"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -78,16 +101,31 @@
             android:text="Välstekt"/>
     </LinearLayout>
 
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="1">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/addednotestext"
-        android:text="Tillagda noteringar: "
-        android:paddingBottom="20dp"/>
+        android:text="@string/text_add_note"
+        android:textSize="@dimen/kitchen_textsize"
+        android:padding="6dp"
+        android:textAlignment="center" />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:id="@+id/addednotes"/>
+    </LinearLayout>
 
 </LinearLayout>

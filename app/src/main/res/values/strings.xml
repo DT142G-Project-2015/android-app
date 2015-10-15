@@ -25,6 +25,10 @@
     <string name="text_send_kitchen">Skicka till köket</string>
     <string name="text_add_group">Ny delbeställning</string>
     <string name="text_done">Klar</string>
+    <string name="text_add_note">Tillagda noteringar:</string>
+    <string name="text_common_notes">Vanliga noteringar:</string>
+    <string name="text_notes_prep">Tillagning:</string>
+    <string name="text_note_hint">Skriv notering här</string>
 
     //Variabler till login rutan
     <string name="title_activity_login">Login</string>

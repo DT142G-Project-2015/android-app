@@ -7,4 +7,5 @@
     <!-- Custom margins -->
     <dimen name="main_buttons_textsize">20sp</dimen>
     <dimen name="small_buttons_textsize">16sp</dimen>
+    <dimen name="kitchen_textsize">18sp</dimen>
 </resources>

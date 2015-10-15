@@ -35,8 +35,16 @@
     </style>
 
 
+    <!-- Stil för listade noteringar i Note-rutan -->
+    <style name="NoteBeginText">
+        <item name="android:drawableStart">@drawable/note</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <!--Kitchen Listview style -->
     <style name="CustomListviewLayout" parent="AppTheme">
         <item name="android:textColor">#000</item>
+        <item name="android:textSize">@dimen/kitchen_textsize</item>
         <item name="android:background">#E0D8E0</item>
 
         <item name="android:paddingLeft">6dip</item>
