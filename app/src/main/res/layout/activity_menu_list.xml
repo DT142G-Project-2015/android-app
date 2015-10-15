@@ -1,39 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:id="@+id/linearlayout_topbar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="fill_parent" android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:orientation="vertical" tools:context=".MenuListActivity"
+    android:layout_centerInParent="true">
 
-    </LinearLayout>
+
+
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+
+        android:layout_height="80dp"
         android:text="Lunch"
+        android:textSize="17dp"
         android:gravity="center"
         android:id="@+id/button5"
-        android:textSize="32sp"
         android:layout_marginTop="100dp"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
         android:textAlignment="center"/>
 
     <Button
-        android:textSize="32sp"
+
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
+        android:textSize="17dp"
         android:text="Middag"
         android:textAlignment="center"
         android:id="@+id/button6"
         android:layout_marginTop="20dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+         />
 
 </LinearLayout>
