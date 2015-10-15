@@ -318,6 +318,35 @@ public class OrderActivity extends AppCompatActivity {
                         };
                         addnotebtn.setOnClickListener(addnotebuttonListener);
 
+                        /// LOOPAR UT ALLA SUBITEMS
+
+                        for(Item subIt : it.subItems){
+                            View itemSubView = inflater.inflate(R.layout.recyclerview_item_view, null);
+                            TextView tvsub = (TextView) itemSubView.findViewById(R.id.item);
+
+                            if (g.status == ReadyForKitchen) {
+                                itemSubView.setBackgroundColor(Color.parseColor("#FFC726"));
+                                tvsub.setBackgroundColor(Color.parseColor("#FFC726"));
+                            }
+                            if (g.status == Done) {
+                                itemSubView.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                                tvsub.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                            }
+                            if (g.status == ReadyToServe) {
+                                itemSubView.setBackgroundColor(Color.parseColor("#609040"));
+                                tvsub.setBackgroundColor(Color.parseColor("#609040"));
+                            }
+                            if (g.status == Initial) {
+                                itemSubView.setBackgroundColor(Color.WHITE);
+                                tvsub.setBackgroundColor(Color.WHITE);
+                                tvsub.setTextColor(Color.BLACK);
+                            }
+
+                            tvsub.setText("    " + subIt.name + ", " + subIt.price + ":-");
+                            tvsub.setTextColor(Color.GRAY);
+                            itemHolder.addView(itemSubView);
+                        }
+                        //END
                     }
                     groupHolder.addView(groupView);
 
