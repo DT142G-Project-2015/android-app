@@ -108,14 +108,14 @@ public class NoteDialogHandler implements View.OnClickListener {
         });
 
         addednotes = new ArrayList<>();
-        theAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1,
+        theAdapter = new ArrayAdapter<String>(context, R.layout.custom_note_layout,
                 addednotes);
 
         listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
 
         if (!item.notes.isEmpty()) {
             for (Note note : item.notes) {
-                addednotes.add(note.text);
+                addednotes.add(" " + note.text);
             }
 
             listviewaddednotes.setAdapter(theAdapter);
