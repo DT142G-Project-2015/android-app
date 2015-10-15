@@ -3,7 +3,6 @@ package com.example.proxymeister.antonsskafferi;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,30 +23,67 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class NoteDialogHandler extends AppCompatActivity {
+public class NoteDialogHandler implements View.OnClickListener {
 
-    Item item; 
-    int orderId, groupId;
-    Context context;
+
+    private Item item;
+    private int orderId, groupId;
+    private Context context;
+    private Callback callback;
+    private ListView listviewaddednotes;
+    private List<String> addednotes;
+    private ListAdapter theAdapter;
+    private Dialog dialog;
+
+    public interface Callback {
+        void onDone();
+    }
     
-    public NoteDialogHandler(Item it, int gid, int orderId, Context con)
+    public NoteDialogHandler(Item it, int gid, int orderId, Context con, Callback callback)
     {
         context = con;
         item = it;
         this.orderId = orderId;
         this.groupId = gid;
+        this.callback = callback;
         showNoteDialog();
-
-
     }
 
+
+    private void done() {
+        if (callback != null)
+            callback.onDone();
+        dialog.dismiss();
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        String thenewnote = ((Button)v).getText().toString();
+
+        Button clickedButton = (Button)v;
+        if (clickedButton.getId() == R.id.dialogButtonDONE) {
+            EditText noteTextView = (EditText)dialog.findViewById(R.id.newnotetext);
+            thenewnote = noteTextView.getText().toString();
+        }
+
+        Note n = new Note();
+        n.text = thenewnote;
+
+        addednotes.add(n.text);
+        listviewaddednotes.setAdapter(theAdapter);
+        //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
+        // listviewaddednotes.setAdapter(theAdapter);
+
+        addNote(orderId, groupId, item.id, n, thenewnote);
+    }
 
 
     // Show dialogs for creating notes to an item
     public void showNoteDialog() {
 
 
-        final Dialog dialog = new Dialog(context);
+        dialog = new Dialog(context);
         dialog.setContentView(R.layout.activity_order_add_new_note);
         dialog.setTitle("Ny notering");
 
@@ -71,11 +107,11 @@ public class NoteDialogHandler extends AppCompatActivity {
             }
         });
 
-        final List<String> addednotes = new ArrayList<>();
-        final ListAdapter theAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1,
+        addednotes = new ArrayList<>();
+        theAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1,
                 addednotes);
 
-        final ListView listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
+        listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
 
         if (!item.notes.isEmpty()) {
             for (Note note : item.notes) {
@@ -85,112 +121,40 @@ public class NoteDialogHandler extends AppCompatActivity {
             listviewaddednotes.setAdapter(theAdapter);
         }
 
-
         // Edit text for own note
         final EditText newnote = (EditText) dialog.findViewById(R.id.newnotetext);
 
-
         Button doneButton = (Button) dialog.findViewById(R.id.dialogButtonDONE);
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String thenewnote = newnote.getText().toString();
-
-                Note n = new Note();
-                n.text = thenewnote;
-
-                addNote(orderId, groupId, item.id, n);
-                addednotes.add(n.text);
-                listviewaddednotes.setAdapter(theAdapter);
-                //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-                // listviewaddednotes.setAdapter(theAdapter);
-
-                Toast.makeText(context, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
-
-                dialog.dismiss();
-            }
-        });
-
-
-        final Button welldoneButton = (Button) dialog.findViewById(R.id.welldonemeatbtn);
-        welldoneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String thenewnote = welldoneButton.getText().toString();
-
-                Note n = new Note();
-                n.text = thenewnote;
-
-                addNote(orderId, groupId, item.id, n);
-                addednotes.add(n.text);
-                listviewaddednotes.setAdapter(theAdapter);
-                // listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-                // listviewaddednotes.setAdapter(theAdapter);
-
-                Toast.makeText(context, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
-
-                dialog.dismiss();
-
-            }
-        });
 
         final Button mediumButton = (Button) dialog.findViewById(R.id.mediummeatbtn);
-        mediumButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String thenewnote = mediumButton.getText().toString();
-
-                Note n = new Note();
-                n.text = thenewnote;
-
-                addNote(orderId, groupId, item.id, n);
-                addednotes.add(n.text);
-                listviewaddednotes.setAdapter(theAdapter);
-
-
-                Toast.makeText(context, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
-
-                dialog.dismiss();
-            }
-        });
 
         final Button rareButton = (Button) dialog.findViewById(R.id.raremeatbtn);
-        rareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String thenewnote = rareButton.getText().toString();
+        final Button welldoneButton = (Button) dialog.findViewById(R.id.welldonemeatbtn);
 
-                Note n = new Note();
-                n.text = thenewnote;
+        rareButton.setOnClickListener(this);
+        mediumButton.setOnClickListener(this);
+        welldoneButton.setOnClickListener(this);
+        doneButton.setOnClickListener(this);
 
-                addNote(orderId, groupId, item.id, n);
-                addednotes.add(n.text);
-                listviewaddednotes.setAdapter(theAdapter);
-                //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-                //listviewaddednotes.setAdapter(theAdapter);
-
-                Toast.makeText(context, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
-
-                dialog.dismiss();
-            }
-        });
 
         dialog.show();
 
     }
 
 
-    void addNote(int orderId, int groupid, int itemid, Note n) {
+    void addNote(int orderId, int groupid, int itemid, Note n, final String thenewnote) {
         Call<Void> call = Utils.getApi(context).addNote(orderId, groupid, itemid, n);
-        call.enqueue(new Callback<Void>() {
+        call.enqueue(new retrofit.Callback<Void>() {
             @Override
             public void onResponse(Response<Void> response, Retrofit retrofit) {
                 Log.i("idg", "Response succesfull: " + response.code());
+                Toast.makeText(context, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
+                done();
             }
 
             @Override
             public void onFailure(Throwable t) {
-                Log.i("idg", "MEGA FAIL");
+                Toast.makeText(context, "No connection", Toast.LENGTH_SHORT).show();
             }
         });
     }

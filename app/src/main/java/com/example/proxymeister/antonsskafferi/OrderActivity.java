@@ -307,11 +307,18 @@ public class OrderActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
 
-                                NoteDialogHandler handler = new NoteDialogHandler(it, g.id, orderId, OrderActivity.this);
+                                NoteDialogHandler handler = new NoteDialogHandler(it, g.id, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
+                                    @Override
+                                    public void onDone() {
+                                        getAllOrders(i);
+                                    }
+                                });
+                                /*
                                 if(!it.notes.isEmpty())
                                 {
                                     addnotebtn.setText("(" + it.notes.size() + ")" + " " + "Notering");
                                 }
+                                */
 
                                 //showNoteDialog(it, g.id, orderId);
                             }
