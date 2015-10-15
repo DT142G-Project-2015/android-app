@@ -10,11 +10,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="User Name"
+        android:textColor="#ffff"
         android:id="@+id/textView" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#ffff"
         android:id="@+id/editTextUserName" />
 
     <TextView
@@ -26,6 +28,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#ffff"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/editTextPassword" />
@@ -35,6 +38,28 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:id="@+id/button"
-        android:onClick="openMainActivity" />
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Attempts Left:"
+        android:id="@+id/textView4"
+        android:layout_below="@+id/editText2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="25dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/textView3"
+        android:layout_alignTop="@+id/textView4"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_toEndOf="@+id/textview"
+        android:textSize="25dp"
+        android:layout_toRightOf="@+id/textview" />
+
 </LinearLayout>
 

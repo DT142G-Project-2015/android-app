@@ -4,6 +4,7 @@
 
         import android.content.Intent;
         import android.content.SharedPreferences;
+        import android.graphics.Color;
         import android.os.Bundle;
         import android.preference.PreferenceManager;
         import android.support.v7.app.AppCompatActivity;
@@ -30,7 +31,7 @@
     EditText pass;
     Button  Login;
     TextView tx1;
-    int counter = 3;
+    int counter = 5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,8 @@
         user = (EditText)findViewById(R.id.editTextUserName);
         pass = (EditText)findViewById(R.id.editTextPassword);
         Login=(Button)findViewById(R.id.button);
+        tx1=(TextView)findViewById(R.id.textView3);
+        tx1.setVisibility(View.GONE);
 
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -85,9 +88,17 @@
                             }
                         } else {
                             Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
+                            tx1.setVisibility(View.VISIBLE);
+                            tx1.setBackgroundColor(Color.RED);
+                            counter--;
+                            tx1.setText(Integer.toString(counter));
+
+                            if (counter == 0) {
+                                Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
+                                Login.setEnabled(false);
                         }
                     }
-
+                    }
                     @Override
                     public void onFailure(Throwable t) {
                         Toast.makeText(getApplicationContext(), "Connection Problem", Toast.LENGTH_SHORT).show();
@@ -98,16 +109,6 @@
 
         });
 
-
-               /*  counter--;
-               tx1.setText(Integer.toString(counter));
-
-                if (counter == 0) {
-                      Login.setEnabled(false);
-                   }
-                }
-              }
-           });*/
 
     }
 
