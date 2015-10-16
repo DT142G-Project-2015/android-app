@@ -31,7 +31,7 @@ public class Article {
     @Override
     public String toString()
     {
-        return Integer.toString(id) + " / " + name + " / " + Double.toString(amount) + " " + unit + " / " +  exp_date;
+        return (name + " / " + Double.toString(amount) + " " + unit + " / " +  exp_date);
     }
 
     public boolean isVoid()
