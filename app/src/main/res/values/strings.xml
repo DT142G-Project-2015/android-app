@@ -19,8 +19,8 @@
     <string name="order_label">Beställningar</string>
     <string name="title_activity_menu_list">Meny</string>
 
-    <string name="notes_button">Notering\t</string>
-    <string name="delete_button">Ta bort\t</string>
+    <string name="notes_button">Notering&#160;</string>
+    <string name="delete_button">Ta bort&#160;</string>
     <string name="text_add_item">+</string>
     <string name="text_send_kitchen">Skicka till köket</string>
     <string name="text_add_group">Ny delbeställning</string>
