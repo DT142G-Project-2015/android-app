@@ -31,13 +31,6 @@ android:layout_height="fill_parent">
 
 </LinearLayout>
 
-    <View
-        android:background="#000000"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_below = "@id/linearlayout_topbar"
-        />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ordersRecyclerView"
         android:layout_width="match_parent"
