@@ -347,9 +347,11 @@ public class OrderActivity extends AppCompatActivity {
 
                         /// LOOPAR UT ALLA SUBITEMS
 
-                        for(Item subIt : it.subItems){
+                        for(final Item subIt : it.subItems){
                             View itemSubView = inflater.inflate(R.layout.recyclerview_item_view, null);
                             TextView tvsub = (TextView) itemSubView.findViewById(R.id.item);
+                            final Button deletesubitembtn = (Button) itemSubView.findViewById(R.id.itemRemoveId);
+                            final Button addnotesubitembtn = (Button) itemSubView.findViewById(R.id.itemNoteId);
 
                             if (g.status == ReadyForKitchen) {
                                 itemSubView.setBackgroundColor(Color.parseColor("#FFC726"));
@@ -368,6 +370,30 @@ public class OrderActivity extends AppCompatActivity {
                                 tvsub.setBackgroundColor(Color.WHITE);
                                 tvsub.setTextColor(Color.BLACK);
                             }
+
+                            OnClickListener deletesubitembuttonListener = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    showSecureDialog(subIt, g, orderId, i);
+                                }
+                            };
+                            deletesubitembtn.setOnClickListener(deletesubitembuttonListener);
+
+
+                            OnClickListener addnotesubitembuttonListener = new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    NoteDialogHandler handler = new NoteDialogHandler(subIt, g.id, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
+                                        @Override
+                                        public void onDone() {
+                                            getAllOrders(i);
+                                        }
+                                    });
+
+                                }
+                            };
+                            addnotesubitembtn.setOnClickListener(addnotebuttonListener);
 
                             tvsub.setText("        " + subIt.name + ", " + subIt.price + ":-");
                             tvsub.setTextColor(Color.GRAY);

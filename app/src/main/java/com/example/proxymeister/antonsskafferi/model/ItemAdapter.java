@@ -87,6 +87,7 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
 
                 if(isItem)
                 {
+
                     final Call<Void> call = Utils.getApi(getContext()).addItem(holder.item, orderID, groupID);
                     call.enqueue(new retrofit.Callback<Void>() {
                         @Override

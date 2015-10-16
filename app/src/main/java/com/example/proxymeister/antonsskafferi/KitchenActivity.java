@@ -236,8 +236,9 @@ public class KitchenActivity extends AppCompatActivity {
                 viewHolder.itemname.setText("");
                 viewHolder.groupnumber.setText("");
 
+                int tablenum = groups.get(i).tablenum;
                 // Print tablenumber
-                viewHolder.groupnumber.setText("Bord: " + groups.get(i).tablenum);
+                viewHolder.groupnumber.setText("Bord: " + tablenum);
 
 
                 // If the item has subitems or notes, the item is added to specialitems
