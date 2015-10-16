@@ -23,7 +23,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class OrderMealActivity extends AppCompatActivity /*implements AdapterView.OnItemClickListener*/ {
+public class OrderSubItemActivity extends AppCompatActivity /*implements AdapterView.OnItemClickListener*/ {
     private List<String> strings;
     private ListView list;
     private Button addOrderButton;
@@ -39,9 +39,10 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
         int id = getIntent().getIntExtra("menu-id", 1);
         final int orderId = getIntent().getIntExtra("order-id", 1);
         final int groupId = getIntent().getIntExtra("group-id", 1);
+        final int itemId = getIntent().getIntExtra("item-id", 1);
         final int pos = getIntent().getIntExtra("pos", 1);
 
-        Call<List<Item>> call = Utils.getApi(OrderMealActivity.this).getMenuItems(id);
+        Call<List<Item>> call = Utils.getApi(OrderSubItemActivity.this).getMenuItems(id);
 
         call.enqueue(new Callback<List<Item>>() {
             @Override
@@ -53,12 +54,12 @@ public class OrderMealActivity extends AppCompatActivity /*implements AdapterVie
                 List<Item> items = response.body();
 
                 if (items != null) {
-                    itemAdapter = new ItemAdapter(OrderMealActivity.this, items, orderId, groupId, pos, new ItemAdapter.Callback() {
+                    itemAdapter = new ItemAdapter(OrderSubItemActivity.this, items, orderId, groupId, itemId, pos, new ItemAdapter.Callback() {
                         @Override
                         public void itemAdded() {
                             Intent returnIntent = new Intent();
                             returnIntent.putExtra("result", pos);
-                            setResult(RESULT_OK,returnIntent);
+                            setResult(RESULT_OK, returnIntent);
                             finish();
                         }
                     });

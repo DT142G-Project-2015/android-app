@@ -33,6 +33,8 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
     public List<Item> temporder = new ArrayList<>();
     public int orderID;
     public int groupID;
+    public int itemID;
+    private boolean isItem;
     public ItemAdapter(Context context, List<Item> items, int orderId, int groupId, int pos, Callback callback) {
         super(context, 0);
         this.callback = callback;
@@ -41,6 +43,19 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
         for (Item i : items) {
             add(new ItemHolder(i));
         }
+        isItem = true;
+    }
+
+    public ItemAdapter(Context context, List<Item> items, int orderId, int groupId, int itemId, int pos, Callback callback) {
+        super(context, 0);
+        this.callback = callback;
+        orderID = orderId;
+        groupID = groupId;
+        itemID = itemId;
+        for (Item i : items) {
+            add(new ItemHolder(i));
+        }
+        isItem = false;
     }
 
     public interface Callback {
@@ -68,24 +83,43 @@ public class ItemAdapter extends ArrayAdapter<ItemHolder> {
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemclicked = getItem(position).item;
-                isClicked = true;
                 ItemHolder holder = getItem(position);
 
+                if(isItem)
+                {
+                    final Call<Void> call = Utils.getApi(getContext()).addItem(holder.item, orderID, groupID);
+                    call.enqueue(new retrofit.Callback<Void>() {
+                        @Override
+                        public void onResponse(Response<Void> response, Retrofit retrofit) {
+                            if (callback != null)
+                                callback.itemAdded();
+                        }
 
-                final Call<Void> call = Utils.getApi(getContext()).addItem(holder.item, orderID, groupID);
-                call.enqueue(new retrofit.Callback<Void>() {
-                    @Override
-                    public void onResponse(Response<Void> response, Retrofit retrofit) {
-                        if (callback != null)
-                            callback.itemAdded();
-                    }
+                        @Override
+                        public void onFailure(Throwable t) {
+                            Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                        }
+                    });
 
-                    @Override
-                    public void onFailure(Throwable t) {
-                        Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
-                    }
-                });
+                }
+                else
+                {
+                    final Call<Void> call = Utils.getApi(getContext()).addSubItem(holder.item, orderID, groupID, itemID);
+                    call.enqueue(new retrofit.Callback<Void>() {
+                        @Override
+                        public void onResponse(Response<Void> response, Retrofit retrofit) {
+                            if (callback != null)
+                                callback.itemAdded();
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                        }
+                    });
+                }
+
+
             }
         });
 

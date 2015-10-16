@@ -62,6 +62,9 @@ public interface ApiInterface {
     @POST("order/{order_id}/group/{group_id}/item")
     Call<Void> addItem(@Body Item item, @Path("order_id") int orderId, @Path("group_id") int groupId);
 
+    @POST("order/{order_id}/group/{group_id}/item/{item_id}/subitem")
+    Call<Void> addSubItem(@Body Item subitem, @Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId);
+
     @POST("order/{order_id}/group")
     Call<Group> createOrderGroup(@Body Group group, @Path("order_id") int orderId);
 
@@ -82,6 +85,9 @@ public interface ApiInterface {
     @POST("order/{order_id}/group/{group_id}/item/{item_id}/note")
     Call<Void> addNote(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId, @Body Note note);
 
+
+    @DELETE("order/{order_id}/group/{group_id}/item/{item_id}/note/{note_id}")
+    Call<Void> deleteNote(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId, @Path("note_id") int noteId);
 
 
 

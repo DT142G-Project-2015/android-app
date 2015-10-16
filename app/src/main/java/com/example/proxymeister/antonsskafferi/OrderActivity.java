@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
 import com.example.proxymeister.antonsskafferi.model.Group;
@@ -108,7 +109,10 @@ public class OrderActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         getAllOrders(data.getIntExtra("result", 1));
+
+
     }
 
     private class CustomViewHolder extends RecyclerView.ViewHolder {
@@ -265,6 +269,31 @@ public class OrderActivity extends AppCompatActivity {
                     for (final Item it : g.items) {
                         View itemView = inflater.inflate(R.layout.recyclerview_item_view, null);
                         TextView tv = (TextView) itemView.findViewById(R.id.item);
+                        tv.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                Toast.makeText(OrderActivity.this, "Lång klick " + orderId + " " + g.id + " " + it.id, Toast.LENGTH_SHORT).show();
+
+                                Intent intent = new Intent(OrderActivity.this, OrderSubItemActivity.class);
+                                intent.putExtra("order-id", orderId);
+                                intent.putExtra("group-id", g.id);
+                                intent.putExtra("item-id", it.id);
+                                intent.putExtra("pos", i);
+                                startActivityForResult(intent, 1);
+
+                                return true;
+                            }
+                        });
+                        tv.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(OrderActivity.this, "Tryck och håll in  för att lägga till ett tillbehör till " + it.name, Toast.LENGTH_SHORT).show();
+
+
+
+
+                            }
+                        });
                         final Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
                         final Button addnotebtn = (Button) itemView.findViewById(R.id.itemNoteId);
 
@@ -313,14 +342,7 @@ public class OrderActivity extends AppCompatActivity {
                                         getAllOrders(i);
                                     }
                                 });
-                                /*
-                                if(!it.notes.isEmpty())
-                                {
-                                    addnotebtn.setText("(" + it.notes.size() + ")" + " " + "Notering");
-                                }
-                                */
 
-                                //showNoteDialog(it, g.id, orderId);
                             }
                         };
                         addnotebtn.setOnClickListener(addnotebuttonListener);
@@ -349,7 +371,7 @@ public class OrderActivity extends AppCompatActivity {
                                 tvsub.setTextColor(Color.BLACK);
                             }
 
-                            tvsub.setText("    " + subIt.name + ", " + subIt.price + ":-");
+                            tvsub.setText("        " + subIt.name + ", " + subIt.price + ":-");
                             tvsub.setTextColor(Color.GRAY);
                             itemHolder.addView(itemSubView);
                         }
@@ -404,7 +426,6 @@ public class OrderActivity extends AppCompatActivity {
                     }
                 });
                 //END ADDGROUP
-
 
                 if (totPrice != 0)
                     viewHolder.mTotPriceTextView.setText("Totalt pris: " + Double.toString(totPrice) + ":-");
@@ -525,157 +546,6 @@ public class OrderActivity extends AppCompatActivity {
 
         dialog.show();
     }
-/*
-    // Show dialogs for creating notes to an item
-    public void showNoteDialog(final Item item, final int groupId, final int orderId) {
-
-
-        final Dialog dialog = new Dialog(OrderActivity.this);
-        dialog.setContentView(R.layout.activity_order_add_new_note);
-        dialog.setTitle("Ny notering");
-
-
-        if (item.type == 2) {
-            dialog.findViewById(R.id.buttonsmeat).setVisibility(View.VISIBLE);
-            dialog.findViewById(R.id.textmeat).setVisibility(View.VISIBLE);
-        } else {
-            dialog.findViewById(R.id.buttonsmeat).setVisibility(View.GONE);
-            dialog.findViewById(R.id.textmeat).setVisibility(View.GONE);
-        }
-
-
-        // This button closes the inner dialog
-        Button cancelButton = (Button) dialog.findViewById(R.id.dialogButtonCANCEL);
-        // if button is clicked, close the custom dialog
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        final List<String> addednotes = new ArrayList<>();
-        final ListAdapter theAdapter = new ArrayAdapter<String>(OrderActivity.this, android.R.layout.simple_list_item_1,
-                addednotes);
-
-        //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-
-        if (!item.notes.isEmpty()) {
-            for (Note note : item.notes) {
-                addednotes.add(note.text);
-            }
-
-            //listviewaddednotes.setAdapter(theAdapter);
-        }
-
-
-        // Edit text for own note
-        final EditText newnote = (EditText) dialog.findViewById(R.id.newnotetext);
-
-
-        Button doneButton = (Button) dialog.findViewById(R.id.dialogButtonDONE);
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String thenewnote = newnote.getText().toString();
-
-                Note n = new Note();
-                n.text = thenewnote;
-
-                addNote(orderId, groupId, item.id, n);
-                addednotes.add(n.text);
-                //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-                // listviewaddednotes.setAdapter(theAdapter);
-
-                Toast.makeText(OrderActivity.this, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
-
-                dialog.dismiss();
-            }
-        });
-
-
-        final Button welldoneButton = (Button) dialog.findViewById(R.id.welldonemeatbtn);
-        welldoneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String thenewnote = welldoneButton.getText().toString();
-
-                Note n = new Note();
-                n.text = thenewnote;
-
-                addNote(orderId, groupId, item.id, n);
-                addednotes.add(n.text);
-                // listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-                // listviewaddednotes.setAdapter(theAdapter);
-
-                Toast.makeText(OrderActivity.this, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
-
-                dialog.dismiss();
-
-            }
-        });
-
-        final Button mediumButton = (Button) dialog.findViewById(R.id.mediummeatbtn);
-        mediumButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String thenewnote = mediumButton.getText().toString();
-
-                Note n = new Note();
-                n.text = thenewnote;
-
-                addNote(orderId, groupId, item.id, n);
-                addednotes.add(n.text);
-                //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-                // listviewaddednotes.setAdapter(theAdapter);
-
-                Toast.makeText(OrderActivity.this, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
-
-                dialog.dismiss();
-            }
-        });
-
-        final Button rareButton = (Button) dialog.findViewById(R.id.raremeatbtn);
-        rareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String thenewnote = rareButton.getText().toString();
-
-                Note n = new Note();
-                n.text = thenewnote;
-
-                addNote(orderId, groupId, item.id, n);
-                addednotes.add(n.text);
-                //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-                //listviewaddednotes.setAdapter(theAdapter);
-
-                Toast.makeText(OrderActivity.this, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
-
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-
-    }
-
-
-    void addNote(int orderId, int groupid, int itemid, Note n) {
-        Call<Void> call = Utils.getApi(OrderActivity.this).addNote(orderId, groupid, itemid, n);
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Response<Void> response, Retrofit retrofit) {
-                Log.i("idg", "Response succesfull: " + response.code());
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.i("idg", "MEGA FAIL");
-            }
-        });
-    }
-
-*/
 
 
     @Override
@@ -716,8 +586,5 @@ public class OrderActivity extends AppCompatActivity {
                 Log.i(OrderActivity.class.getName(), "Failed to delete data " + t.getMessage());
             }
         });
-
     }
-
-
 }

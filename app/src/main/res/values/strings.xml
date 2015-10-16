@@ -40,6 +40,7 @@
     <string name="title_activity_handle_lager">Lagerhantering</string>
     <string name="StatusReadyToServe">readyToServe</string>
     <string name="StatusReadyForKitchen">readyForKitchen</string>
+    <string name="title_add_subItem">Lägg till tillbehör</string>
 
 
 </resources>

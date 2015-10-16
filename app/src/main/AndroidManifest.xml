@@ -49,6 +49,17 @@
         </activity>
 
         <activity
+            android:name=".OrderSubItemActivity"
+            android:label="@string/title_add_subItem"
+            android:parentActivityName=".OrderActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.proxymeister.antonsskafferi.OrderActivity" />
+        </activity>
+
+        <activity
             android:name=".OrderListActivity"
             android:label="@string/title_activity_order"
             android:configChanges="keyboardHidden|orientation|screenSize"
