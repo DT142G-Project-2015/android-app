@@ -75,6 +75,5 @@
         android:layout_toEndOf="@+id/textview"
         android:textSize="25dp"
         android:layout_toRightOf="@+id/textview" />
-
 </LinearLayout>
 
