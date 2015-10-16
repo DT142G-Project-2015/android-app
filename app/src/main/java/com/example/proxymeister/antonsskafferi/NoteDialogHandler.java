@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,26 +20,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Call;
-import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
 public class NoteDialogHandler implements View.OnClickListener {
 
-
+    private Note n = new Note();
     private Item item;
-    private int orderId, groupId;
+    private Item subitem;
+    private int orderId;
+    private int groupId;
     private Context context;
     private Callback callback;
     private ListView listviewaddednotes;
     private List<String> addednotes;
     private ListAdapter theAdapter;
     private Dialog dialog;
+    private boolean isItem;
 
     public interface Callback {
         void onDone();
     }
-    
+
+    // Add note to item
     public NoteDialogHandler(Item it, int gid, int orderId, Context con, Callback callback)
     {
         context = con;
@@ -46,6 +50,20 @@ public class NoteDialogHandler implements View.OnClickListener {
         this.orderId = orderId;
         this.groupId = gid;
         this.callback = callback;
+        isItem = true;
+        showNoteDialog();
+    }
+
+    // Add no to subitem
+    public NoteDialogHandler(Item subit, Item it, int gid, int orderId, Context con, Callback callback)
+    {
+        context = con;
+        item = it;
+        subitem = subit;
+        this.orderId = orderId;
+        this.groupId = gid;
+        this.callback = callback;
+        isItem = false;
         showNoteDialog();
     }
 
@@ -67,15 +85,14 @@ public class NoteDialogHandler implements View.OnClickListener {
             thenewnote = noteTextView.getText().toString();
         }
 
-        Note n = new Note();
-        n.text = thenewnote;
+        this.n.text = thenewnote;
 
-        addednotes.add(n.text);
+        addednotes.add(this.n.text);
         listviewaddednotes.setAdapter(theAdapter);
         //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
         // listviewaddednotes.setAdapter(theAdapter);
 
-        addNote(orderId, groupId, item.id, n, thenewnote);
+        addNote();
     }
 
 
@@ -87,13 +104,23 @@ public class NoteDialogHandler implements View.OnClickListener {
         dialog.setContentView(R.layout.activity_order_add_new_note);
         dialog.setTitle("Ny notering");
 
-
-        if (item.type == 2) {
-            dialog.findViewById(R.id.buttonsmeat).setVisibility(View.VISIBLE);
-            dialog.findViewById(R.id.textmeat).setVisibility(View.VISIBLE);
-        } else {
-            dialog.findViewById(R.id.buttonsmeat).setVisibility(View.GONE);
-            dialog.findViewById(R.id.textmeat).setVisibility(View.GONE);
+        if(isItem) {
+            if (item.type == 2) {
+                dialog.findViewById(R.id.buttonsmeat).setVisibility(View.VISIBLE);
+                dialog.findViewById(R.id.textmeat).setVisibility(View.VISIBLE);
+            } else {
+                dialog.findViewById(R.id.buttonsmeat).setVisibility(View.GONE);
+                dialog.findViewById(R.id.textmeat).setVisibility(View.GONE);
+            }
+        }
+        else{
+            if (subitem.type == 2) {
+                dialog.findViewById(R.id.buttonsmeat).setVisibility(View.VISIBLE);
+                dialog.findViewById(R.id.textmeat).setVisibility(View.VISIBLE);
+            } else {
+                dialog.findViewById(R.id.buttonsmeat).setVisibility(View.GONE);
+                dialog.findViewById(R.id.textmeat).setVisibility(View.GONE);
+            }
         }
 
 
@@ -108,18 +135,38 @@ public class NoteDialogHandler implements View.OnClickListener {
         });
 
         addednotes = new ArrayList<>();
-        theAdapter = new ArrayAdapter<String>(context, R.layout.custom_note_layout,
+        theAdapter = new ArrayAdapter<>(context, R.layout.custom_note_layout,
                 addednotes);
 
         listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
+        listviewaddednotes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        if (!item.notes.isEmpty()) {
-            for (Note note : item.notes) {
-                addednotes.add(" " + note.text);
+                Toast.makeText(context, "Håll in för att ta bort noteringen " + String.valueOf(adapterView.getItemAtPosition(i)), Toast.LENGTH_SHORT).show();
+
             }
+        });
 
-            listviewaddednotes.setAdapter(theAdapter);
+        if(isItem) {
+            if(!item.notes.isEmpty()) {
+                for (Note note : item.notes) {
+                    addednotes.add(" " + note.text);
+                }
+
+                listviewaddednotes.setAdapter(theAdapter);
+            }
         }
+        else {
+            if (!subitem.notes.isEmpty()) {
+                for (Note note : subitem.notes) {
+                    addednotes.add(" " + note.text);
+                }
+
+                listviewaddednotes.setAdapter(theAdapter);
+            }
+        }
+
 
         // Edit text for own note
         final EditText newnote = (EditText) dialog.findViewById(R.id.newnotetext);
@@ -142,21 +189,41 @@ public class NoteDialogHandler implements View.OnClickListener {
     }
 
 
-    void addNote(int orderId, int groupid, int itemid, Note n, final String thenewnote) {
-        Call<Void> call = Utils.getApi(context).addNote(orderId, groupid, itemid, n);
-        call.enqueue(new retrofit.Callback<Void>() {
-            @Override
-            public void onResponse(Response<Void> response, Retrofit retrofit) {
-                Log.i("idg", "Response succesfull: " + response.code());
-                Toast.makeText(context, thenewnote + " tillagd", Toast.LENGTH_SHORT).show();
-                done();
-            }
+    void addNote() {
+        if(isItem) {
+            Call<Void> call = Utils.getApi(context).addNote(orderId, groupId, item.id, n);
+            call.enqueue(new retrofit.Callback<Void>() {
+                @Override
+                public void onResponse(Response<Void> response, Retrofit retrofit) {
+                    Log.i("idg", "Response succesfull: " + response.code());
+                    Toast.makeText(context, n.text + " tillagd till " + item.name, Toast.LENGTH_SHORT).show();
+                    done();
+                }
 
-            @Override
-            public void onFailure(Throwable t) {
-                Toast.makeText(context, "No connection", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(context, "No connection", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else
+        {
+            Call<Void> call = Utils.getApi(context).addSubItemNote(orderId, groupId, item.id, subitem.id, n);
+            call.enqueue(new retrofit.Callback<Void>() {
+                @Override
+                public void onResponse(Response<Void> response, Retrofit retrofit) {
+                    Log.i("idg", "Response succesfull: " + response.code());
+                    Toast.makeText(context, n.text + " tillagd till tillbehöret " + subitem.name, Toast.LENGTH_SHORT).show();
+                    done();
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(context, "No connection", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
     }
 
 }

@@ -371,6 +371,11 @@ public class OrderActivity extends AppCompatActivity {
                                 tvsub.setTextColor(Color.BLACK);
                             }
 
+                            if(!subIt.notes.isEmpty())
+                            {
+                                addnotesubitembtn.setText("(" + subIt.notes.size() + ")" + " " + "Notering");
+                            }
+
                             OnClickListener deletesubitembuttonListener = new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -384,7 +389,7 @@ public class OrderActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
 
-                                    NoteDialogHandler handler = new NoteDialogHandler(subIt, g.id, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
+                                    NoteDialogHandler handler = new NoteDialogHandler(subIt, it, g.id, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
                                         @Override
                                         public void onDone() {
                                             getAllOrders(i);
@@ -393,7 +398,7 @@ public class OrderActivity extends AppCompatActivity {
 
                                 }
                             };
-                            addnotesubitembtn.setOnClickListener(addnotebuttonListener);
+                            addnotesubitembtn.setOnClickListener(addnotesubitembuttonListener);
 
                             tvsub.setText("        " + subIt.name + ", " + subIt.price + ":-");
                             tvsub.setTextColor(Color.GRAY);

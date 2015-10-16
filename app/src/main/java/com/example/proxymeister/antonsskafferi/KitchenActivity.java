@@ -275,6 +275,8 @@ public class KitchenActivity extends AppCompatActivity {
                                     if (j != item.notes.size() - 1)
                                         viewHolder.itemname.append(", ");
                                 }
+                            }
+                            if(!item.subItems.isEmpty()) {
                                 for (Item subitem : item.subItems) {
                                     viewHolder.itemname.append("\n" + "     ");
                                     viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));

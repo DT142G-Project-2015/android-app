@@ -85,6 +85,9 @@ public interface ApiInterface {
     @POST("order/{order_id}/group/{group_id}/item/{item_id}/note")
     Call<Void> addNote(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId, @Body Note note);
 
+    @POST("order/{order_id}/group/{group_id}/item/{item_id}/subitem/{subitem_id}/note")
+    Call<Void> addSubItemNote(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId, @Path("subitem_id") int subitemId, @Body Note note);
+
 
     @DELETE("order/{order_id}/group/{group_id}/item/{item_id}/note/{note_id}")
     Call<Void> deleteNote(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId, @Path("note_id") int noteId);
