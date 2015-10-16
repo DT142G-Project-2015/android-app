@@ -3,7 +3,6 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorButtonNormal">#272121</item>
-        <item name="android:colorBackground">#333</item>
         <item name="android:background">#4D4141</item>
         <item name="android:textColor">#fff</item>
 
@@ -32,6 +31,12 @@
 
     <style name="ButtonDelete" parent="ButtonThemeSmall">
         <item name="android:drawableEnd">@drawable/delete</item>
+    </style>
+
+    <style name="ButtonRefresh" parent="ButtonThemeSmall">
+        <item name="android:drawableEnd">@drawable/refresh</item>
+        <item name="android:text">@string/text_update_button</item>
+        <item name="android:background">#478eb2</item>
     </style>
 
 

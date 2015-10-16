@@ -4,10 +4,11 @@ android:orientation="vertical"
 android:layout_width="fill_parent"
 android:layout_height="fill_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:id="@+id/linearlayout_topbar"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#478eb2">
 
     <Button
         android:text="@string/text_add_item"
@@ -17,16 +18,17 @@ android:layout_height="fill_parent">
         android:layout_width="fill_parent"
         android:background="#272121">
     </Button>
-    <!--<TextView
 
-        android:id="@+id/order_label_textView"
-        android:layout_height="match_parent"
+    <Button
         android:layout_width="wrap_content"
-        android:textSize="@dimen/orderlabel_textsize"
-        android:layout_marginLeft="30dp"
-        android:textAlignment="center"
-        android:layout_marginTop="10dp">
-    </TextView>-->
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/new_update_button"
+        android:textSize="@dimen/small_buttons_textsize"
+
+        android:visibility="gone"
+        style="@style/ButtonRefresh"/>
+
 </LinearLayout>
 
     <View
