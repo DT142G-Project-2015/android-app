@@ -29,6 +29,7 @@
     <string name="text_common_notes">Vanliga noteringar:</string>
     <string name="text_notes_prep">Tillagning:</string>
     <string name="text_note_hint">Skriv notering här</string>
+    <string name="text_update_button">Ny updatering tillgänglig\t</string>
 
     //Variabler till login rutan
     <string name="title_activity_login">Login</string>
