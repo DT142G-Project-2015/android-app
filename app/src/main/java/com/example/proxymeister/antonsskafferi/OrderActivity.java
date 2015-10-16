@@ -290,8 +290,6 @@ public class OrderActivity extends AppCompatActivity {
                                 Toast.makeText(OrderActivity.this, "Tryck och håll in  för att lägga till ett tillbehör till " + it.name, Toast.LENGTH_SHORT).show();
 
 
-
-
                             }
                         });
                         final Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
