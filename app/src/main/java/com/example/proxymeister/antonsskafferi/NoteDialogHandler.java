@@ -34,6 +34,7 @@ public class NoteDialogHandler implements View.OnClickListener {
     private Callback callback;
     private ListView listviewaddednotes;
     private List<String> addednotes;
+    private List<Integer> addednotesid;
     private ListAdapter theAdapter;
     private Dialog dialog;
     private boolean isItem;
@@ -87,10 +88,6 @@ public class NoteDialogHandler implements View.OnClickListener {
 
         this.n.text = thenewnote;
 
-        addednotes.add(this.n.text);
-        listviewaddednotes.setAdapter(theAdapter);
-        //listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
-        // listviewaddednotes.setAdapter(theAdapter);
 
         addNote();
     }
@@ -130,15 +127,24 @@ public class NoteDialogHandler implements View.OnClickListener {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                done();
             }
         });
 
         addednotes = new ArrayList<>();
+        addednotesid = new ArrayList<>();
         theAdapter = new ArrayAdapter<>(context, R.layout.custom_note_layout,
                 addednotes);
 
         listviewaddednotes = (ListView) dialog.findViewById(R.id.addednotes);
+        listviewaddednotes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                deleteNote(pos);
+                return true;
+            }
+        });
+
         listviewaddednotes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -152,6 +158,7 @@ public class NoteDialogHandler implements View.OnClickListener {
             if(!item.notes.isEmpty()) {
                 for (Note note : item.notes) {
                     addednotes.add(" " + note.text);
+                    addednotesid.add(note.id);
                 }
 
                 listviewaddednotes.setAdapter(theAdapter);
@@ -161,6 +168,7 @@ public class NoteDialogHandler implements View.OnClickListener {
             if (!subitem.notes.isEmpty()) {
                 for (Note note : subitem.notes) {
                     addednotes.add(" " + note.text);
+                    addednotesid.add(note.id);
                 }
 
                 listviewaddednotes.setAdapter(theAdapter);
@@ -215,6 +223,51 @@ public class NoteDialogHandler implements View.OnClickListener {
                     Log.i("idg", "Response succesfull: " + response.code());
                     Toast.makeText(context, n.text + " tillagd till tillbehöret " + subitem.name, Toast.LENGTH_SHORT).show();
                     done();
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(context, "No connection", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+    }
+
+
+
+    void deleteNote(final int position) {
+        n.id = addednotesid.get(position);
+        n.text = addednotes.get(position);
+        if(isItem) {
+            Call<Void> call = Utils.getApi(context).deleteNote(orderId, groupId, item.id, n.id);
+            call.enqueue(new retrofit.Callback<Void>() {
+                @Override
+                public void onResponse(Response<Void> response, Retrofit retrofit) {
+                    Log.i("idg", "Response succesfull: " + response.code());
+                    Toast.makeText(context, n.text + " borttagen från " + item.name, Toast.LENGTH_SHORT).show();
+                    addednotes.remove(position);
+                    addednotesid.remove(position);
+                    listviewaddednotes.setAdapter(theAdapter);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(context, "No connection", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else
+        {
+            Call<Void> call = Utils.getApi(context).deleteSubItemNote(orderId, groupId, item.id, subitem.id, n.id);
+            call.enqueue(new retrofit.Callback<Void>() {
+                @Override
+                public void onResponse(Response<Void> response, Retrofit retrofit) {
+                    Log.i("idg", "Response succesfull: " + response.code());
+                    Toast.makeText(context, n.text + " borttagen från tillbehöret " + subitem.name, Toast.LENGTH_SHORT).show();
+                    addednotes.remove(position);
+                    addednotesid.remove(position);
+                    listviewaddednotes.setAdapter(theAdapter);
                 }
 
                 @Override

@@ -92,7 +92,8 @@ public interface ApiInterface {
     @DELETE("order/{order_id}/group/{group_id}/item/{item_id}/note/{note_id}")
     Call<Void> deleteNote(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId, @Path("note_id") int noteId);
 
-
+    @DELETE("order/{order_id}/group/{group_id}/item/{item_id}/subitem/{subitem_id}/note/{note_id}")
+    Call<Void> deleteSubItemNote(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId, @Path("subitem_id") int subitemId, @Path("note_id") int noteId);
 
     @DELETE("storage/{article_id}")
     Call<Void> deleteArticle(@Path("article_id") int articleId);
