@@ -5,63 +5,76 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-    android:orientation="vertical"
-    android:layout_centerInParent="true">
 
+    android:orientation="vertical"
+    android:layout_centerInParent="true"
+    android:weightSum="100">
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        />
 
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="20"
-        android:layout_marginBottom="5dip"
         android:adjustViewBounds="true"
-        android:src="@drawable/logo_image_land"
-        android:layout_gravity="center_vertical|right"/>
+        android:layout_weight="45"
+        android:src="@drawable/logo_image"
+        android:layout_gravity="center_vertical|center_horizontal"
+        />
 
-    <LinearLayout
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        />
 
-        android:orientation="vertical"
+    <Button
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="80">
+        android:layout_weight="13"
+        android:text="@string/order"
+        android:id="@+id/button"
+        style="@style/ButtonTheme"
+        android:onClick="openOrderActivity" />
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        />
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:text="@string/kitchen"
+        android:id="@+id/button2"
+        style="@style/ButtonTheme"
+        android:onClick="openKitchenActivity"/>
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:text="@string/order"
-            android:id="@+id/button"
-            style="@style/ButtonTheme"
-            android:onClick="openOrderActivity"/>
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:text="@string/menu"
+        android:id="@+id/button3"
+        style="@style/ButtonTheme"
+        android:onClick="openMenuActivity"/>
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:text="@string/kitchen"
-            android:id="@+id/button2"
-            style="@style/ButtonTheme"
-            android:onClick="openKitchenActivity"/>
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:text="@string/lager"
+        android:id="@+id/button4"
+        style="@style/ButtonTheme"
+        android:onClick="startLagerActivity"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:text="@string/menu"
-            android:id="@+id/button3"
-            style="@style/ButtonTheme"
-            android:onClick="openMenuActivity"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:text="@string/lager"
-            android:id="@+id/button4"
-            style="@style/ButtonTheme"
-            android:onClick="startLagerActivity"/>
-
-    </LinearLayout>
 
 </LinearLayout>
