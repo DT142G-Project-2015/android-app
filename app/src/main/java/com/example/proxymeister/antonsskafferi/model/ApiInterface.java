@@ -28,8 +28,11 @@ public interface ApiInterface {
     Call<List<Menu>> getMenus();
 
     // Removes an item from the menu group
-    @DELETE("menu/{menu_id}/{group_id}/item/{item_id}")
-    Call<Void> removeMenuItem(@Path("menu_id") int menuId, @Path("group_id") int groupId, @Path("item_id") int itemId);
+    @DELETE("menu/{menu_id}/group/{group_id}/item/{item_id}")
+    Call<Void> deleteMenuItem(@Path("menu_id") int menuId, @Path("group_id") int groupId, @Path("item_id") int itemId);
+
+    @DELETE("menu/{menu_id}/group/{group_id}")
+    Call<Void> deleteMenuGroup(@Path("menu_id") int menuId, @Path("group_id") int groupId);
 
 
     //// Item Resource

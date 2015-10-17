@@ -48,15 +48,13 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
 
         setContentView(R.layout.activity_menu);
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         rv = (RecyclerView)findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
 
         if (getIntent().getAction().equals(EDIT_MENU)) {
             editMenu = true;
-            menuId = getIntent().getIntExtra("menu-id", 1);
+            menuId = getIntent().getIntExtra("menu-id", 0);
         }
 
         if (editMenu) {
@@ -69,7 +67,7 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
 
                 @Override
                 public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                    adapter.notifyItemChanged(viewHolder.getAdapterPosition()); // restore
+                    adapter.onDeleteRow(viewHolder.getAdapterPosition());
                 }
             };
             ItemTouchHelper touchHelper = new ItemTouchHelper(touchCallback);
@@ -94,7 +92,7 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
 
                     if (menu != null) {
                         setTitle("Redigera " + (menu.type == 0 ? "lunchmeny" : "middagsmeny"));
-                        adapter = new MenuAdapter(menu, editMenu, MenuActivity.this);;
+                        adapter = new MenuAdapter(MenuActivity.this, menu, editMenu, MenuActivity.this);;
                         rv.setAdapter(adapter);
                     }
                 }
@@ -118,7 +116,7 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
                     if (menus != null) {
                         Menu menu = Menu.mergedMenuAtCurrentTime(menus);
                         setTitle(menu.type == 0 ? "Lunchmeny" : "Middagsmeny");
-                        adapter = new MenuAdapter(menu, editMenu, MenuActivity.this);
+                        adapter = new MenuAdapter(MenuActivity.this, menu, editMenu, MenuActivity.this);
                         rv.setAdapter(adapter);
                     }
                 }
@@ -131,10 +129,6 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
 
 
         }
-
-
-
-
     }
 
     @Override
