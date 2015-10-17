@@ -9,15 +9,4 @@
         android:layout_height="match_parent"
         android:id="@+id/rv" />
 
-
-        <Button
-            android:layout_width="fill_parent"
-            android:padding="20dp"
-            android:layout_height="wrap_content"
-            android:text="Lägg till"
-            android:id="@+id/AddItem"
-            android:layout_alignParentBottom="true"
-            android:layout_alignRight="@+id/list"
-            android:layout_alignEnd="@+id/list" />
-
 </LinearLayout>

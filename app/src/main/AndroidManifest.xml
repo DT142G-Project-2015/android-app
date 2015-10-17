@@ -11,6 +11,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -21,6 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -29,14 +31,8 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.proxymeister.antonsskafferi.LoginActivity" />
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
         </activity>
+
         <activity
             android:name=".OrderActivity"
             android:label="@string/title_activity_order"
@@ -49,35 +45,6 @@
         </activity>
 
         <activity
-            android:name=".OrderSubItemActivity"
-            android:label="@string/title_add_subItem"
-            android:parentActivityName=".OrderActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.proxymeister.antonsskafferi.OrderActivity" />
-        </activity>
-
-        <activity
-            android:name=".OrderListActivity"
-            android:label="@string/title_activity_order"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".OrderActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.proxymeister.antonsskafferi.OrderActivity" />
-        </activity>
-        <activity
-            android:name=".OrderMealActivity"
-            android:label="@string/title_activity_order"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".OrderActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.proxymeister.antonsskafferi.OrderActivity" />
-        </activity>
-        <activity
             android:name=".KitchenActivity"
             android:label="@string/title_activity_kitchen"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -86,15 +53,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.proxymeister.antonsskafferi.MainActivity" />
         </activity>
+
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu"
-            android:parentActivityName=".MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.proxymeister.antonsskafferi.MainActivity" />
         </activity>
+
         <activity
             android:name=".LagerActivity"
             android:label="@string/title_activity_lager"
@@ -104,6 +72,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.proxymeister.antonsskafferi.MainActivity" />
         </activity>
+
         <activity
             android:name=".MenuListActivity"
             android:label="@string/title_activity_menu_list"
@@ -113,6 +82,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.proxymeister.antonsskafferi.MainActivity" />
         </activity>
+
     </application>
 
 </manifest>

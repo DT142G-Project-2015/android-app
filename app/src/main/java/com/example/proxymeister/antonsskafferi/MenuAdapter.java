@@ -75,6 +75,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         public void bindViewHolder(ViewHolder vh) {
             vh.text1.setText(item.name);
             vh.text2.setText(item.description);
+            vh.text3.setText(String.valueOf(item.price) + " kr");
             vh.addItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -92,12 +93,14 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
         TextView text1;
         TextView text2;
+        TextView text3;
         Button addItem;
 
         ViewHolder(View itemView) {
             super(itemView);
             text1 = (TextView)itemView.findViewById(R.id.name);
             text2 = (TextView)itemView.findViewById(R.id.description);
+            text3 = (TextView)itemView.findViewById(R.id.price);
             addItem = (Button)itemView.findViewById(R.id.add_item);
         }
     }

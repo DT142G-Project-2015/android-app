@@ -48,6 +48,8 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
 
         setContentView(R.layout.activity_menu);
 
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         rv = (RecyclerView)findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
@@ -57,20 +59,22 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
             menuId = getIntent().getIntExtra("menu-id", 1);
         }
 
-        ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        if (editMenu) {
+            ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
+                @Override
+                public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                    return false;
+                }
 
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                adapter.notifyItemChanged(viewHolder.getAdapterPosition()); // restore
-            }
-        };
-        ItemTouchHelper touchHelper = new ItemTouchHelper(touchCallback);
-        touchHelper.attachToRecyclerView(rv);
+                @Override
+                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                    adapter.notifyItemChanged(viewHolder.getAdapterPosition()); // restore
+                }
+            };
+            ItemTouchHelper touchHelper = new ItemTouchHelper(touchCallback);
+            touchHelper.attachToRecyclerView(rv);
+        }
 
         setTitle("...");
         refreshData();
@@ -147,6 +151,11 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_menu_group) {
 
@@ -159,11 +168,6 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
     @Override
     public void onPickItem(Menu.Item item) {
         Intent intent = getIntent();
-
-        //intent.putExtra("picked-item-id", item.id);
-        //intent.putExtra("picked-item-type", item.type);
-        //intent.putExtra("picked-item-name", item.name);
-        //intent.putExtra("picked-item-description", item.description);
         intent.putExtra("picked-item", item);
         setResult(RESULT_OK, intent);
         finish();

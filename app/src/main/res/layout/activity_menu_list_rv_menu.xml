@@ -29,23 +29,4 @@
         android:textColor="@color/dim_foreground_disabled_material_dark"
         android:textStyle="italic" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lägg till"
-        android:id="@+id/add_item"
-        android:layout_alignBottom="@+id/description"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="false" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="15 kr"
-        android:id="@+id/price"
-        android:layout_centerInParent="true"
-        android:layout_toLeftOf="@+id/add_item"
-        android:layout_marginRight="8dp" />
 </RelativeLayout>
