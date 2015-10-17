@@ -2,14 +2,11 @@ package com.example.proxymeister.antonsskafferi.model;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.proxymeister.antonsskafferi.LagerActivity;
 import com.example.proxymeister.antonsskafferi.R;
 
 import java.util.ArrayList;

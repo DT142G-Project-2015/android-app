@@ -13,11 +13,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.widget.LinearLayout.LayoutParams;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -34,110 +37,140 @@ import retrofit.Retrofit;
 
 public class LagerActivity extends AppCompatActivity  {
 
-    private RecyclerView rv;
-    private LagerAdapter lAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<String> strings;
-    private List<Article> articles;
+    private LagerRecycler lr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lager);
 
-        // get reference to recyclerView
-        rv = (RecyclerView) findViewById(R.id.lager_recycler_view);
-
-        // sets layout for recyclerviewer
-        mLayoutManager = new LinearLayoutManager(this);
-        rv.setLayoutManager(mLayoutManager);
-
-        // used to store data for recyclerview
-        strings = new ArrayList<>();
-
-        // create recyclerviewer
-        setRecyclerview(0);
+        // create and set view
+        lr = new LagerRecycler();
+        lr.setView();
     }
 
-    public void setRecyclerview(final int cmd)
+    public class LagerRecycler
     {
-        Call<List<Article>> call = Utils.getApi(this).getArticles();
-        call.enqueue(new Callback<List<Article>>() {
-            @Override
-            public void onResponse(Response<List<Article>> response, Retrofit retrofit) {
-                int statusCode = response.code();
-                Log.i(MainActivity.class.getName(), "Status: " + statusCode);
+        // stores clicked position
+        private int pos;
 
-                articles = response.body();
+        // stores entries from database
+        private List<Article> articles;
 
-                if( cmd == 1 ) strings.clear();
+        // stores entries in string
+        private ArrayList<String> strings;
 
-                if (articles != null)
+        // recyclerview
+        private RecyclerView rv;
+
+        // adapter
+        private LagerAdapter lAdapter;
+
+        public LagerRecycler()
+        {
+            pos = -1;
+
+            // get reference to recyclerView
+            rv = (RecyclerView) findViewById(R.id.lager_recycler_view);
+
+            // sets layout for recyclerviewer
+            rv.setLayoutManager(new LinearLayoutManager(LagerActivity.this));
+
+            // used to store data for recyclerview
+            strings = new ArrayList<>();
+        }
+
+        // sets recyclerview
+        public void setView()
+        {
+            Call<List<Article>> call = Utils.getApi(LagerActivity.this).getArticles();
+            call.enqueue(new Callback<List<Article>>()
+            {
+                @Override
+                public void onResponse(Response<List<Article>> response, Retrofit retrofit)
                 {
-                    for (Article p : articles) {
-                        strings.add(p.toString());
+                    int statusCode = response.code();
+                    Log.i(MainActivity.class.getName(), "Status: " + statusCode);
+
+                    articles = response.body();
+
+                    if (!articles.equals(null))
+                    {
+                        for (Article p : articles)
+                        {
+                            strings.add(p.toString());
+                        }
                     }
-                } else {
-                    strings.add("Inga varor hittades ...");
-                }
-                if(cmd == 1)
-                {
-                    lAdapter.notifyDataSetChanged();
-                }
-                else
-                {
+                    else
+                    {
+                        strings.add("Inga varor hittades ...");
+                    }
+
                     lAdapter = new LagerAdapter(strings);
-                    lAdapter.SetOnItemClickListener(new LagerAdapter.OnItemClickListener() {
+
+                    lAdapter.SetOnItemClickListener(new LagerAdapter.OnItemClickListener()
+                    {
                         @Override
-                        public void onItemClick(View view, int position) {
-                            System.out.println(position);
+                        public void onItemClick(View view, int position)
+                        {
+                            pos = position;
                         }
                     });
+
                     rv.setItemAnimator(new DefaultItemAnimator());
                     rv.setAdapter(lAdapter);
+                }
+
+                @Override
+                public void onFailure(Throwable t)
+                {
+                    Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+
+                    strings.add("Kunde inte nå databasen... ");
+                    lAdapter = new LagerAdapter(strings);
                     rv.setAdapter(lAdapter);
                 }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
-                strings.add("Kunde inte nå databasen... ");
-                lAdapter = new LagerAdapter(strings);
-                rv.setAdapter(lAdapter);
-            }
-        });
-
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_lager, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        HandleLager hl = new HandleLager();
-
-        switch(id) {
-            case (R.id.lagethantering_add): { hl.createArticleDialog();}
-            break;
-            case (R.id.lagethantering_remove): { hl.deleteArticleDialog();}
-            break;
-            case (R.id.lagethantering_change): { hl.changeArticleDialog();}
-            break;
-            case (R.id.lagethantering_refresh): { setRecyclerview(1); }
-            break;
+            });
         }
-        return super.onOptionsItemSelected(item);
+
+        // refresh content of recylcerview
+        public void refreshView()
+        {
+            Call<List<Article>> call = Utils.getApi(LagerActivity.this).getArticles();
+            call.enqueue(new Callback<List<Article>>()
+            {
+                @Override
+                public void onResponse(Response<List<Article>> response, Retrofit retrofit)
+                {
+                    int statusCode = response.code();
+                    Log.i(MainActivity.class.getName(), "Status: " + statusCode);
+
+                    articles = response.body();
+
+                    strings.clear();
+
+                    if (!articles.equals(null))
+                    {
+                        for (Article p : articles)
+                        {
+                            strings.add(p.toString());
+                        }
+                    }
+                    else
+                    {
+                        strings.add("Inga varor hittades ...");
+                    }
+
+                    lAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onFailure(Throwable t)
+                {
+                    Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                }
+            });
+        }
     }
 
     public class HandleLager
@@ -145,61 +178,43 @@ public class LagerActivity extends AppCompatActivity  {
         private int deleteID;
         private Article body = new Article();
         private Article retrievedArticle = new Article();
+        private List<Article> articles = lr.articles;
 
         public void deleteArticleDialog()
         {
+            // if nothing is selected
+            if(lr.pos == -1)
+            {
+                createToaster("Välj en vara");
+                return;
+            }
+
             final AlertDialog.Builder builder = new AlertDialog.Builder(LagerActivity.this);
             builder.setTitle("");
-            builder.setMessage("Mata in ID för varan du vill ta bort");
+            builder.setMessage("Är du säker på att du vill ta bort denna vara?");
 
-
-            //input object
-            final EditText input = new EditText(LagerActivity.this);
-
-            // constraint for input
-            input.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-            // put input into dialog
-            builder.setView(input);
-
-
-            builder.setPositiveButton("Genmför", new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    try
-                    {
-                        if(input.getText().toString().equals("")) { throw new Throwable("Ange ID"); }
-                        deleteID = Integer.parseInt(input.getText().toString());
-
-                        if(idDoesNotExist()) { throw new Throwable("Varan med ID: " + deleteID + " existerar inte"); }
-
-
-                        deleteArticle();
-                        dialog.dismiss();
-                        Toast toast = Toast.makeText(getApplicationContext(), "Genomförd", Toast.LENGTH_LONG);
-                        toast.show();
-                        setRecyclerview(1);
-                    }
-                    catch (Throwable t)
-                    {
-                        dialog.dismiss();
-                        String s = t.getMessage();
-                        Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
-                        toast.show();
-                        deleteArticleDialog();
-                    }
-                }
-            });
-
-            builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
+            builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
                     dialog.cancel();
                 }
             });
 
+            builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    try {
+                        deleteID = articles.get(lr.pos).id;
+
+                        deleteArticle();
+                        dialog.dismiss();
+                        createToaster("Vara borttagen");
+                        lr.refreshView();
+                    } catch (Throwable t) {
+                        dialog.dismiss();
+                        String s = t.getMessage();
+                        createToaster(s);
+                    }
+                }
+            });
             AlertDialog dialog = builder.create();
             dialog.show();
         }
@@ -208,11 +223,21 @@ public class LagerActivity extends AppCompatActivity  {
         {
             final AlertDialog.Builder builder = new AlertDialog.Builder(LagerActivity.this);
 
-            builder.setTitle("   Mata in värden för varan");
+            builder.setTitle("   Fyll i värden för varan");
 
             // defines layout
             LinearLayout ll = new LinearLayout(LagerActivity.this);
             ll.setOrientation(LinearLayout.VERTICAL); //1 is for vertical orientation
+
+            // spinner for category
+            String[] s = { "Dryck", "Grönsak", "Råvara", "Färskvara", "Tillbehör" };
+
+            final ArrayAdapter<String> adp = new ArrayAdapter<>(LagerActivity.this,
+                    R.layout.spinner_item, s);
+
+            final Spinner sp = new Spinner(LagerActivity.this);
+            sp.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            sp.setAdapter(adp);
 
             // input objects
             final EditText name = new EditText(LagerActivity.this);
@@ -236,7 +261,7 @@ public class LagerActivity extends AppCompatActivity  {
             final TextView amount_title = new TextView(LagerActivity.this);
             amount_title.setText("  Mängd  (*)");
             final TextView date_title = new TextView(LagerActivity.this);
-            date_title.setText("  Utgångsdatum (YYYY/MM/DD)");
+            date_title.setText("  Utgångsdatum (YYYY/MM/DD, YYYY-MM-DD)");
             final TextView category_title = new TextView(LagerActivity.this);
             category_title.setText("  Kategori  (*)");
 
@@ -251,55 +276,48 @@ public class LagerActivity extends AppCompatActivity  {
             ll.addView(date_title);
             ll.addView(date);
             ll.addView(category_title);
-            ll.addView(category);
+            ll.addView(sp);
 
             // set view for dialog
             builder.setView(ll);
 
-            builder.setPositiveButton("Genmför", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id)
-                {
+            builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
 
-                    try
-                    {
+            builder.setPositiveButton("Genmför", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                    try {
                         body.name = name.getText().toString();
                         if (body.name.equals("")) throw new Throwable("Ange namn");
 
                         body.unit = unit.getText().toString();
                         if (body.unit.equals("")) throw new Throwable("Ange enhet");
 
-                        if(amount.getText().toString().equals("")) throw new Throwable("Ange mängd");
+                        if (amount.getText().toString().equals(""))
+                            throw new Throwable("Ange mängd");
                         body.amount = Integer.parseInt(amount.getText().toString());
-                        if (body.amount == 0) throw new Throwable("Mängd får inte vara 0");
 
                         body.exp_date = date.getText().toString();
-                        if (!(isValidDate(body.exp_date)) && !(body.exp_date.equals(""))) throw new Throwable("Dåligt format av utgångsdatum");
+                        if (!(isValidDate(body.exp_date)) && !(body.exp_date.equals("")))
+                            throw new Throwable("Fel format på utgångsdatum");
 
-                        body.category = category.getText().toString();
-                        if (body.category.equals("")) throw new Throwable("Ange kategori");
+                        body.category = sp.getSelectedItem().toString();
 
                         createArticle();
                         dialog.dismiss();
-                        Toast toast = Toast.makeText(getApplicationContext(), "Genomförd", Toast.LENGTH_LONG);
-                        toast.show();
-                        setRecyclerview(1);
-                    }
-                    catch (Throwable t)
-                    {
+                        createToaster("Vara skapad");
+                        lr.refreshView();
+
+                    } catch (Throwable t) {
                         dialog.dismiss();
                         String s = t.getMessage();
-                        Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
-                        toast.show();
+                        createToaster(s);
                         createArticleDialog();
                     }
-                }
-            });
-
-            builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    dialog.cancel();
                 }
             });
 
@@ -309,16 +327,34 @@ public class LagerActivity extends AppCompatActivity  {
 
         public void changeArticleDialog()
         {
+            // if nothing is selected
+            if(lr.pos == -1)
+            {
+                createToaster("Välj en vara");
+                return;
+            }
+
             final AlertDialog.Builder builder = new AlertDialog.Builder(LagerActivity.this);
 
-            builder.setTitle(" Mata in ID och värden som skall  ändras");
+            builder.setTitle("Fyll i värden som ska ändras");
 
             // defines layout
             LinearLayout ll = new LinearLayout(LagerActivity.this);
             ll.setOrientation(LinearLayout.VERTICAL); //1 is for vertical orientation
 
+
+            // spinner for category
+            String[] s = { "Dryck", "Grönsak", "Råvara", "Färskvara", "Tillbehör" };
+
+            final ArrayAdapter<String> adp = new ArrayAdapter<>(LagerActivity.this,
+                    R.layout.spinner_item, s);
+
+            final Spinner sp = new Spinner(LagerActivity.this);
+            sp.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            sp.setAdapter(adp);
+
+
             // input objects
-            final EditText id_art = new EditText(LagerActivity.this);
             final EditText name = new EditText(LagerActivity.this);
             final EditText amount = new EditText(LagerActivity.this);
             final EditText unit = new EditText(LagerActivity.this);
@@ -326,7 +362,6 @@ public class LagerActivity extends AppCompatActivity  {
             final EditText date = new EditText(LagerActivity.this);
 
             // constraints for input objects
-            id_art.setInputType(InputType.TYPE_CLASS_NUMBER);
             name.setInputType(InputType.TYPE_CLASS_TEXT);
             amount.setInputType(InputType.TYPE_CLASS_NUMBER);
             unit.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -334,8 +369,6 @@ public class LagerActivity extends AppCompatActivity  {
             date.setInputType(InputType.TYPE_CLASS_DATETIME);
 
             // title per input object
-            final TextView id_title = new TextView(LagerActivity.this);
-            id_title.setText("  ID  (*)");
             final TextView name_title = new TextView(LagerActivity.this);
             name_title.setText("  Namn");
             final TextView unit_title = new TextView(LagerActivity.this);
@@ -343,14 +376,12 @@ public class LagerActivity extends AppCompatActivity  {
             final TextView amount_title = new TextView(LagerActivity.this);
             amount_title.setText("  Mängd");
             final TextView date_title = new TextView(LagerActivity.this);
-            date_title.setText("  Utgångsdatum (YYYY/MM/DD)");
+            date_title.setText("  Utgångsdatum (YYYY/MM/DD, YYYY-MM-DD)");
             final TextView category_title = new TextView(LagerActivity.this);
             category_title.setText("  Kategori");
 
             // insert to layout
             ll.addView(new TextView(LagerActivity.this));
-            ll.addView(id_title);
-            ll.addView(id_art);
             ll.addView(name_title);
             ll.addView(name);
             ll.addView(unit_title);
@@ -360,83 +391,56 @@ public class LagerActivity extends AppCompatActivity  {
             ll.addView(date_title);
             ll.addView(date);
             ll.addView(category_title);
-            ll.addView(category);
+            ll.addView(sp);
 
             // set view for dialog
             builder.setView(ll);
 
-            builder.setPositiveButton("Genmför", new DialogInterface.OnClickListener()
-            {
+            builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+            builder.setPositiveButton("Genmför", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     try {
-
-                        if(id_art.getText().toString().equals("")) throw new Throwable("Ange ID");
-                        body.id = Integer.parseInt(id_art.getText().toString());
-
-                        for(int i = 0; i < articles.size(); i++)
-                        {
-                            if(articles.get(i).id == body.id)
-                            {
-                                retrievedArticle = articles.get(i);
-                                break;
-                            }
-                            if(i == (articles.size()-1) ) { throw new Throwable("Varan med ID: " + deleteID + " existerar inte"); }
-                        }
-
-                        // if article is completely empty or corrupt, throw "Varan med id" + body.id "finns inte")
+                        retrievedArticle = articles.get(lr.pos);
+                        body.id = retrievedArticle.id;
 
                         body.name = name.getText().toString();
-                        if (body.name.equals("")) body.name=retrievedArticle.name;
+                        if (body.name.equals("")) body.name = retrievedArticle.name;
 
                         body.unit = unit.getText().toString();
-                        if (body.unit.equals("")) body.unit=retrievedArticle.unit;
+                        if (body.unit.equals("")) body.unit = retrievedArticle.unit;
 
-                        if(amount.getText().toString().equals(""))
-                        {
-                            body.amount=retrievedArticle.amount;
-                        }
-                        else
-                        {
+                        if (amount.getText().toString().equals("")) {
+                            body.amount = retrievedArticle.amount;
+                        } else {
                             body.amount = Integer.parseInt(amount.getText().toString());
                         }
-                        if (body.amount == 0) throw new Throwable("Mängd får inte vara 0");
 
-                        if(date.getText().toString().equals(""))
-                        {
-                            body.exp_date=retrievedArticle.exp_date;
-                        }
-                        else
-                        {
+                        if (date.getText().toString().equals("")) {
+                            body.exp_date = retrievedArticle.exp_date;
+                        } else {
                             body.exp_date = date.getText().toString();
-                            if (!(isValidDate(body.exp_date)) && !(body.exp_date.equals(""))) throw new Throwable("Fel format på utgångsdatum");
+                            if (!(isValidDate(body.exp_date)) && !(body.exp_date.equals("")))
+                                throw new Throwable("Fel format på utgångsdatum");
                         }
 
+                        body.category = sp.getSelectedItem().toString();
 
-                        body.category = category.getText().toString();
-                        if (body.category.equals("")) body.category=retrievedArticle.category;
+                        System.out.println(body.category);
 
                         changeArticle();
                         dialog.dismiss();
-                        Toast toast = Toast.makeText(getApplicationContext(), "Genomförd", Toast.LENGTH_LONG);
-                        toast.show();
-                        setRecyclerview(1);
-                    }
-                    catch(Throwable t)
-                    {
+                        createToaster("Ändring genomförd");
+                        lr.refreshView();
+
+                    } catch (Throwable t) {
                         dialog.dismiss();
                         String s = t.getMessage();
-                        Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
-                        toast.show();
-                        changeArticleDialog();
+                        createToaster(s);
                     }
-                }
-            });
-
-            builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    dialog.cancel();
                 }
             });
 
@@ -495,17 +499,37 @@ public class LagerActivity extends AppCompatActivity  {
             });
         }
 
+        // checks if string date format is valid
         public boolean isValidDate(String inDate) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            dateFormat.setLenient(false);
+            boolean dashValid = true;
+            boolean slashValid = true;
+            SimpleDateFormat dateFormat_dash = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat_slash = new SimpleDateFormat("yyyy/MM/dd");
+            dateFormat_dash.setLenient(false);
+            dateFormat_slash.setLenient(false);
             try {
-                dateFormat.parse(inDate.trim());
+                dateFormat_dash.parse(inDate.trim());
             } catch (ParseException pe) {
+                dashValid = false;
+            }
+            try {
+                dateFormat_slash.parse(inDate.trim());
+            } catch (ParseException pe) {
+                slashValid = false;
+            }
+
+            if(slashValid || dashValid)
+            {
+                return true;
+            }
+            else
+            {
                 return false;
             }
-            return true;
+
         }
 
+        // check if id exists
         public boolean idDoesNotExist() {
             for (int i = 0; i < articles.size(); i++) {
                 if (articles.get(i).id == deleteID) {
@@ -514,5 +538,43 @@ public class LagerActivity extends AppCompatActivity  {
             }
             return true;
         }
+
+        // create toaster with input string
+        public void createToaster(String s)
+        {
+            Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_lager, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        HandleLager hl = new HandleLager();
+
+        switch(id)
+        {
+            case R.id.lagethantering_refresh: lr.refreshView();
+                break;
+            case R.id.lagethantering_change: hl.changeArticleDialog();
+                break;
+            case R.id.lagethantering_remove: hl.deleteArticleDialog();
+                break;
+            case R.id.lagethantering_add: hl.createArticleDialog();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
