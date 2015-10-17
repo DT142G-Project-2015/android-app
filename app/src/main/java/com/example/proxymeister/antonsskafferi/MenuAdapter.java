@@ -1,10 +1,12 @@
 package com.example.proxymeister.antonsskafferi;
 
 
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.proxymeister.antonsskafferi.model.Menu;
@@ -14,6 +16,9 @@ import java.util.List;
 
 
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
+
+    private boolean editMenu;
+    private Callback callback;
 
     private interface Row {
         int getLayout();
@@ -70,6 +75,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         public void bindViewHolder(ViewHolder vh) {
             vh.text1.setText(item.name);
             vh.text2.setText(item.description);
+            vh.addItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (callback != null)
+                        callback.onPickItem(item);
+                }
+            });
         }
     }
 
@@ -80,21 +92,43 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
         TextView text1;
         TextView text2;
+        Button addItem;
 
         ViewHolder(View itemView) {
             super(itemView);
             text1 = (TextView)itemView.findViewById(R.id.name);
             text2 = (TextView)itemView.findViewById(R.id.description);
+            addItem = (Button)itemView.findViewById(R.id.add_item);
         }
     }
 
-    public MenuAdapter(Menu menu){
+    public interface Callback {
+        void onPickItem(Menu.Item item);
+    }
+
+    public MenuAdapter(Menu menu, boolean editMenu, Callback callback) {
+        this.editMenu = editMenu;
+        this.callback = callback;
 
         for (Menu.Group g : menu.groups) {
             Group groupRow = new Group();
             groupRow.group = g;
             rows.add(groupRow);
-            System.out.println(g.name);
+        }
+
+        if (!editMenu) {
+            new Handler().post(new Runnable() {
+                @Override public void run() {
+                    for (final Row r : rows) {
+                        if (r instanceof Group)
+                            new Handler().post(new Runnable() {
+                                @Override public void run() {
+                                    ((Group) r).expand();
+                                }
+                            });
+                    }
+                }
+            });
         }
 
     }
@@ -121,5 +155,4 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     public int getItemCount() {
         return rows.size();
     }
-
 }

@@ -23,6 +23,10 @@ public interface ApiInterface {
     @GET("menu/{menu_id}?expand=true")
     Call<Menu> getMenu(@Path("menu_id") int menuId);
 
+    // Get all menus
+    @GET("menu")
+    Call<List<Menu>> getMenus();
+
     // Removes an item from the menu group
     @DELETE("menu/{menu_id}/{group_id}/item/{item_id}")
     Call<Void> removeMenuItem(@Path("menu_id") int menuId, @Path("group_id") int groupId, @Path("item_id") int itemId);
@@ -60,10 +64,10 @@ public interface ApiInterface {
     Call<Void> changeStatus(@Body Group group, @Path("order_id") int orderId, @Path("group_id") int groupId);
 
     @POST("order/{order_id}/group/{group_id}/item")
-    Call<Void> addItem(@Body Item item, @Path("order_id") int orderId, @Path("group_id") int groupId);
+    Call<IdHolder> addItem(@Body Item item, @Path("order_id") int orderId, @Path("group_id") int groupId);
 
     @POST("order/{order_id}/group/{group_id}/item/{item_id}/subitem")
-    Call<Void> addSubItem(@Body Item subitem, @Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId);
+    Call<IdHolder> addSubItem(@Body Item subitem, @Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId);
 
     @POST("order/{order_id}/group")
     Call<Group> createOrderGroup(@Body Group group, @Path("order_id") int orderId);

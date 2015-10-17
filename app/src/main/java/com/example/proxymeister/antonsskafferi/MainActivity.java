@@ -1,31 +1,13 @@
 package com.example.proxymeister.antonsskafferi;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.*;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.content.SharedPreferences;
-import android.view.MenuItem;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
-import com.example.proxymeister.antonsskafferi.model.Order;
-
-import java.util.List;
-
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -89,33 +71,14 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(id == android.R.id.home)
-        {
-            if (client != null)
-                client.interrupt();
-        }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.actionbar_settings) {
-            return true;
-
-        }
-
-        if (id == R.id.actionbarlog_out) {
+        if (id == R.id.actionbar_logout) {
             finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
 
-    }
-
-    // Called on by the Lager button in activity_main.xml
-    // Starts the lager activity
-    public void startLagerActivity(View view) {
-
-        Intent intent = new Intent(MainActivity.this, LagerActivity.class);
-        startActivity(intent);
     }
 
     //-------------------------------------------------------------------------------------//
@@ -142,16 +105,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //public void MenuListActivity(View view) {
-    //  Intent intent = new Intent(this, MenuActivity.class);
-    //startActivity(intent);
-    //}
-    //-------------------------------------------------------------------------------------//
+    public void openLagerActivity(View view) {
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        System.out.println("okk");
-
+        Intent intent = new Intent(MainActivity.this, LagerActivity.class);
+        startActivity(intent);
     }
 }

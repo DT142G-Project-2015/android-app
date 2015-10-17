@@ -1,6 +1,5 @@
 package com.example.proxymeister.antonsskafferi.model;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 

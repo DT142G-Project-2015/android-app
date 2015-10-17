@@ -54,6 +54,6 @@
             android:text="@string/lager"
             android:id="@+id/button4"
             style="@style/ButtonTheme"
-            android:onClick="startLagerActivity"/>
+            android:onClick="openLagerActivity"/>
 
 </LinearLayout>

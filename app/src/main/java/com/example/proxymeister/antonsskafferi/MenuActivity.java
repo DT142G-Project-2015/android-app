@@ -1,5 +1,7 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,15 +12,35 @@ import android.view.MenuItem;
 
 import com.example.proxymeister.antonsskafferi.model.Menu;
 
+import java.util.List;
+
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class MenuActivity extends AppCompatActivity {
+public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callback {
 
     private MenuAdapter adapter;
     private RecyclerView rv;
+    private boolean editMenu;
+    private int menuId;
+
+    private static String PICK_ITEM = "antonsskafferi.PICK_ITEM";
+    private static String EDIT_MENU = "antonsskafferi.EDIT_MENU";
+
+    public static Intent getPickItemIntent(Context context) {
+        Intent intent = new Intent(context, MenuActivity.class);
+        intent.setAction(PICK_ITEM);
+        return intent;
+    }
+
+    public static Intent getEditMenuIntent(Context context, int menuId) {
+        Intent intent = new Intent(context, MenuActivity.class);
+        intent.setAction(EDIT_MENU);
+        intent.putExtra("menu-id", menuId);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +51,11 @@ public class MenuActivity extends AppCompatActivity {
         rv = (RecyclerView)findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
+
+        if (getIntent().getAction().equals(EDIT_MENU)) {
+            editMenu = true;
+            menuId = getIntent().getIntExtra("menu-id", 1);
+        }
 
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
@@ -46,38 +73,71 @@ public class MenuActivity extends AppCompatActivity {
         touchHelper.attachToRecyclerView(rv);
 
         setTitle("...");
-        refreshMenu();
+        refreshData();
     }
 
-    private void refreshMenu() {
-        int id = getIntent().getIntExtra("menu-id", 1);
-        Call<Menu> call = Utils.getApi(this).getMenu(id);
 
-        call.enqueue(new Callback<Menu>() {
-            @Override
-            public void onResponse(Response<Menu> response, Retrofit retrofit) {
+    private void refreshData() {
 
-                Menu menu = response.body();
+        if (editMenu) {
+            Call<Menu> call = Utils.getApi(this).getMenu(menuId);
 
-                if (menu != null) {
-                    setTitle(menu.name);
-                    adapter = new MenuAdapter(menu);
-                    rv.setAdapter(adapter);
+            call.enqueue(new Callback<Menu>() {
+                @Override
+                public void onResponse(Response<Menu> response, Retrofit retrofit) {
+
+                    Menu menu = response.body();
+
+                    if (menu != null) {
+                        setTitle("Redigera " + (menu.type == 0 ? "lunchmeny" : "middagsmeny"));
+                        adapter = new MenuAdapter(menu, editMenu, MenuActivity.this);;
+                        rv.setAdapter(adapter);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Throwable t) {
-                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.i(MenuActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                }
+            });
+
+        } else {
+
+            Call<List<Menu>> call = Utils.getApi(this).getMenus();
+
+            call.enqueue(new Callback<List<Menu>>() {
+                @Override
+                public void onResponse(Response<List<Menu>> response, Retrofit retrofit) {
+
+                    List<Menu> menus = response.body();
+
+                    if (menus != null) {
+                        Menu menu = Menu.mergedMenuAtCurrentTime(menus);
+                        setTitle(menu.type == 0 ? "Lunchmeny" : "Middagsmeny");
+                        adapter = new MenuAdapter(menu, editMenu, MenuActivity.this);
+                        rv.setAdapter(adapter);
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.i(MenuActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                }
+            });
+
+
+        }
+
+
+
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_menu, menu);
-        return true;
+        return editMenu;
     }
 
     @Override
@@ -88,11 +148,24 @@ public class MenuActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_add_menu_group) {
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onPickItem(Menu.Item item) {
+        Intent intent = getIntent();
+
+        //intent.putExtra("picked-item-id", item.id);
+        //intent.putExtra("picked-item-type", item.type);
+        //intent.putExtra("picked-item-name", item.name);
+        //intent.putExtra("picked-item-description", item.description);
+        intent.putExtra("picked-item", item);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 }

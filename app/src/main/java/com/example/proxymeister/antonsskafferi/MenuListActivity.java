@@ -1,13 +1,12 @@
 package com.example.proxymeister.antonsskafferi;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.content.Intent;
 
 public class MenuListActivity extends AppCompatActivity {
 
@@ -24,9 +23,8 @@ public class MenuListActivity extends AppCompatActivity {
         lunchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MenuListActivity.this, MenuActivity.class);
-                intent.putExtra("menu-id", 1);
-                startActivity(intent);
+                Intent i = MenuActivity.getEditMenuIntent(MenuListActivity.this, 1);
+                startActivity(i);
             }
         });
         MiddagBtn.setOnClickListener(new View.OnClickListener() {
