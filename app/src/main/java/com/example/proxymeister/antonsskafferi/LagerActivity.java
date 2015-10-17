@@ -5,12 +5,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,7 +35,7 @@ import retrofit.Retrofit;
 public class LagerActivity extends AppCompatActivity  {
 
     private RecyclerView rv;
-    private RecyclerView.Adapter lAdapter;
+    private LagerAdapter lAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<String> strings;
     private List<Article> articles;
@@ -43,7 +45,7 @@ public class LagerActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lager);
 
-        // get a reference to recyclerView
+        // get reference to recyclerView
         rv = (RecyclerView) findViewById(R.id.lager_recycler_view);
 
         // sets layout for recyclerviewer
@@ -85,6 +87,14 @@ public class LagerActivity extends AppCompatActivity  {
                 else
                 {
                     lAdapter = new LagerAdapter(strings);
+                    lAdapter.SetOnItemClickListener(new LagerAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            System.out.println(position);
+                        }
+                    });
+                    rv.setItemAnimator(new DefaultItemAnimator());
+                    rv.setAdapter(lAdapter);
                     rv.setAdapter(lAdapter);
                 }
             }
