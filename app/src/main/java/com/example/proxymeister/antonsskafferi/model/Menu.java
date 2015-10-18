@@ -27,6 +27,12 @@ public class Menu {
         return null;
     }
 
+    public String getMenuTypeString() {
+        return type == 0 ? "Lunch"
+                : type == 1 ? "A'la carte"
+                : "Statisk";
+    }
+
     public static Menu mergedMenuAtCurrentTime(List<Menu> menus) {
         Menu mergedMenu = new Menu();
 
@@ -35,7 +41,7 @@ public class Menu {
         mergedMenu.type = lunch ? 0 : 1;
         mergedMenu.groups = new ArrayList<>();
 
-        for (Menu m : menus) if (m.type == mergedMenu.type) {
+        for (Menu m : menus) if (m.type == mergedMenu.type || m.type == 2) {
             for (Group g : m.groups) {
 
                 Group mergedGroup = mergedMenu.getGroupNamed(g.name);

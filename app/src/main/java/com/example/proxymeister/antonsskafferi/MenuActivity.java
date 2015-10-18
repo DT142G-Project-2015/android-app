@@ -95,7 +95,7 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
                     Menu menu = response.body();
 
                     if (menu != null) {
-                        setTitle("Redigera " + (menu.type == 0 ? "lunchmeny" : "middagsmeny"));
+                        setTitle("Redigera " + menu.getMenuTypeString() + "meny");
                         adapter = new MenuAdapter(MenuActivity.this, menu, editMenu, MenuActivity.this);;
                         rv.setAdapter(adapter);
                     }
@@ -119,7 +119,7 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
 
                     if (menus != null) {
                         Menu menu = Menu.mergedMenuAtCurrentTime(menus);
-                        setTitle(menu.type == 0 ? "Lunchmeny" : "Middagsmeny");
+                        setTitle(menu.getMenuTypeString() + "meny");
                         adapter = new MenuAdapter(MenuActivity.this, menu, editMenu, MenuActivity.this);
                         rv.setAdapter(adapter);
                     }

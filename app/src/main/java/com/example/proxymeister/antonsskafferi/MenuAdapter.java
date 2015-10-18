@@ -30,7 +30,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     private void failedToRemoveRow(int pos) {
         notifyItemChanged(pos);
-        Toast.makeText(context, "Gick inte att ta bort", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Kunde inte ta bort", Toast.LENGTH_SHORT).show();
     }
 
     private interface Row {

@@ -80,7 +80,7 @@ public class MenuListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder vh, int position) {
             final Menu menu = menus.get(position);
-            vh.text1.setText(menu.type == 0 ? "Lunchmeny" : "Middagsmeny");
+            vh.text1.setText(menu.getMenuTypeString());
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
