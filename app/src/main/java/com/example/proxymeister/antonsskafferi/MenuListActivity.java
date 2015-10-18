@@ -18,12 +18,16 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.Menu;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit.Callback;
@@ -229,12 +233,38 @@ public class MenuListActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_menu) {
 
+            final View view = LayoutInflater.from(this).inflate(R.layout.activity_menu_list_new_menu, null);
+
+            // Set default dates to today
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date today = new Date();
+            ((TextView)view.findViewById(R.id.start_date)).setText(sdf.format(today));
+            ((TextView)view.findViewById(R.id.stop_date)).setText(sdf.format(today));
+
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Skapa meny");
-            builder.setView(R.layout.activity_menu_list_new_menu);
+            builder.setView(view);
             builder.setPositiveButton("Skapa meny", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    TextView startDate = (TextView)view.findViewById(R.id.start_date);
+                    TextView stopDate = (TextView)view.findViewById(R.id.start_date);
+                    RadioButton button0 = (RadioButton)view.findViewById(R.id.radioButton0);
+                    RadioButton button1 = (RadioButton)view.findViewById(R.id.radioButton1);
 
+                    Menu m = new Menu();
+
+                    try {
+                        m.start_date = sdf.parse(startDate.getText().toString());
+                        m.stop_date = sdf.parse(startDate.getText().toString());
+                    } catch (ParseException e) {
+                        Toast.makeText(MenuListActivity.this, "Felaktigt datumformat", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    m.type = button0.isChecked() ? 0 : button1.isChecked() ? 1 : 2;
+
+                    addMenu(m, dialog);
                 }
             })
             .setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
@@ -242,8 +272,8 @@ public class MenuListActivity extends AppCompatActivity {
                     dialog.dismiss();
                 }
             });
-
             builder.create().show();
+
 
             return true;
         }
@@ -251,5 +281,23 @@ public class MenuListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void addMenu(Menu menu, final DialogInterface dialog) {
+
+        Utils.getApi(this).createMenu(menu).enqueue(new Callback<Void>() {
+            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    refreshData();
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(MenuListActivity.this, "Kunde inte skapa menyn", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            public void onFailure(Throwable t) {
+                Toast.makeText(MenuListActivity.this, "Ingen anslutning", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 
 }

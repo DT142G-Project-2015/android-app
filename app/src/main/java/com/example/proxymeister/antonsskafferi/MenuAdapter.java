@@ -2,6 +2,7 @@ package com.example.proxymeister.antonsskafferi;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,6 +55,16 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                     expand();
                 }
             });
+
+            if (editMode) {
+                vh.addItem.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent i = ItemActivity.getPickItemIntent(context);
+                        i.putExtra("group-id", group.id);
+                        context.startActivity(i);
+                    }
+                });
+            }
         }
 
         public void delete() {
@@ -142,6 +153,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 public void onResponse(Response<Void> response, Retrofit retrofit) {
                     if (response.isSuccess()) {
                         rows.remove(pos);
+                        parentGroup.items.remove(item);
                         notifyItemRemoved(pos);
                     } else
                         failedToRemoveRow(pos);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:padding="8dp">
+    android:padding="16dp">
 
 
     <TableRow
@@ -15,7 +15,7 @@
             android:text="Typ av meny:"
             android:layout_column="0" />
 
-        <LinearLayout
+        <RadioGroup
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,16 +25,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lunch"
-                android:id="@+id/radioButton"
+                android:id="@+id/radioButton0"
+                android:checked="true" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A'la carte"
+                android:id="@+id/radioButton1"
                 android:checked="false" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Middag"
+                android:text="Statisk"
                 android:id="@+id/radioButton2"
                 android:checked="false" />
-        </LinearLayout>
+        </RadioGroup>
     </TableRow>
 
     <TableRow
@@ -53,7 +60,7 @@
             android:layout_height="wrap_content"
             android:inputType="date"
             android:ems="10"
-            android:id="@+id/editText"
+            android:id="@+id/start_date"
             android:layout_column="1"
             android:text="2015-01-31" />
     </TableRow>
@@ -87,7 +94,7 @@
             android:layout_height="wrap_content"
             android:inputType="date"
             android:ems="10"
-            android:id="@+id/editText3"
+            android:id="@+id/stop_date"
             android:layout_column="1" />
     </TableRow>
 

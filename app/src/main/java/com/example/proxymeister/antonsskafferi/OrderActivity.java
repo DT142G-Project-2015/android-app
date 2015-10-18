@@ -127,16 +127,29 @@ public class OrderActivity extends AppCompatActivity {
 
                         IdHolder idHolder = response.body();  // only gets OrderGroupItem id
 
-                        Menu.Item item = (Menu.Item)result.getSerializableExtra("picked-item");
+                        final Menu.Item item = (Menu.Item)result.getSerializableExtra("picked-item");
                         item.id = idHolder.id;
 
                         if (item.type == 2) { // if meat
-                            new NoteDialogHandler(item, groupId, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
+                            NoteDialogHandler handler = new NoteDialogHandler(item, groupId, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
                                 @Override
                                 public void onDone() {
+
+                                    Intent intent = MenuActivity.getPickItemIntent(OrderActivity.this);
+                                    intent.putExtra("order-id", orderId);
+                                    intent.putExtra("group-id", groupId);
+                                    intent.putExtra("item-id", itemId);
+                                    intent.putExtra("pos", pos);
+                                    Toast.makeText(OrderActivity.this, "Välj tillbehör till " + item.name, Toast.LENGTH_LONG).show();
+
+                                    startActivityForResult(intent, REQUEST_CODE_PICK_SUB_ITEM);
+
                                     getAllOrders(pos);
                                 }
                             });
+                            handler.setTitle("Välj tillagning: ");
+                            handler.showNoteDialogCooking();
+
                         } else {
                             getAllOrders(pos);
                         }
@@ -205,7 +218,6 @@ public class OrderActivity extends AppCompatActivity {
                 if (i == activePosition) {
                     groupHolder.setVisibility(View.VISIBLE);
                     viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
-                    viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
                     viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
                     viewHolder.mPayedButton.setVisibility(View.VISIBLE);
                     viewHolder.expanded = true;
@@ -383,6 +395,9 @@ public class OrderActivity extends AppCompatActivity {
                                     }
                                 });
 
+                                handler.setTitle("Lägg till notering: ");
+                                handler.showNoteDialog();
+
                             }
                         };
                         addnotebtn.setOnClickListener(addnotebuttonListener);
@@ -437,6 +452,8 @@ public class OrderActivity extends AppCompatActivity {
                                             getAllOrders(i);
                                         }
                                     });
+                                    handler.setTitle("Lägg till notering för tillbehör: ");
+                                    handler.showNoteDialog();
 
                                 }
                             };
@@ -511,7 +528,6 @@ public class OrderActivity extends AppCompatActivity {
                         if (!viewHolder.expanded) {
                             groupHolder.setVisibility(View.VISIBLE);
                             viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
-                            viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
                             viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
                             viewHolder.mPayedButton.setVisibility(View.VISIBLE);
                             viewHolder.expanded = true;
@@ -519,7 +535,6 @@ public class OrderActivity extends AppCompatActivity {
                         } else {
                             groupHolder.setVisibility(View.GONE);
                             viewHolder.mTotPriceTextView.setVisibility(View.GONE);
-                            viewHolder.mOrderTextView.setPadding(20, 20, 20, 20);
                             viewHolder.mAddGroupButton.setVisibility(View.GONE);
                             viewHolder.mPayedButton.setVisibility(View.GONE);
                             viewHolder.expanded = false;
