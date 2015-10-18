@@ -11,8 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -24,7 +22,9 @@ import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
 import com.example.proxymeister.antonsskafferi.model.Group;
+import com.example.proxymeister.antonsskafferi.model.IdHolder;
 import com.example.proxymeister.antonsskafferi.model.Item;
+import com.example.proxymeister.antonsskafferi.model.Menu;
 import com.example.proxymeister.antonsskafferi.model.Note;
 import com.example.proxymeister.antonsskafferi.model.Order;
 
@@ -36,10 +36,15 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-import static com.example.proxymeister.antonsskafferi.model.Group.Status.*;
+import static com.example.proxymeister.antonsskafferi.model.Group.Status.Done;
+import static com.example.proxymeister.antonsskafferi.model.Group.Status.Initial;
+import static com.example.proxymeister.antonsskafferi.model.Group.Status.ReadyForKitchen;
+import static com.example.proxymeister.antonsskafferi.model.Group.Status.ReadyToServe;
 
 public class OrderActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE_PICK_ITEM = 1;
+    private static final int REQUEST_CODE_PICK_SUB_ITEM = 2;
 
     private List<Order> orders;
     private int activePosition;
@@ -108,10 +113,48 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, final Intent result) {
 
-        getAllOrders(data.getIntExtra("result", 1));
+        if (resultCode == RESULT_OK) {
+            final int orderId = result.getIntExtra("order-id", 0);
+            final int groupId = result.getIntExtra("group-id", 0);
+            final int itemId = result.getIntExtra("item-id", 0);
+            final int pos = result.getIntExtra("pos", -1);
 
+            Callback<IdHolder> callback = new Callback<IdHolder>() {
+                @Override public void onResponse(Response<IdHolder> response, Retrofit retrofit) {
+                    if (response.isSuccess()) {
+
+                        IdHolder idHolder = response.body();  // only gets OrderGroupItem id
+
+                        Menu.Item item = (Menu.Item)result.getSerializableExtra("picked-item");
+                        item.id = idHolder.id;
+
+                        if (item.type == 2) { // if meat
+                            new NoteDialogHandler(item, groupId, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
+                                @Override
+                                public void onDone() {
+                                    getAllOrders(pos);
+                                }
+                            });
+                        } else {
+                            getAllOrders(pos);
+                        }
+                    }
+                }
+
+                @Override public void onFailure(Throwable t) {}
+            };
+
+            Menu.Item item = (Menu.Item)result.getSerializableExtra("picked-item");
+
+            if(requestCode == REQUEST_CODE_PICK_ITEM)
+                Utils.getApi(this).addItem(item, orderId, groupId).enqueue(callback);
+
+            if (requestCode == REQUEST_CODE_PICK_SUB_ITEM)
+                Utils.getApi(this).addSubItem(item, orderId, groupId, itemId).enqueue(callback);
+
+        }
 
     }
 
@@ -204,12 +247,11 @@ public class OrderActivity extends AppCompatActivity {
                     OnClickListener additem = new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(OrderActivity.this, OrderMealActivity.class);
+                            Intent intent = MenuActivity.getPickItemIntent(OrderActivity.this);
                             intent.putExtra("order-id", orderId);
                             intent.putExtra("group-id", groupID);
                             intent.putExtra("pos", i);
-                            startActivityForResult(intent, 1);
-
+                            startActivityForResult(intent, REQUEST_CODE_PICK_ITEM);
                         }
                     };
                     mAddItemButton.setOnClickListener(additem);
@@ -274,12 +316,12 @@ public class OrderActivity extends AppCompatActivity {
                             public boolean onLongClick(View v) {
                                 Toast.makeText(OrderActivity.this, "Lång klick " + orderId + " " + g.id + " " + it.id, Toast.LENGTH_SHORT).show();
 
-                                Intent intent = new Intent(OrderActivity.this, OrderSubItemActivity.class);
+                                Intent intent = MenuActivity.getPickItemIntent(OrderActivity.this);
                                 intent.putExtra("order-id", orderId);
                                 intent.putExtra("group-id", g.id);
                                 intent.putExtra("item-id", it.id);
                                 intent.putExtra("pos", i);
-                                startActivityForResult(intent, 1);
+                                startActivityForResult(intent, REQUEST_CODE_PICK_SUB_ITEM);
 
                                 return true;
                             }
@@ -574,29 +616,6 @@ public class OrderActivity extends AppCompatActivity {
         });
 
         dialog.show();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_order, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void deleteItem(int orderId, int groupId, int itemId) {

@@ -1,11 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/actionbar_settings" android:title="@string/actionbar_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
 
-
-    <item android:id="@+id/actionbarlog_out" android:title="@string/actionbarlog_out"
+    <item android:id="@+id/actionbar_logout" android:title="@string/actionbar_logout"
         android:orderInCategory="100" app:showAsAction="never" />
 
 </menu>

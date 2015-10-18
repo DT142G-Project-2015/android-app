@@ -155,7 +155,7 @@ public class NoteDialogHandler implements View.OnClickListener {
         });
 
         if(isItem) {
-            if(!item.notes.isEmpty()) {
+            if(item.notes != null && !item.notes.isEmpty()) {
                 for (Note note : item.notes) {
                     addednotes.add(" " + note.text);
                     addednotesid.add(note.id);
@@ -165,7 +165,7 @@ public class NoteDialogHandler implements View.OnClickListener {
             }
         }
         else {
-            if (!subitem.notes.isEmpty()) {
+            if (subitem.notes != null && !subitem.notes.isEmpty()) {
                 for (Note note : subitem.notes) {
                     addednotes.add(" " + note.text);
                     addednotesid.add(note.id);

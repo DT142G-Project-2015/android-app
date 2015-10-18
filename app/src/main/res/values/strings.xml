@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">Antons Skafferi</string>
     <string name="hello_world">Hello world!</string>
-    <string name="actionbar_settings">Settings</string>
-    <string name="actionbar_exit">Exit</string>
-    <string name="actionbarlog_out">logout</string>
+    <string name="actionbar_logout">Logga ut</string>
     <string name="order">Beställningar</string>
     <string name="kitchen">Köket</string>
     <string name="menu">Meny</string>

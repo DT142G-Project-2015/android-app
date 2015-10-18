@@ -20,7 +20,6 @@
             android:layout_marginBottom="20dp"
             />
 
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="95dp"
@@ -59,6 +58,6 @@
             android:id="@+id/button4"
             style="@style/ButtonTheme"
             android:layout_marginTop="5dp"
-            android:onClick="startLagerActivity"/>
+            android:onClick="openLagerActivity"/>
 
 </LinearLayout>

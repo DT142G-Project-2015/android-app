@@ -1,10 +1,9 @@
 package com.example.proxymeister.antonsskafferi.model;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-public class Item {
+public class Item implements Serializable {
     public int id;
     public String name;
     public String description;

@@ -1,34 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="fill_parent" android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp"
-    android:orientation="vertical" tools:context=".MenuListActivity"
-    android:layout_centerInParent="true">
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-
-    <Button
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:text="Lunch"
-        android:textSize="17dp"
-        android:gravity="center"
-        android:id="@+id/button5"
-        android:layout_marginTop="250dp"
-        android:textAlignment="center"/>
-
-    <Button
-
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:textSize="17dp"
-        android:text="Middag"
-        android:textAlignment="center"
-        android:id="@+id/button6"
-        android:layout_marginTop="40dp"
-         />
+        android:layout_height="match_parent"
+        android:id="@+id/rv" />
 
 </LinearLayout>

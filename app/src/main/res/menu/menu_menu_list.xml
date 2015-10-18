@@ -2,6 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.proxymeister.antonsskafferi.MenuListActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+    <item android:id="@+id/action_add_menu" android:title="Lägg till meny"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

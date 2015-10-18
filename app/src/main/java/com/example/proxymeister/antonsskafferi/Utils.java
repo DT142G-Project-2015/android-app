@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 
 import com.example.proxymeister.antonsskafferi.model.ApiInterface;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -46,11 +48,7 @@ public class Utils {
         String BASE_URL = "http://46.254.15.8/api/";
 
 
-
         final String basicAuth = "Basic " + new String(Base64.encode((username + ":" + password).getBytes(), Base64.NO_WRAP));
-
-        System.out.println(basicAuth);
-
 
         OkHttpClient client = new OkHttpClient();
         client.interceptors().add(new Interceptor() {
@@ -71,11 +69,12 @@ public class Utils {
             }
         });
 
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         return retrofit.create(ApiInterface.class);
     }
