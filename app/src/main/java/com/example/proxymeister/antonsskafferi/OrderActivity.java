@@ -218,7 +218,6 @@ public class OrderActivity extends AppCompatActivity {
                 if (i == activePosition) {
                     groupHolder.setVisibility(View.VISIBLE);
                     viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
-                    viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
                     viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
                     viewHolder.mPayedButton.setVisibility(View.VISIBLE);
                     viewHolder.expanded = true;
@@ -529,7 +528,6 @@ public class OrderActivity extends AppCompatActivity {
                         if (!viewHolder.expanded) {
                             groupHolder.setVisibility(View.VISIBLE);
                             viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
-                            viewHolder.mOrderTextView.setPadding(20, 20, 20, 5);
                             viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
                             viewHolder.mPayedButton.setVisibility(View.VISIBLE);
                             viewHolder.expanded = true;
@@ -537,7 +535,6 @@ public class OrderActivity extends AppCompatActivity {
                         } else {
                             groupHolder.setVisibility(View.GONE);
                             viewHolder.mTotPriceTextView.setVisibility(View.GONE);
-                            viewHolder.mOrderTextView.setPadding(20, 20, 20, 20);
                             viewHolder.mAddGroupButton.setVisibility(View.GONE);
                             viewHolder.mPayedButton.setVisibility(View.GONE);
                             viewHolder.expanded = false;

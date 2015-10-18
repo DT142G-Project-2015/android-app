@@ -28,6 +28,9 @@ public interface ApiInterface {
     Call<List<Menu>> getMenus();
 
 
+    @POST("menu")
+    Call<Void> createMenu(@Body Menu menu);
+
     @DELETE("menu/{menu_id}")
     Call<Void> deleteMenu(@Path("menu_id") int menuId);
 
