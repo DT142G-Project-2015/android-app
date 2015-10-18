@@ -94,7 +94,7 @@ public class LagerActivity extends AppCompatActivity  {
 
                     articles = response.body();
 
-                    if (!articles.equals(null))
+                    if (articles != null)
                     {
                         for (Article p : articles)
                         {
@@ -119,6 +119,8 @@ public class LagerActivity extends AppCompatActivity  {
 
                     rv.setItemAnimator(new DefaultItemAnimator());
                     rv.setAdapter(lAdapter);
+
+                    Log.i("getart", "succ: ");
                 }
 
                 @Override
@@ -149,7 +151,7 @@ public class LagerActivity extends AppCompatActivity  {
 
                     strings.clear();
 
-                    if (!articles.equals(null))
+                    if (articles != null)
                     {
                         for (Article p : articles)
                         {
@@ -202,7 +204,7 @@ public class LagerActivity extends AppCompatActivity  {
             builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     try {
-                        deleteID = articles.get(lr.pos).id;
+                        deleteID = articles.get(lr.pos).article_id;
 
                         deleteArticle();
                         dialog.dismiss();
@@ -253,6 +255,18 @@ public class LagerActivity extends AppCompatActivity  {
             category.setInputType(InputType.TYPE_CLASS_TEXT);
             date.setInputType(InputType.TYPE_CLASS_DATETIME);
 
+            // previous inserts
+            if(!body.isVoid()) {
+                name.setText(body.article_name);
+                if(body.amount != 0) {
+                    amount.setText(Integer.toString((int) (body.amount)));
+                }
+                unit.setText(body.unit);
+                date.setText(body.exp_date);
+                sp.setSelection(body.category_id);
+            }
+
+
             // title per input object
             final TextView name_title = new TextView(LagerActivity.this);
             name_title.setText("  Namn  (*)");
@@ -291,21 +305,33 @@ public class LagerActivity extends AppCompatActivity  {
                 public void onClick(DialogInterface dialog, int id) {
 
                     try {
-                        body.name = name.getText().toString();
-                        if (body.name.equals("")) throw new Throwable("Ange namn");
+                        body.article_name = name.getText().toString();
+                        if (body.article_name.equals("")) throw new Throwable("Ange namn");
 
                         body.unit = unit.getText().toString();
                         if (body.unit.equals("")) throw new Throwable("Ange enhet");
 
                         if (amount.getText().toString().equals(""))
                             throw new Throwable("Ange mängd");
-                        body.amount = Integer.parseInt(amount.getText().toString());
+                        body.amount = Double.parseDouble(amount.getText().toString());
 
                         body.exp_date = date.getText().toString();
                         if (!(isValidDate(body.exp_date)) && !(body.exp_date.equals("")))
                             throw new Throwable("Fel format på utgångsdatum");
 
-                        body.category = sp.getSelectedItem().toString();
+                        switch(sp.getSelectedItem().toString())
+                        {
+                            case "Tillbehör": body.category_id = 1;
+                                break;
+                            case "Grönsaker": body.category_id = 2;
+                                break;
+                            case "Råvaror": body.category_id = 3;
+                                break;
+                            case "Färskvara": body.category_id = 4;
+                                break;
+                            case "Dryck": body.category_id = 5;
+                                break;
+                        }
 
                         createArticle();
                         dialog.dismiss();
@@ -342,31 +368,27 @@ public class LagerActivity extends AppCompatActivity  {
             LinearLayout ll = new LinearLayout(LagerActivity.this);
             ll.setOrientation(LinearLayout.VERTICAL); //1 is for vertical orientation
 
-
-            // spinner for category
-            String[] s = { "Dryck", "Grönsak", "Råvara", "Färskvara", "Tillbehör" };
-
-            final ArrayAdapter<String> adp = new ArrayAdapter<>(LagerActivity.this,
-                    R.layout.spinner_item, s);
-
-            final Spinner sp = new Spinner(LagerActivity.this);
-            sp.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            sp.setAdapter(adp);
-
-
             // input objects
             final EditText name = new EditText(LagerActivity.this);
             final EditText amount = new EditText(LagerActivity.this);
             final EditText unit = new EditText(LagerActivity.this);
-            final EditText category = new EditText(LagerActivity.this);
             final EditText date = new EditText(LagerActivity.this);
 
             // constraints for input objects
             name.setInputType(InputType.TYPE_CLASS_TEXT);
             amount.setInputType(InputType.TYPE_CLASS_NUMBER);
             unit.setInputType(InputType.TYPE_CLASS_TEXT);
-            category.setInputType(InputType.TYPE_CLASS_TEXT);
             date.setInputType(InputType.TYPE_CLASS_DATETIME);
+
+
+            // previous inserts
+            retrievedArticle = articles.get(lr.pos);
+            body = retrievedArticle;
+            name.setText(body.article_name);
+            amount.setText(String.valueOf(body.amount));
+            unit.setText(body.unit);
+            date.setText(body.exp_date);
+
 
             // title per input object
             final TextView name_title = new TextView(LagerActivity.this);
@@ -377,8 +399,6 @@ public class LagerActivity extends AppCompatActivity  {
             amount_title.setText("  Mängd");
             final TextView date_title = new TextView(LagerActivity.this);
             date_title.setText("  Utgångsdatum (YYYY/MM/DD, YYYY-MM-DD)");
-            final TextView category_title = new TextView(LagerActivity.this);
-            category_title.setText("  Kategori");
 
             // insert to layout
             ll.addView(new TextView(LagerActivity.this));
@@ -390,8 +410,6 @@ public class LagerActivity extends AppCompatActivity  {
             ll.addView(amount);
             ll.addView(date_title);
             ll.addView(date);
-            ll.addView(category_title);
-            ll.addView(sp);
 
             // set view for dialog
             builder.setView(ll);
@@ -404,32 +422,19 @@ public class LagerActivity extends AppCompatActivity  {
             builder.setPositiveButton("Genmför", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     try {
-                        retrievedArticle = articles.get(lr.pos);
-                        body.id = retrievedArticle.id;
-
-                        body.name = name.getText().toString();
-                        if (body.name.equals("")) body.name = retrievedArticle.name;
+                        body.article_name = name.getText().toString();
+                        if (body.article_name.equals("")) throw new Throwable("Ange namn");
 
                         body.unit = unit.getText().toString();
-                        if (body.unit.equals("")) body.unit = retrievedArticle.unit;
+                        if (body.unit.equals("")) throw new Throwable("Ange enhet");
 
-                        if (amount.getText().toString().equals("")) {
-                            body.amount = retrievedArticle.amount;
-                        } else {
-                            body.amount = Integer.parseInt(amount.getText().toString());
-                        }
+                        if (amount.getText().toString().equals(""))
+                            throw new Throwable("Ange mängd");
+                        body.amount = Double.parseDouble(amount.getText().toString());
 
-                        if (date.getText().toString().equals("")) {
-                            body.exp_date = retrievedArticle.exp_date;
-                        } else {
-                            body.exp_date = date.getText().toString();
-                            if (!(isValidDate(body.exp_date)) && !(body.exp_date.equals("")))
-                                throw new Throwable("Fel format på utgångsdatum");
-                        }
-
-                        body.category = sp.getSelectedItem().toString();
-
-                        System.out.println(body.category);
+                        body.exp_date = date.getText().toString();
+                        if (!(isValidDate(body.exp_date)) && !(body.exp_date.equals("")))
+                            throw new Throwable("Fel format på utgångsdatum");
 
                         changeArticle();
                         dialog.dismiss();
@@ -440,6 +445,7 @@ public class LagerActivity extends AppCompatActivity  {
                         dialog.dismiss();
                         String s = t.getMessage();
                         createToaster(s);
+                        changeArticleDialog();
                     }
                 }
             });
@@ -467,7 +473,8 @@ public class LagerActivity extends AppCompatActivity  {
 
         public void createArticle() {
 
-            Article newArticle = new Article(body.name, body.category, body.amount, body.unit, body.exp_date);
+            Article newArticle = new Article(body.article_name, body.amount, body.unit, body.exp_date,
+                    body.category_id);
             Call<Void> call = Utils.getApi(LagerActivity.this).createArticle(newArticle);
             call.enqueue(new Callback<Void>() {
                 @Override
@@ -484,8 +491,9 @@ public class LagerActivity extends AppCompatActivity  {
 
         public void changeArticle()
         {
-            Article newArticle = new Article(body.name, body.category, body.amount, body.unit, body.exp_date);
-            Call<Void> call = Utils.getApi(LagerActivity.this).changeArticle(body.id, newArticle);
+            Article newArticle = new Article(body.article_name, body.amount, body.unit, body.exp_date,
+                    body.category_id);
+            Call<Void> call = Utils.getApi(LagerActivity.this).changeArticle(body.article_id, newArticle);
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Response<Void> response, Retrofit retrofit) {
@@ -532,7 +540,7 @@ public class LagerActivity extends AppCompatActivity  {
         // check if id exists
         public boolean idDoesNotExist() {
             for (int i = 0; i < articles.size(); i++) {
-                if (articles.get(i).id == deleteID) {
+                if (articles.get(i).article_id == deleteID) {
                     return false;
                 }
             }
