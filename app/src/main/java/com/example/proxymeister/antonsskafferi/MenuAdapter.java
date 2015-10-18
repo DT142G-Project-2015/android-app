@@ -190,22 +190,19 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             rows.add(groupRow);
         }
 
-        if (!editMode) {
-            // auto expand all groups
-            new Handler().post(new Runnable() {
-                @Override public void run() {
-                    for (final Row r : rows) {
-                        if (r instanceof Group)
-                            new Handler().post(new Runnable() {
-                                @Override public void run() {
-                                    ((Group) r).expand();
-                                }
-                            });
-                    }
+        // auto expand all groups
+        new Handler().post(new Runnable() {
+            @Override public void run() {
+                for (final Row r : rows) {
+                    if (r instanceof Group)
+                        new Handler().post(new Runnable() {
+                            @Override public void run() {
+                                ((Group) r).expand();
+                            }
+                        });
                 }
-            });
-        }
-
+            }
+        });
     }
 
     @Override
