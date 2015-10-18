@@ -14,46 +14,50 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
-            android:layout_weight="40"
+            android:layout_weight="85"
             android:src="@drawable/logo_image"
             android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginBottom="20dp"
             />
 
-
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:textSize="17dp"
             android:text="@string/order"
             android:id="@+id/button"
             style="@style/ButtonTheme"
             android:onClick="openOrderActivity" />
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:textSize="17dp"
             android:text="@string/kitchen"
             android:id="@+id/button2"
             style="@style/ButtonTheme"
-            android:onClick="openKitchenActivity"/>
+            android:onClick="openKitchenActivity"
+            android:layout_marginTop="5dp"/>
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:textSize="17dp"
             android:text="@string/menu"
             android:id="@+id/button3"
             style="@style/ButtonTheme"
             android:onClick="openMenuActivity"/>
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:textSize="17dp"
+            android:layout_marginBottom="0dp"
             android:text="@string/lager"
             android:id="@+id/button4"
             style="@style/ButtonTheme"
+            android:layout_marginTop="5dp"
             android:onClick="openLagerActivity"/>
 
 </LinearLayout>

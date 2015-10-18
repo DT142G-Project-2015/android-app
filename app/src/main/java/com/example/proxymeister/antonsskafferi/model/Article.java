@@ -1,42 +1,42 @@
 package com.example.proxymeister.antonsskafferi.model;
 
 public class Article {
-    public int id;
-    public String name;
-    public String category;
-    // public String category; unlikely used
+    public int article_id;
+    public String article_name;
     public double amount;
     public String unit;
     public String exp_date;     // public String days_to_exp ( depending on solution )
+    public int category_id;
+
 
     public Article()
     {
-        id = 0;
-        name = "";
-        category = "";
+        article_id = 0;
+        article_name = "";
+        category_id = 0;
         amount = 0;
         unit = "";
         exp_date = "";
     }
 
     //Constructor
-    public Article(String startname, String startcategory, double startamount, String startunit, String startexp_date) {
-        name = startname;
-        category = startcategory;
+    public Article(String startname, double startamount, String startunit, String startexp_date, int startcategory) {
+        article_name = startname;
         amount = startamount;
         unit = startunit;
         exp_date = startexp_date;
+        category_id = startcategory;
     }
 
     @Override
     public String toString()
     {
-        return (name + " / " + Double.toString(amount) + " " + unit + " / " +  exp_date);
+        return ( article_name + " / " + Double.toString(amount) + " " + unit + " / " +  exp_date);
     }
 
     public boolean isVoid()
     {
-        return ( id == 0 && name.equals("") && category.equals("")
+        return ( article_id == 0 && article_name.equals("") && category_id == 0
                 && amount == 0 && unit.equals("") && exp_date.equals("") );
     }
 }
