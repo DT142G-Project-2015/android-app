@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User Name"
+        android:text="Användarnamn"
         android:textColor="#ffff"
         android:id="@+id/textView" />
 
@@ -22,7 +22,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Password"
+        android:text="Lösenord"
         android:id="@+id/textView2" />
 
     <EditText
@@ -34,20 +34,23 @@
         android:id="@+id/editTextPassword" />
 
     <Button
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Logga in"
         android:id="@+id/button"
-        />
+        android:textAllCaps="false"
+        android:layout_marginTop="15dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Attempts Left:"
+        android:text="Antal försök kvar"
         android:id="@+id/textView4"
         android:layout_below="@+id/editText2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textSize="25dp" />
+        android:textSize="20sp"
+        android:layout_marginLeft="5dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
