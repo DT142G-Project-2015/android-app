@@ -51,15 +51,6 @@
             android:text="Klar"/>
     </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textcommonnotes"
-            android:text="@string/text_common_notes"
-            android:paddingTop="10dp"
-            android:textSize="@dimen/medium_textsize"
-            android:layout_marginStart="6dp"
-            android:layout_marginLeft="6dp"/>
 
     <TextView
         android:layout_width="wrap_content"
