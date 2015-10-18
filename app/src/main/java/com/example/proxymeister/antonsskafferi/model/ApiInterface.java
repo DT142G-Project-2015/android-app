@@ -27,6 +27,10 @@ public interface ApiInterface {
     @GET("menu")
     Call<List<Menu>> getMenus();
 
+
+    @DELETE("menu/{menu_id}")
+    Call<Void> deleteMenu(@Path("menu_id") int menuId);
+
     // Removes an item from the menu group
     @DELETE("menu/{menu_id}/group/{group_id}/item/{item_id}")
     Call<Void> deleteMenuItem(@Path("menu_id") int menuId, @Path("group_id") int groupId, @Path("item_id") int itemId);
@@ -34,6 +38,8 @@ public interface ApiInterface {
     @DELETE("menu/{menu_id}/group/{group_id}")
     Call<Void> deleteMenuGroup(@Path("menu_id") int menuId, @Path("group_id") int groupId);
 
+    @POST("menu/{menu_id}/group")
+    Call<Group> createMenuGroup(@Body Menu.Group group, @Path("menu_id") int menuId);
 
     //// Item Resource
 

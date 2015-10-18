@@ -1,13 +1,21 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -24,9 +32,30 @@ import retrofit.Retrofit;
 
 public class MenuListActivity extends AppCompatActivity {
 
+
     class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHolder> {
 
-        List<Menu> menus = new ArrayList<>();
+        public List<Menu> menus = new ArrayList<>();
+
+        private Integer selectedRow;
+
+
+        public Integer getSelectedRow() {
+            return selectedRow;
+        }
+
+        public void setSelectedRow(Integer selectedRow) {
+
+            if (this.selectedRow != null)
+                notifyItemChanged(this.selectedRow);
+            if (selectedRow != null)
+                notifyItemChanged(selectedRow);
+
+            this.selectedRow = selectedRow;
+        }
+
+
+
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -63,6 +92,11 @@ public class MenuListActivity extends AppCompatActivity {
                     startActivity(i);
                 }
             });
+
+            if (Integer.valueOf(position).equals(selectedRow))
+                vh.itemView.setBackgroundColor(Color.BLACK);
+            else
+                vh.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
 
         @Override
@@ -79,6 +113,8 @@ public class MenuListActivity extends AppCompatActivity {
 
     private MenuListAdapter adapter;
     private RecyclerView rv;
+    private ActionMode actionMode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +126,69 @@ public class MenuListActivity extends AppCompatActivity {
         rv.setLayoutManager(llm);
         adapter = new MenuListAdapter();
         rv.setAdapter(adapter);
-
         setTitle("Menyredigeraren");
+
+
+        final GestureDetectorCompat gestureDetector = new GestureDetectorCompat(this, new GestureDetector.SimpleOnGestureListener() {
+            public void onLongPress(MotionEvent e) {
+                if (actionMode != null) {
+                    actionMode.finish();
+                }
+                View view = rv.findChildViewUnder(e.getX(), e.getY());
+                adapter.setSelectedRow(rv.getChildAdapterPosition(view));
+
+                actionMode = startActionMode(new ActionMode.Callback() {
+                    public boolean onCreateActionMode(ActionMode mode, android.view.Menu menu) {
+                        MenuInflater inflater = mode.getMenuInflater();
+                        inflater.inflate(R.menu.menu_menu_list_selected, menu);
+                        return true;
+                    }
+                    public boolean onPrepareActionMode(ActionMode mode, android.view.Menu menu) {
+                        return false;
+                    }
+                    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                        if (item.getItemId() == R.id.action_remove_menu) {
+                            deleteMenu();
+                            return true;
+                        }
+                        return false;
+                    }
+                    public void onDestroyActionMode(ActionMode mode) {
+                        actionMode = null;
+                        adapter.setSelectedRow(null);
+                    }
+                });
+                super.onLongPress(e);
+            }
+        });
+
+        rv.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                gestureDetector.onTouchEvent(e);
+                return false;
+            }
+        });
+
+
+
         refreshData();
+    }
+
+    private void deleteMenu() {
+        final Integer row = adapter.getSelectedRow();
+        if (row != null) {
+            int id = adapter.menus.get(row).id;
+
+            Utils.getApi(this).deleteMenu(id).enqueue(new Callback<Void>() {
+                public void onResponse(Response<Void> response, Retrofit retrofit) {
+                    if (response.isSuccess()) {
+                        adapter.menus.remove((int)row);
+                        adapter.notifyItemRemoved(row);
+                    }
+                }
+                public void onFailure(Throwable t) {}
+            });
+        }
     }
 
     private void refreshData() {
@@ -132,6 +228,23 @@ public class MenuListActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_menu) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Skapa meny");
+            builder.setView(R.layout.activity_menu_list_new_menu);
+            builder.setPositiveButton("Skapa meny", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                }
+            })
+            .setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.create().show();
+
             return true;
         }
 

@@ -1,15 +1,19 @@
 package com.example.proxymeister.antonsskafferi;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.EditText;
 
+import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Menu;
 
 import java.util.List;
@@ -150,9 +154,39 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
             return true;
         }
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_menu_group) {
 
+
+            final EditText edit = new EditText(this);
+            edit.setHint("Namn");
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Skapa kategori");
+            builder.setView(edit);
+            builder.setPositiveButton("Skapa kategori", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                    Menu.Group g = new Menu.Group(edit.getText().toString());
+
+                    Utils.getApi(MenuActivity.this).createMenuGroup(g, menuId).enqueue(new Callback<Group>() {
+                        public void onResponse(Response<Group> response, Retrofit retrofit) {
+                            if (response.isSuccess()) {
+                                refreshData();
+                            }
+                        }
+
+                        public void onFailure(Throwable t) {
+
+                        }
+                    });
+                }
+            });
+            builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.create().show();
             return true;
         }
 
