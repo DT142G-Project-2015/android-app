@@ -39,6 +39,31 @@ public class NoteDialogHandler implements View.OnClickListener {
     private Dialog dialog;
     private boolean isItem;
 
+    public void showNoteDialogCooking() {
+        dialog.setContentView(R.layout.activity_order_add_new_note);
+
+
+        dialog.findViewById(R.id.buttonsmeat).setVisibility(View.VISIBLE);
+        dialog.findViewById(R.id.textmeat).setVisibility(View.GONE);
+        dialog.findViewById(R.id.newnotetext).setVisibility(View.GONE);
+        dialog.findViewById(R.id.addednotestext).setVisibility(View.GONE);
+        dialog.findViewById(R.id.dialogButtonDONE).setVisibility(View.GONE);
+        dialog.findViewById(R.id.dialogButtonCANCEL).setVisibility(View.GONE);
+
+
+
+
+
+        final Button mediumButton = (Button) dialog.findViewById(R.id.mediummeatbtn);
+        final Button rareButton = (Button) dialog.findViewById(R.id.raremeatbtn);
+        final Button welldoneButton = (Button) dialog.findViewById(R.id.welldonemeatbtn);
+        rareButton.setOnClickListener(this);
+        mediumButton.setOnClickListener(this);
+        welldoneButton.setOnClickListener(this);
+
+        dialog.show();
+    }
+
     public interface Callback {
         void onDone();
     }
@@ -52,7 +77,9 @@ public class NoteDialogHandler implements View.OnClickListener {
         this.groupId = gid;
         this.callback = callback;
         isItem = true;
-        showNoteDialog();
+        dialog = new Dialog(context);
+        Toast.makeText(context, orderId + " -> " + gid + " -> " + it.id, Toast.LENGTH_SHORT).show();
+        dialog.setContentView(R.layout.activity_order_add_new_note);
     }
 
     // Add no to subitem
@@ -65,7 +92,13 @@ public class NoteDialogHandler implements View.OnClickListener {
         this.groupId = gid;
         this.callback = callback;
         isItem = false;
-        showNoteDialog();
+        dialog = new Dialog(context);
+        dialog.setContentView(R.layout.activity_order_add_new_note);
+    }
+
+    public void setTitle(String title)
+    {
+        dialog.setTitle(title);
     }
 
 
@@ -87,19 +120,19 @@ public class NoteDialogHandler implements View.OnClickListener {
         }
 
         this.n.text = thenewnote;
-
-
-        addNote();
+        if(this.n.text.isEmpty())
+        {
+            Toast.makeText(context, "Fel: Ange notering eller tryck avbryt", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            addNote();
+        }
     }
 
 
     // Show dialogs for creating notes to an item
     public void showNoteDialog() {
-
-
-        dialog = new Dialog(context);
-        dialog.setContentView(R.layout.activity_order_add_new_note);
-        dialog.setTitle("Ny notering");
 
         if(isItem) {
             if (item.type == 2) {
@@ -155,23 +188,34 @@ public class NoteDialogHandler implements View.OnClickListener {
         });
 
         if(isItem) {
-            if(item.notes != null && !item.notes.isEmpty()) {
-                for (Note note : item.notes) {
-                    addednotes.add(" " + note.text);
-                    addednotesid.add(note.id);
-                }
+            if(item.notes != null)
+            {
+                if(!item.notes.isEmpty()) {
+                    for (Note note : item.notes) {
+                        addednotes.add(" " + note.text);
+                        addednotesid.add(note.id);
+                    }
 
-                listviewaddednotes.setAdapter(theAdapter);
+                    listviewaddednotes.setAdapter(theAdapter);
+                }
+                else
+                    dialog.findViewById(R.id.addednotestext).setVisibility(View.GONE);
             }
         }
         else {
-            if (subitem.notes != null && !subitem.notes.isEmpty()) {
-                for (Note note : subitem.notes) {
-                    addednotes.add(" " + note.text);
-                    addednotesid.add(note.id);
-                }
+            if (subitem.notes != null)
+            {
+                if(!subitem.notes.isEmpty())
+                {
+                    for (Note note : subitem.notes) {
+                            addednotes.add(" " + note.text);
+                            addednotesid.add(note.id);
+                        }
 
-                listviewaddednotes.setAdapter(theAdapter);
+                        listviewaddednotes.setAdapter(theAdapter);
+                }
+                else
+                    dialog.findViewById(R.id.addednotestext).setVisibility(View.GONE);
             }
         }
 
