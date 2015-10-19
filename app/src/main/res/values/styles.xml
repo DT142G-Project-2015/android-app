@@ -3,27 +3,32 @@
     <!-- OBS: Use the pre-set colors when assigning color to styles! -->
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat">
         <item name="colorButtonNormal">@color/button_black</item>
-        <item name="android:background">@color/background_grey</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:windowBackground">@color/old_background_grey</item>
+        <item name="colorPrimary">#675757</item>
+        <item name="colorPrimaryDark">#321A1A</item>
+        <item name="colorAccent">#ff5656</item>
+        <item name="alertDialogTheme">@style/AppCompatAlertDialogStyle</item>
+        <item name="android:dialogTheme">@style/AppCompatAlertDialogStyle</item>
+    </style>
 
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">#ff5656</item>
+        <item name="android:windowBackground">@color/old_background_grey</item>
     </style>
 
 
-    <style name="BackgroundGradient" parent="AppTheme">
-        <item name="android:background">@drawable/background_gradient</item>
-    </style>
 
-   <!-- Base button style -->
-    <style name="ButtonTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorButtonNormal">@color/button_black</item>
+
+    <!-- Base button style -->
+    <style name="ButtonTheme" parent="AppTheme">
+        <!-- NOTE: overridden in main's layout files: This button theme could be removed? -->
         <item name="android:textSize">@dimen/main_buttons_textsize</item>
-        <item name="android:textColor">@color/white</item>
     </style>
 
     <!-- Smaller button style -->
-    <style name="ButtonThemeSmall" parent="ButtonTheme">
+    <style name="ButtonThemeSmall" parent="AppTheme">
         <item name="android:textSize">@dimen/small_buttons_textsize</item>
     </style>
 
@@ -57,5 +62,6 @@
         <item name="android:paddingLeft">6dip</item>
         <item name="android:paddingRight">6dip</item>
     </style>
+
 
 </resources>
