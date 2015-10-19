@@ -1,8 +1,12 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private static boolean threadNotRunning = true;
         private int dflag = 0;
         private Thread client;
-        Button logout;
+        boolean logout;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -73,8 +77,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (id == R.id.actionbar_logout) {
-            finish();
-            return true;
+
+
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                SharedPreferences.Editor editor =sp.edit();
+                editor.clear();
+                editor.putString("username", "");
+                editor.putString("password", "");
+                editor.apply();
+                finish();
         }
 
         return super.onOptionsItemSelected(item);
