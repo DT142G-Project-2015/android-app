@@ -31,7 +31,7 @@ public class Article {
     @Override
     public String toString()
     {
-        return ( article_name + " / " + Double.toString(amount) + " " + unit + " / " +  exp_date);
+        return ( article_name + " | " + Double.toString(amount) + " " + unit + " | " +  exp_date);
     }
 
     public boolean isVoid()
