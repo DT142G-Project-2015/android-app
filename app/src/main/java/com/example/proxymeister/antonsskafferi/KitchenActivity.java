@@ -253,32 +253,33 @@ public class KitchenActivity extends AppCompatActivity {
                 for (String s : occur)
                     nodub.add(s);
 
-                for (Item item : groups.get(i).items) {
-                    if (item.type != 1)  {
-                        if (specialitems.contains(item)) {
-                            int occurrencesspecial = Collections.frequency(specialitems, item);
-                            if (occurrencesspecial == 1) {
-                                viewHolder.itemname.append("\n" + "   " + item.name);
-                                Log.e("error", "special" + "   " + item.name);
-                            } else {
-                                viewHolder.itemname.append("\n" + occurrencesspecial + " " + item.name);
-                                Log.e("error", "special" + occurrencesspecial + " " + item.name);
 
+                for(int n = 0; n < specialitems.size(); n++){
+
+                    if (specialitems.get(n).type != 1) {
+                        int occurrencesspecial = Collections.frequency(specialitems, specialitems.get(n));
+                        if (occurrencesspecial == 1) {
+                            viewHolder.itemname.append("\n" + "   " + specialitems.get(n).name);
+                            Log.e("error", "special" + "   " + specialitems.get(n).name);
+                        }
+                        if(occurrencesspecial > 1) {
+                            viewHolder.itemname.append("\n" + occurrencesspecial + " " + specialitems.get(n).name);
+                            Log.e("error", "special" + occurrencesspecial + " " + specialitems.get(n).name);
+                        }
+                        if (!specialitems.get(n).notes.isEmpty()) {
+                            viewHolder.itemname.append(": ");
+                            for (int j = 0; j < specialitems.get(n).notes.size(); j++) {
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + specialitems.get(n).notes.get(j).text + "</font></i>"));
+                                if (j != specialitems.get(n).notes.size() - 1)
+                                    viewHolder.itemname.append(", ");
                             }
-                            if (!item.notes.isEmpty()) {
-                                viewHolder.itemname.append(": ");
-                                for (int j = 0; j < item.notes.size(); j++) {
-                                    viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + item.notes.get(j).text + "</font></i>"));
-                                    if (j != item.notes.size() - 1)
-                                        viewHolder.itemname.append(", ");
-                                }
-                            }
-                            if(!item.subItems.isEmpty()) {
-                                for (Item subitem : item.subItems) {
-                                    viewHolder.itemname.append("\n" + "     ");
-                                    viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
-                                    if (!subitem.notes.isEmpty())
-                                        viewHolder.itemname.append(": ");
+                        }
+                        if (!specialitems.get(n).subItems.isEmpty()) {
+                            for (Item subitem : specialitems.get(n).subItems) {
+                                viewHolder.itemname.append("\n" + "     ");
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
+                                if (!subitem.notes.isEmpty()) {
+                                    viewHolder.itemname.append(": ");
                                     for (int k = 0; k < subitem.notes.size(); k++) {
                                         viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
                                         if (k != subitem.notes.size() - 1)
@@ -286,21 +287,32 @@ public class KitchenActivity extends AppCompatActivity {
                                     }
                                 }
                             }
-                            specialitems.remove(item);
                         }
-                        else
+                        for (int l = 0; l < occurrencesspecial; l++)
                         {
-                            int occurrences = Collections.frequency(occur, item.name);
-                            // If occurences is 1, just print the item.name
-                            // Otherwise, print the frequency and item.name
-                            if (occurrences == 1) {
-                                viewHolder.itemname.append("\n" + "   " + item.name);
-                                Log.e("error", "nodub" + "   " + item.name);
-                            } else {
-                                viewHolder.itemname.append("\n" + occurrences + " " + item.name);
-                                Log.e("error", "nodub" +  occurrences + " " + item.name);
-                            }
+                            specialitems.remove(specialitems.get(n));
+                            n--;
                         }
+
+
+
+                    }
+                }
+                for (Item it : groups.get(i).items) {
+                    if (!specialitems.contains(it)) {
+                        int occurrences = Collections.frequency(occur, it.name);
+                        // If occurences is 1, just print the item.name
+                        // Otherwise, print the frequency and item.name
+                        if (occurrences == 1) {
+                            viewHolder.itemname.append("\n" + "   " + it.name);
+                            Log.e("error", "nodub" + "   " + it.name);
+                        }
+                        if(occurrences > 1){
+                            viewHolder.itemname.append("\n" + occurrences + " " + it.name);
+                            Log.e("error", "nodub" + occurrences + " " + it.name);
+                        }
+                        for (int m = 0; m < occurrences; m++)
+                            occur.remove(it.name);
                     }
 
 
@@ -506,13 +518,6 @@ public class KitchenActivity extends AppCompatActivity {
         public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
         }
     }
-
-
-
-
-
-
-
 
 
 }
