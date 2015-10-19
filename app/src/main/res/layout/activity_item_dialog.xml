@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="16dp"
+    android:layout_marginTop="8dp">
+
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Namn:"
+            android:layout_column="0"
+            android:layout_gravity="right"
+            android:gravity="center_vertical" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/name"
+            android:layout_column="1"
+            android:inputType="textCapSentences" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Beskrivning:"
+            android:layout_column="0"
+            android:layout_gravity="right"
+            android:gravity="center_vertical" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/description"
+            android:layout_column="1"
+            android:inputType="textCapSentences" />
+
+    </TableRow>
+
+
+
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Pris:"
+            android:layout_column="0"
+            android:layout_gravity="right"
+            android:gravity="center_vertical" />
+
+        <LinearLayout android:orientation="horizontal"
+            android:layout_column="1">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/price"
+
+                android:inputType="number|textCapSentences" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="kr" />
+        </LinearLayout>
+
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Special:"
+            android:layout_column="0"
+            android:layout_gravity="right"
+            android:id="@+id/" />
+
+        <RadioGroup
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nej"
+                android:id="@+id/radioButton0"
+                android:checked="true" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dryck"
+                android:id="@+id/radioButton1"
+                android:checked="false" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kötträtt"
+                android:id="@+id/radioButton2"
+                android:checked="false" />
+        </RadioGroup>
+    </TableRow>
+
+
+</TableLayout>
