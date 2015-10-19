@@ -20,13 +20,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Med massor av mandelmassa"
+        android:textAppearance="@style/TextSmall"
         android:id="@+id/description"
         android:layout_below="@+id/name"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textColor="@color/dim_foreground_disabled_material_dark"
         android:textStyle="italic" />
 
     <Button
@@ -42,7 +41,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="@style/TextSmall"
         android:text="15 kr"
         android:id="@+id/price"
         android:layout_centerInParent="true"
