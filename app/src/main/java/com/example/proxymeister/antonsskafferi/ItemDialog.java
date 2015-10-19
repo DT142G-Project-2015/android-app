@@ -10,7 +10,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.proxymeister.antonsskafferi.model.Menu;
+import com.example.proxymeister.antonsskafferi.model.Item;
 
 import java.text.SimpleDateFormat;
 
@@ -43,7 +43,7 @@ public class ItemDialog {
     }
 
     public interface Callback {
-        void onResult(Menu.Item item, DialogInterface dialog);
+        void onResult(Item item, DialogInterface dialog);
     }
 
     public ItemDialog(Context context, Callback callback) {
@@ -82,7 +82,7 @@ public class ItemDialog {
 
     private void onDone(DialogInterface dialog) {
 
-        Menu.Item i = new Menu.Item();
+        Item i = new Item();
         i.name = nameText.getText().toString();
         i.description = descriptionText.getText().toString();
         try {

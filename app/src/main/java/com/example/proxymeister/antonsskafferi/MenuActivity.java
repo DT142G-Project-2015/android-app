@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.example.proxymeister.antonsskafferi.model.Group;
+import com.example.proxymeister.antonsskafferi.model.Item;
 import com.example.proxymeister.antonsskafferi.model.Menu;
 
 import java.util.List;
@@ -199,5 +200,27 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
         intent.putExtra("picked-item", item);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onAddItemClick(Menu menu, Menu.Group group) {
+        Intent i = ItemActivity.getPickItemIntent(this);
+        i.putExtra("menu-id", menu.id);
+        i.putExtra("group-id", group.id);
+        startActivityForResult(i, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+            Item item = (Item)data.getSerializableExtra("picked-item");
+
+
+            //Utils.getApi(this).createMenuGroupItem(item, )
+            //////////////////////////
+
+
+        }
     }
 }

@@ -59,11 +59,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             if (editMode) {
                 vh.addItem.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Intent i = ItemActivity.getPickItemIntent(context);
-                        i.putExtra("group-id", group.id);
-                        context.startActivity(i);
+                        callback.onAddItemClick(menu, group);
                     }
                 });
+            } else {
+                vh.addItem.setVisibility(View.GONE);
             }
         }
 
@@ -188,6 +188,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     public interface Callback {
         void onPickItem(Menu.Item item);
+        void onAddItemClick(Menu menu, Menu.Group group);
     }
 
     public MenuAdapter(Context context, Menu menu, boolean editMode, Callback callback) {

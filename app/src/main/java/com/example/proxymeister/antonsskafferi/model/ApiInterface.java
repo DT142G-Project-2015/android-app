@@ -47,6 +47,9 @@ public interface ApiInterface {
     @POST("menu/{menu_id}/group")
     Call<Group> createMenuGroup(@Body Menu.Group group, @Path("menu_id") int menuId);
 
+    @POST("menu/{menu_id}/group/{group_id}/item")
+    Call<Group> createMenuGroupItem(@Body Item item, @Path("menu_id") int menuId, @Path("group_id") int groupId);
+
     //// Item Resource
 
     // Get item by id
@@ -54,8 +57,12 @@ public interface ApiInterface {
     Call<Item> getItem(@Path("item_id") int itemId);
 
     // Get all items
-    @GET("item")
-    Call<List<Item>> getItems();
+    @GET("item?excludeGroupId={menu_group_id}")
+    Call<List<Item>> getItems(@Path("menu_group_id") int menuGroupId);
+
+    @PUT("item")
+    Call<IdHolder> createItem(@Body Item item);
+
 
     //// Order Resource
 

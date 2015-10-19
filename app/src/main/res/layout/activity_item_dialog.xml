@@ -97,8 +97,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Special:"
             android:layout_column="0"
-            android:layout_gravity="right"
-            android:id="@+id/" />
+            android:layout_gravity="right" />
 
         <RadioGroup
             android:orientation="vertical"
