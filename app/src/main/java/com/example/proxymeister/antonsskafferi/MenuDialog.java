@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -91,17 +92,24 @@ public class MenuDialog implements View.OnClickListener, DatePickerDialog.OnDate
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
         .setTitle(title)
         .setView(view)
-        .setPositiveButton(title, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                onDone(dialog);
-            }
-        })
+        .setPositiveButton(title, null)
         .setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
         });
-        builder.create().show();
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Weird hack to prevent dialog from autoclosing
+        final Button okButton =
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDone(dialog);
+            }
+        });
     }
 
 

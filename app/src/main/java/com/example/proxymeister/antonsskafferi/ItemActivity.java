@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -14,9 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.proxymeister.antonsskafferi.model.IdHolder;
 import com.example.proxymeister.antonsskafferi.model.Item;
+import com.example.proxymeister.antonsskafferi.model.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,30 @@ public class ItemActivity extends AppCompatActivity {
 
     class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
-        public List<Item> items = new ArrayList<>();
+        public List<Menu.Item> items = new ArrayList<>();
+
+        public void onDeleteRow(final int pos) {
+            Utils.getApi(ItemActivity.this).deleteItem(items.get(pos).id).enqueue(new retrofit.Callback<Void>() {
+                @Override
+                public void onResponse(Response<Void> response, Retrofit retrofit) {
+                    if (response.isSuccess()) {
+                        items.remove(pos);
+                        notifyItemRemoved(pos);
+                    } else
+                        failedToRemoveRow(pos);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    failedToRemoveRow(pos);
+                }
+            });
+        }
+
+        private void failedToRemoveRow(int pos) {
+            notifyItemChanged(pos);
+            Toast.makeText(ItemActivity.this, "Kunde inte ta bort maträtt", Toast.LENGTH_SHORT).show();
+        }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -61,7 +86,7 @@ public class ItemActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(ViewHolder vh, int position) {
-            final Item item = items.get(position);
+            final Menu.Item item = items.get(position);
             vh.text1.setText(item.name);
             vh.text2.setText(item.description);
             vh.text3.setText("" + item.price);
@@ -77,19 +102,19 @@ public class ItemActivity extends AppCompatActivity {
             return items.size();
         }
 
-        public void setData(List<Item> data) {
+        public void setData(List<Menu.Item> data) {
             items = data;
             notifyDataSetChanged();
         }
 
-        public void addItem(Item item) {
+        public void addItem(Menu.Item item) {
             items.add(item);
             notifyItemInserted(items.indexOf(item));
             rv.smoothScrollToPosition(items.indexOf(item));
         }
     }
 
-    void sendResult(Item item) {
+    void sendResult(Menu.Item item) {
         Intent i = getIntent();
         i.putExtra("picked-item", item);
         setResult(RESULT_OK, i);
@@ -116,16 +141,37 @@ public class ItemActivity extends AppCompatActivity {
         rv.setLayoutManager(llm);
         adapter = new ItemAdapter();
         rv.setAdapter(adapter);
+
+        ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                adapter.onDeleteRow(viewHolder.getAdapterPosition());
+            }
+        };
+        ItemTouchHelper touchHelper = new ItemTouchHelper(touchCallback);
+        touchHelper.attachToRecyclerView(rv);
+
+
+
+
+
+
         setTitle("Lägg till maträtt på menyn");
         refreshData();
     }
 
     private void refreshData() {
 
-        Utils.getApi(this).getItems(groupId).enqueue(new Callback<List<Item>>() {
-            public void onResponse(Response<List<Item>> response, Retrofit retrofit) {
+        Utils.getApi(this).getItems(groupId).enqueue(new Callback<List<Menu.Item>>() {
+            public void onResponse(Response<List<Menu.Item>> response, Retrofit retrofit) {
 
-                List<Item> items = response.body();
+                List<Menu.Item> items = response.body();
 
                 if (items != null) {
                     adapter.setData(items);
@@ -162,13 +208,12 @@ public class ItemActivity extends AppCompatActivity {
 
             new ItemDialog(this, new ItemDialog.Callback() {
                 @Override
-                public void onResult(final Item item, DialogInterface dialog) {
-                    Utils.getApi(ItemActivity.this).createItem(item).enqueue(new Callback<IdHolder>() {
-                        public void onResponse(Response<IdHolder> response, Retrofit retrofit) {
+                public void onResult(final Menu.Item item, final DialogInterface dialog) {
+                    Utils.getApi(ItemActivity.this).createItem(item).enqueue(new Callback<Menu.Item>() {
+                        public void onResponse(Response<Menu.Item> response, Retrofit retrofit) {
                             if (response.body() != null) {
-                                Item i = (Item)item.clone();
-                                i.id = response.body().id;
-                                adapter.addItem(i);
+                                adapter.addItem(response.body());
+                                dialog.dismiss();
                             }
                         }
                         public void onFailure(Throwable t) {}

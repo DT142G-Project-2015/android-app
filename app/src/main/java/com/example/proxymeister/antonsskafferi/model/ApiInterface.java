@@ -56,12 +56,15 @@ public interface ApiInterface {
     @GET("item/{item_id}")
     Call<Item> getItem(@Path("item_id") int itemId);
 
-    // Get all items
-    @GET("item?excludeGroupId={menu_group_id}")
-    Call<List<Item>> getItems(@Path("menu_group_id") int menuGroupId);
+    @DELETE("item/{item_id}")
+    Call<Void> deleteItem(@Path("item_id") int itemId);
 
-    @PUT("item")
-    Call<IdHolder> createItem(@Body Item item);
+    // Get all items
+    @GET("item")
+    Call<List<Menu.Item>> getItems(@Query("excludeGroupId") int menuGroupId);
+
+    @POST("item")
+    Call<Menu.Item> createItem(@Body Item item);
 
 
     //// Order Resource

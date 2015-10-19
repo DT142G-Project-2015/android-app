@@ -2,7 +2,6 @@ package com.example.proxymeister.antonsskafferi;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -59,7 +58,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             if (editMode) {
                 vh.addItem.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        callback.onAddItemClick(menu, group);
+                        callback.onAddItemClick(group);
                     }
                 });
             } else {
@@ -188,7 +187,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     public interface Callback {
         void onPickItem(Menu.Item item);
-        void onAddItemClick(Menu menu, Menu.Group group);
+        void onAddItemClick(Menu.Group group);
     }
 
     public MenuAdapter(Context context, Menu menu, boolean editMode, Callback callback) {
@@ -216,6 +215,29 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 }
             }
         });
+    }
+
+    public void addItem(int groupId, final Menu.Item item) {
+        for (final Row r : rows) {
+            if (r instanceof Group) {
+
+                final Group groupRow = (Group) r;
+
+                if (groupRow.group.id == groupId) {
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (groupRow.expanded)
+                                groupRow.expand();
+
+                            groupRow.group.items.add(item);
+
+                            groupRow.expand();
+                        }
+                    });
+                }
+            }
+        }
     }
 
     @Override

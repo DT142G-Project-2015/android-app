@@ -11,7 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.Group;
 import com.example.proxymeister.antonsskafferi.model.Item;
@@ -159,6 +161,7 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
 
 
             final EditText edit = new EditText(this);
+            edit.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
             edit.setHint("Namn");
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Skapa kategori");
@@ -203,23 +206,31 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
     }
 
     @Override
-    public void onAddItemClick(Menu menu, Menu.Group group) {
+    public void onAddItemClick(Menu.Group group) {
         Intent i = ItemActivity.getPickItemIntent(this);
-        i.putExtra("menu-id", menu.id);
         i.putExtra("group-id", group.id);
         startActivityForResult(i, 1);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent i) {
 
         if (resultCode == RESULT_OK) {
-            Item item = (Item)data.getSerializableExtra("picked-item");
+            final Menu.Item item = (Menu.Item)i.getSerializableExtra("picked-item");
+            final int groupId = i.getIntExtra("group-id", -1);
 
+            Utils.getApi(this).createMenuGroupItem(item, menuId, groupId).enqueue(new Callback<Group>() {
+                public void onResponse(Response<Group> response, Retrofit retrofit) {
+                    if (response.isSuccess()) {
+                        adapter.addItem(groupId, item);
+                    } else
+                        Toast.makeText(MenuActivity.this, "Kunde inte lägga till maträtt", Toast.LENGTH_SHORT).show();
 
-            //Utils.getApi(this).createMenuGroupItem(item, )
-            //////////////////////////
-
+                }
+                public void onFailure(Throwable t) {
+                    Toast.makeText(MenuActivity.this, "Ingen anslutning. Försök igen.", Toast.LENGTH_SHORT).show();
+                }
+            });
 
         }
     }
