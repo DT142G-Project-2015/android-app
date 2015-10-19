@@ -310,6 +310,8 @@ public class OrderActivity extends AppCompatActivity {
                     }
                     if (g.status == ReadyToServe) {
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
+                        mAddItemButton.setVisibility(View.GONE);
+                        mSendToKitchenButton.setVisibility(View.GONE);
                     }
                     if (g.status == Done) {
                         groupView.setBackgroundColor(Color.parseColor("#CDCDCD"));
@@ -368,6 +370,8 @@ public class OrderActivity extends AppCompatActivity {
                         if (g.status == ReadyToServe) {
                             itemView.setBackgroundColor(Color.parseColor("#609040"));
                             tv.setBackgroundColor(Color.parseColor("#609040"));
+                            deletebtn.setVisibility(View.GONE);
+                            addnotebtn.setVisibility(View.GONE);
                         }
                         if (g.status == Done) {
                             itemView.setBackgroundColor(Color.parseColor("#CDCDCD"));
