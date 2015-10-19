@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,16 +17,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.Menu;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit.Callback;
@@ -154,6 +150,9 @@ public class MenuListActivity extends AppCompatActivity {
                         if (item.getItemId() == R.id.action_remove_menu) {
                             deleteMenu();
                             return true;
+                        } else if (item.getItemId() == R.id.action_edit_menu) {
+                            openUpdateMenuDialog();
+                            return true;
                         }
                         return false;
                     }
@@ -188,6 +187,8 @@ public class MenuListActivity extends AppCompatActivity {
                     if (response.isSuccess()) {
                         adapter.menus.remove((int)row);
                         adapter.notifyItemRemoved(row);
+                        adapter.setSelectedRow(null);
+                        actionMode.finish();
                     }
                 }
                 public void onFailure(Throwable t) {}
@@ -198,7 +199,6 @@ public class MenuListActivity extends AppCompatActivity {
     private void refreshData() {
 
         Utils.getApi(this).getMenus().enqueue(new Callback<List<Menu>>() {
-            @Override
             public void onResponse(Response<List<Menu>> response, Retrofit retrofit) {
 
                 List<Menu> menus = response.body();
@@ -207,13 +207,10 @@ public class MenuListActivity extends AppCompatActivity {
                     adapter.setData(menus);
                 }
             }
-
-            @Override
             public void onFailure(Throwable t) {
                 Log.i(MenuActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
             }
         });
-
     }
 
     @Override
@@ -230,51 +227,12 @@ public class MenuListActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_menu) {
-
-            final View view = LayoutInflater.from(this).inflate(R.layout.activity_menu_list_new_menu, null);
-
-            // Set default dates to today
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date today = new Date();
-            ((TextView)view.findViewById(R.id.start_date)).setText(sdf.format(today));
-            ((TextView)view.findViewById(R.id.stop_date)).setText(sdf.format(today));
-
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Skapa meny");
-            builder.setView(view);
-            builder.setPositiveButton("Skapa meny", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    TextView startDate = (TextView)view.findViewById(R.id.start_date);
-                    TextView stopDate = (TextView)view.findViewById(R.id.start_date);
-                    RadioButton button0 = (RadioButton)view.findViewById(R.id.radioButton0);
-                    RadioButton button1 = (RadioButton)view.findViewById(R.id.radioButton1);
-
-                    Menu m = new Menu();
-
-                    try {
-                        m.start_date = sdf.parse(startDate.getText().toString());
-                        m.stop_date = sdf.parse(startDate.getText().toString());
-                    } catch (ParseException e) {
-                        Toast.makeText(MenuListActivity.this, "Felaktigt datumformat", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    m.type = button0.isChecked() ? 0 : button1.isChecked() ? 1 : 2;
-
-                    addMenu(m, dialog);
+            new MenuDialog(this, null, new MenuDialog.Callback() {
+                public void onResult(Menu menu, DialogInterface dialog) {
+                    addMenu(menu, dialog);
                 }
-            })
-            .setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
-            builder.create().show();
-
-
+            }).show();
             return true;
         }
 
@@ -298,6 +256,40 @@ public class MenuListActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void openUpdateMenuDialog() {
+
+        final Integer row = adapter.getSelectedRow();
+        if (row != null) {
+            Menu selectedMenu = adapter.menus.get(row);
+
+            new MenuDialog(MenuListActivity.this, selectedMenu, new MenuDialog.Callback() {
+                public void onResult(Menu menu, final DialogInterface dialog) {
+                    updateMenu(menu, dialog);
+                }
+            }).show();
+        }
+    }
+
+    private void updateMenu(Menu menu, final DialogInterface dialog) {
+
+        Utils.getApi(MenuListActivity.this).updateMenu(menu.id, menu).enqueue(new Callback<Void>() {
+            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    refreshData();
+                    dialog.dismiss();
+                    adapter.setSelectedRow(null);
+                    actionMode.finish();
+                } else {
+                    Toast.makeText(MenuListActivity.this, "Kunde inte uppdatera menyn", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            public void onFailure(Throwable t) {
+                Toast.makeText(MenuListActivity.this, "Ingen anslutning", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

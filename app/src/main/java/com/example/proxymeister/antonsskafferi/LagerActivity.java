@@ -3,6 +3,7 @@ package com.example.proxymeister.antonsskafferi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -225,7 +226,16 @@ public class LagerActivity extends AppCompatActivity  {
         {
             final AlertDialog.Builder builder = new AlertDialog.Builder(LagerActivity.this);
 
-            builder.setTitle("   Fyll i värden för varan");
+            // define primary title for the view
+            final TextView title = new TextView(LagerActivity.this);
+            title.setGravity(17);
+            title.setPadding(0, 40, 0, 0);
+            title.setTypeface(null, Typeface.BOLD);
+            title.setTextSize(19);
+            title.setText("Lägg till vara");
+
+            // set primary title
+            builder.setCustomTitle(title);
 
             // defines layout
             LinearLayout ll = new LinearLayout(LagerActivity.this);
@@ -362,7 +372,17 @@ public class LagerActivity extends AppCompatActivity  {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(LagerActivity.this);
 
-            builder.setTitle("Fyll i värden som ska ändras");
+            // define primary title for the view
+            final TextView title = new TextView(LagerActivity.this);
+            title.setGravity(17);
+            title.setPadding(0, 40, 0, 0);
+            title.setTypeface(null, Typeface.BOLD);
+            title.setTextSize(19);
+            title.setText("Ändra vara");
+
+            // set primary title
+            builder.setCustomTitle(title);
+
 
             // defines layout
             LinearLayout ll = new LinearLayout(LagerActivity.this);
@@ -379,7 +399,6 @@ public class LagerActivity extends AppCompatActivity  {
             amount.setInputType(InputType.TYPE_CLASS_NUMBER);
             unit.setInputType(InputType.TYPE_CLASS_TEXT);
             date.setInputType(InputType.TYPE_CLASS_DATETIME);
-
 
             // previous inserts
             retrievedArticle = articles.get(lr.pos);
@@ -537,15 +556,6 @@ public class LagerActivity extends AppCompatActivity  {
 
         }
 
-        // check if id exists
-        public boolean idDoesNotExist() {
-            for (int i = 0; i < articles.size(); i++) {
-                if (articles.get(i).article_id == deleteID) {
-                    return false;
-                }
-            }
-            return true;
-        }
 
         // create toaster with input string
         public void createToaster(String s)

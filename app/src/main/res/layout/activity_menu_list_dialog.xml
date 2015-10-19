@@ -17,7 +17,7 @@
 
         <RadioGroup
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1">
 
@@ -62,18 +62,16 @@
             android:ems="10"
             android:id="@+id/start_date"
             android:layout_column="1"
-            android:text="2015-01-31" />
-    </TableRow>
+            android:width="140dp" />
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <android.support.v7.internal.widget.TintImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/start_date_btn"
+            android:layout_column="2"
+            android:src="@drawable/ic_today_24dp"
+            android:tint="?attr/colorAccent"
+            android:layout_gravity="center" />
 
     </TableRow>
 
@@ -95,12 +93,17 @@
             android:inputType="date"
             android:ems="10"
             android:id="@+id/stop_date"
-            android:layout_column="1" />
+            android:layout_column="1"
+            android:width="140dp" />
+
+        <android.support.v7.internal.widget.TintImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stop_date_btn"
+            android:layout_column="2"
+            android:src="@drawable/ic_today_24dp"
+            android:tint="?attr/colorAccent"
+            android:layout_gravity="center" />
     </TableRow>
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </TableRow>
 </TableLayout>

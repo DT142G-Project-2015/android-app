@@ -13,25 +13,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="10"
-            android:text="Namn"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:text="Mängd"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:text="Enhet"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="11"
-            android:text="Utgångsdatum"/>
+            android:textSize="17sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="Namn | Mängd, Enhet | Utgångsdatum"/>
 
     </LinearLayout>
 

@@ -9,6 +9,20 @@ import java.util.List;
 public class Menu {
 
 
+    public boolean isMenuActive() {
+        Calendar start = Calendar.getInstance();
+        start.setTime(start_date);
+        start.set(Calendar.HOUR_OF_DAY, 0);
+
+        Calendar stop = Calendar.getInstance();
+        stop.setTime(stop_date);
+        stop.add(Calendar.DAY_OF_YEAR, 1);
+
+        Calendar now = Calendar.getInstance();
+
+        return start.before(now) && now.before(stop);
+    }
+
     private static boolean isLunchActive() {
         Calendar lunchStarts = Calendar.getInstance();
         lunchStarts.set(Calendar.HOUR_OF_DAY, 11);
@@ -41,7 +55,7 @@ public class Menu {
         mergedMenu.type = lunch ? 0 : 1;
         mergedMenu.groups = new ArrayList<>();
 
-        for (Menu m : menus) if (m.type == mergedMenu.type || m.type == 2) {
+        for (Menu m : menus) if (m.isMenuActive() && (m.type == mergedMenu.type || m.type == 2)) {
             for (Group g : m.groups) {
 
                 Group mergedGroup = mergedMenu.getGroupNamed(g.name);

@@ -30,6 +30,16 @@ public class LoginActivity extends AppCompatActivity {
     Button  Login;
     TextView tx1;
     int counter = 5;
+
+
+    @Override
+    protected void onResume() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+        user.setText(sp.getString("username", ""));
+        pass.setText(sp.getString("password", ""));
+        super.onResume();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +50,8 @@ public class LoginActivity extends AppCompatActivity {
         tx1=(TextView)findViewById(R.id.textView3);
         tx1.setVisibility(View.GONE);
 
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        user.setText(sp.getString("username", ""));
-        pass.setText(sp.getString("password", ""));
+
 
 
 
@@ -53,11 +61,11 @@ public class LoginActivity extends AppCompatActivity {
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+            final SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 SharedPreferences.Editor edit = sp.edit();
                 edit.putString("username", user.getText().toString());
                 edit.putString("password", pass.getText().toString());
-                edit.commit();
+                edit.apply();
 
                 Call<List<Staff>> call = Utils.getApi(LoginActivity.this).getStaffMembers();
                 call.enqueue(new Callback<List<Staff>>() {

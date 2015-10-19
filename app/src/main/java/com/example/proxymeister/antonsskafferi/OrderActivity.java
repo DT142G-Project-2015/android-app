@@ -113,7 +113,7 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent result) {
+    protected void onActivityResult(final int requestCode, int resultCode, final Intent result) {
 
         if (resultCode == RESULT_OK) {
             final int orderId = result.getIntExtra("order-id", 0);
@@ -130,7 +130,7 @@ public class OrderActivity extends AppCompatActivity {
                         final Menu.Item item = (Menu.Item)result.getSerializableExtra("picked-item");
                         item.id = idHolder.id;
 
-                        if (item.type == 2) { // if meat
+                        if (item.type == 2 && requestCode == REQUEST_CODE_PICK_ITEM) { // if meat
                             NoteDialogHandler handler = new NoteDialogHandler(item, groupId, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
                                 @Override
                                 public void onDone() {
@@ -138,7 +138,7 @@ public class OrderActivity extends AppCompatActivity {
                                     Intent intent = MenuActivity.getPickItemIntent(OrderActivity.this);
                                     intent.putExtra("order-id", orderId);
                                     intent.putExtra("group-id", groupId);
-                                    intent.putExtra("item-id", itemId);
+                                    intent.putExtra("item-id", item.id);
                                     intent.putExtra("pos", pos);
                                     Toast.makeText(OrderActivity.this, "Välj tillbehör till " + item.name, Toast.LENGTH_LONG).show();
 
@@ -298,21 +298,21 @@ public class OrderActivity extends AppCompatActivity {
                     mDoneButton.setOnClickListener(markDone);
                     //END
 
-                    if (g.status == ReadyForKitchen)
-                        groupView.setBackgroundColor(Color.parseColor("#FFC726"));
-                    if (g.status == Done) { // Denna ska inte synas senare.
-                        groupView.setBackgroundColor(Color.parseColor("#CDCDCD"));
-                        mAddItemButton.setVisibility(View.GONE);
-                    }
-                    if (g.status == ReadyToServe) {
-                        groupView.setBackgroundColor(Color.parseColor("#609040"));
-                        mAddItemButton.setVisibility(View.GONE);
-                        mDoneButton.setVisibility(View.VISIBLE);
-                    }
                     if (g.status == Initial) {
                         groupView.setBackgroundColor(Color.WHITE);
                         if (!g.items.isEmpty())
                             mSendToKitchenButton.setVisibility(View.VISIBLE);
+                    }
+                    if (g.status == ReadyForKitchen) {
+                        groupView.setBackgroundColor(Color.parseColor("#FFC726"));
+                        mAddItemButton.setVisibility(View.GONE);
+                        mSendToKitchenButton.setVisibility(View.GONE);
+                    }
+                    if (g.status == ReadyToServe) {
+                        groupView.setBackgroundColor(Color.parseColor("#609040"));
+                    }
+                    if (g.status == Done) {
+                        groupView.setBackgroundColor(Color.parseColor("#CDCDCD"));
                     }
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     lp.setMargins(0, 4, 0, 4);
@@ -323,49 +323,57 @@ public class OrderActivity extends AppCompatActivity {
                     for (final Item it : g.items) {
                         View itemView = inflater.inflate(R.layout.recyclerview_item_view, null);
                         TextView tv = (TextView) itemView.findViewById(R.id.item);
-                        tv.setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(View v) {
-                                Toast.makeText(OrderActivity.this, "Lång klick " + orderId + " " + g.id + " " + it.id, Toast.LENGTH_SHORT).show();
 
-                                Intent intent = MenuActivity.getPickItemIntent(OrderActivity.this);
-                                intent.putExtra("order-id", orderId);
-                                intent.putExtra("group-id", g.id);
-                                intent.putExtra("item-id", it.id);
-                                intent.putExtra("pos", i);
-                                startActivityForResult(intent, REQUEST_CODE_PICK_SUB_ITEM);
+                        if(g.status == Initial) {
+                            tv.setOnLongClickListener(new View.OnLongClickListener() {
+                                @Override
+                                public boolean onLongClick(View v) {
+                                    Toast.makeText(OrderActivity.this, "Lång klick " + orderId + " " + g.id + " " + it.id, Toast.LENGTH_SHORT).show();
 
-                                return true;
-                            }
-                        });
-                        tv.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(OrderActivity.this, "Tryck och håll in  för att lägga till ett tillbehör till " + it.name, Toast.LENGTH_SHORT).show();
+                                    Intent intent = MenuActivity.getPickItemIntent(OrderActivity.this);
+                                    intent.putExtra("order-id", orderId);
+                                    intent.putExtra("group-id", g.id);
+                                    intent.putExtra("item-id", it.id);
+                                    intent.putExtra("pos", i);
+                                    startActivityForResult(intent, REQUEST_CODE_PICK_SUB_ITEM);
+
+                                    return true;
+                                }
+                            });
+
+                            tv.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Toast.makeText(OrderActivity.this, "Tryck och håll in  för att lägga till ett tillbehör till " + it.name, Toast.LENGTH_SHORT).show();
 
 
-                            }
-                        });
+                                }
+                            });
+                        }
+
                         final Button deletebtn = (Button) itemView.findViewById(R.id.itemRemoveId);
                         final Button addnotebtn = (Button) itemView.findViewById(R.id.itemNoteId);
 
-                        if (g.status == ReadyForKitchen) {
-                            itemView.setBackgroundColor(Color.parseColor("#FFC726"));
-                            tv.setBackgroundColor(Color.parseColor("#FFC726"));
-                        }
-                        if (g.status == Done) {
-                            itemView.setBackgroundColor(Color.parseColor("#CDCDCD"));
-                            tv.setBackgroundColor(Color.parseColor("#CDCDCD"));
-                        }
-                        if (g.status == ReadyToServe) {
-                            itemView.setBackgroundColor(Color.parseColor("#609040"));
-                            tv.setBackgroundColor(Color.parseColor("#609040"));
-                        }
                         if (g.status == Initial) {
                             itemView.setBackgroundColor(Color.WHITE);
                             tv.setBackgroundColor(Color.WHITE);
                             tv.setTextColor(Color.BLACK);
                         }
+                        if (g.status == ReadyForKitchen) {
+                            itemView.setBackgroundColor(Color.parseColor("#FFC726"));
+                            tv.setBackgroundColor(Color.parseColor("#FFC726"));
+                            deletebtn.setVisibility(View.GONE);
+                            addnotebtn.setVisibility(View.GONE);
+                        }
+                        if (g.status == ReadyToServe) {
+                            itemView.setBackgroundColor(Color.parseColor("#609040"));
+                            tv.setBackgroundColor(Color.parseColor("#609040"));
+                        }
+                        if (g.status == Done) {
+                            itemView.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                            tv.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                        }
+
                         tv.setText(it.name + ", " + it.price + ":-");
                         itemHolder.addView(itemView);
 
@@ -410,22 +418,24 @@ public class OrderActivity extends AppCompatActivity {
                             final Button deletesubitembtn = (Button) itemSubView.findViewById(R.id.itemRemoveId);
                             final Button addnotesubitembtn = (Button) itemSubView.findViewById(R.id.itemNoteId);
 
+                            if (g.status == Initial) {
+                                itemSubView.setBackgroundColor(Color.WHITE);
+                                tvsub.setBackgroundColor(Color.WHITE);
+                                tvsub.setTextColor(Color.BLACK);
+                            }
                             if (g.status == ReadyForKitchen) {
                                 itemSubView.setBackgroundColor(Color.parseColor("#FFC726"));
                                 tvsub.setBackgroundColor(Color.parseColor("#FFC726"));
-                            }
-                            if (g.status == Done) {
-                                itemSubView.setBackgroundColor(Color.parseColor("#CDCDCD"));
-                                tvsub.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                                deletesubitembtn.setVisibility(View.GONE);
+                                addnotesubitembtn.setVisibility(View.GONE);
                             }
                             if (g.status == ReadyToServe) {
                                 itemSubView.setBackgroundColor(Color.parseColor("#609040"));
                                 tvsub.setBackgroundColor(Color.parseColor("#609040"));
                             }
-                            if (g.status == Initial) {
-                                itemSubView.setBackgroundColor(Color.WHITE);
-                                tvsub.setBackgroundColor(Color.WHITE);
-                                tvsub.setTextColor(Color.BLACK);
+                            if (g.status == Done) {
+                                itemSubView.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                                tvsub.setBackgroundColor(Color.parseColor("#CDCDCD"));
                             }
 
                             if(!subIt.notes.isEmpty())
