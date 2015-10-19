@@ -113,7 +113,7 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent result) {
+    protected void onActivityResult(final int requestCode, int resultCode, final Intent result) {
 
         if (resultCode == RESULT_OK) {
             final int orderId = result.getIntExtra("order-id", 0);
@@ -130,7 +130,7 @@ public class OrderActivity extends AppCompatActivity {
                         final Menu.Item item = (Menu.Item)result.getSerializableExtra("picked-item");
                         item.id = idHolder.id;
 
-                        if (item.type == 2) { // if meat
+                        if (item.type == 2 && requestCode == REQUEST_CODE_PICK_ITEM) { // if meat
                             NoteDialogHandler handler = new NoteDialogHandler(item, groupId, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
                                 @Override
                                 public void onDone() {
@@ -138,7 +138,7 @@ public class OrderActivity extends AppCompatActivity {
                                     Intent intent = MenuActivity.getPickItemIntent(OrderActivity.this);
                                     intent.putExtra("order-id", orderId);
                                     intent.putExtra("group-id", groupId);
-                                    intent.putExtra("item-id", itemId);
+                                    intent.putExtra("item-id", item.id);
                                     intent.putExtra("pos", pos);
                                     Toast.makeText(OrderActivity.this, "Välj tillbehör till " + item.name, Toast.LENGTH_LONG).show();
 
