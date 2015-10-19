@@ -15,6 +15,7 @@
             android:layout_weight="10"
             android:textSize="17sp"
             android:gravity="center"
+            android:textStyle="bold"
             android:text="Namn | Mängd, Enhet | Utgångsdatum"/>
 
     </LinearLayout>
