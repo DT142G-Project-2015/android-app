@@ -29,6 +29,10 @@
     <string name="text_note_hint">Skriv notering här</string>
     <string name="text_update_button">Ny updatering tillgänglig\t</string>
     <string name="secure_remove_text">Är du säker på att du vill ta bort</string>
+    <string name="confirm_send_kitchen">Vill du skicka den aktuella delbeställningen till köket?</string>
+    <string name="terminate_order_text">Avsluta beställning</string>
+    <string name="confirm_terminate_order">Beställningen kommer tas bort ur denna vy, och kommer inte kunna redigeras ytterliggare.
+                                            \n\nÄr du säker på att du vill avsluta den aktuella beställningen?</string>
 
     //Variabler till login rutan
     <string name="title_activity_login">Login</string>
@@ -41,7 +45,6 @@
     <string name="StatusReadyForKitchen">readyForKitchen</string>
     <string name="title_add_subItem">Lägg till tillbehör</string>
     <string name="title_activity_item">ItemActivity</string>
-    <string name="terminate_order_text">Avsluta beställning</string>
 
 
 </resources>

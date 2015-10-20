@@ -12,7 +12,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:text="Vill du skicka den aktuella beställningen till köket?" />
+        android:text="" />
 
 
     <LinearLayout
@@ -24,7 +24,7 @@
         android:paddingBottom="20dp">
 
         <Button
-            android:id="@+id/toKitchenDialogButtonYES"
+            android:id="@+id/genericDialogButtonYES"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -33,7 +33,7 @@
             style="@style/ButtonThemeSmall"/>
 
         <Button
-            android:id="@+id/toKitchenDialogButtonNO"
+            android:id="@+id/genericDialogButtonNO"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

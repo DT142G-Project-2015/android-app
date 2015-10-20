@@ -235,14 +235,17 @@ public class OrderActivity extends AppCompatActivity {
 
                                 //Yes or no dialog box
                                 final Dialog dialog = new Dialog(OrderActivity.this);
-                                dialog.setContentView(R.layout.activity_order_secure_send_kitchen);
+                                dialog.setContentView(R.layout.activity_generic_yes_no_dialog);
                                 dialog.setTitle("Skicka till köket");
+                                final TextView sendkitchen = (TextView) dialog.findViewById(R.id.textSuretoSend);
+                                sendkitchen.append(getString(R.string.confirm_send_kitchen));
 
                                 //YES
-                                Button yesButton = (Button) dialog.findViewById(R.id.toKitchenDialogButtonYES);
+                                Button yesButton = (Button) dialog.findViewById(R.id.genericDialogButtonYES);
                                 yesButton.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+
                                         //Sends the order to the kitchen
                                         g.status = ReadyForKitchen;
                                         Call<Void> call = Utils.getApi(OrderActivity.this).changeStatus(g, orderId, groupID);
@@ -265,7 +268,7 @@ public class OrderActivity extends AppCompatActivity {
                                     }
                                 });
                                 //NO
-                                Button noButton = (Button) dialog.findViewById(R.id.toKitchenDialogButtonNO);
+                                Button noButton = (Button) dialog.findViewById(R.id.genericDialogButtonNO);
                                 noButton.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -539,23 +542,52 @@ public class OrderActivity extends AppCompatActivity {
                 viewHolder.mPayedButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Order or = orders.get(i);
-                        or.payed = true;
-                        final Call<Void> call = Utils.getApi(OrderActivity.this).updateOrderStatus(or, orderId);
-                        call.enqueue(new retrofit.Callback<Void>() {
-                            @Override
-                            public void onResponse(Response<Void> response, Retrofit retrofit) {
-                                Log.i(MainActivity.class.getName(), "NICE");
-                                getAllOrders(-1);
-                            }
 
-                            @Override
-                            public void onFailure(Throwable t) {
-                                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
-                            }
-                        });
-                    }
-                });
+                            final Dialog dialog = new Dialog(OrderActivity.this);
+                            dialog.setContentView(R.layout.activity_generic_yes_no_dialog);
+                            dialog.setTitle("Avsluta beställning");
+
+                        final TextView terminateorder = (TextView) dialog.findViewById(R.id.textSuretoSend);
+                        terminateorder.append(getString(R.string.confirm_terminate_order));
+
+                            Button yesButton = (Button) dialog.findViewById(R.id.genericDialogButtonYES);
+                            yesButton.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Order or = orders.get(i);
+                                    or.payed = true;
+                                    final Call<Void> call = Utils.getApi(OrderActivity.this).updateOrderStatus(or, orderId);
+                                    call.enqueue(new retrofit.Callback<Void>() {
+                                        @Override
+                                        public void onResponse(Response<Void> response, Retrofit retrofit) {
+                                            Log.i(MainActivity.class.getName(), "NICE");
+                                            getAllOrders(-1);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Throwable t) {
+                                            Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                                        }
+                                    });
+
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            Button noButton = (Button) dialog.findViewById(R.id.genericDialogButtonNO);
+
+                            noButton.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            dialog.show();
+
+            }
+        });
                 //END ADDGROUP
 
                 if (totPrice != 0)
