@@ -78,7 +78,6 @@ public class NoteDialogHandler implements View.OnClickListener {
         this.callback = callback;
         isItem = true;
         dialog = new Dialog(context);
-        Toast.makeText(context, orderId + " -> " + gid + " -> " + it.id, Toast.LENGTH_SHORT).show();
         dialog.setContentView(R.layout.activity_order_add_new_note);
     }
 
