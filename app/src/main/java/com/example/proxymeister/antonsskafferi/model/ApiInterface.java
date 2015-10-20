@@ -136,6 +136,9 @@ public interface ApiInterface {
     @DELETE("order/{order_id}/group/{group_id}/item/{item_id}")
     Call<Void> deleteItem(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId);
 
+    @DELETE("order/{order_id}/group/{group_id}/item/{item_id}/subitem/{subitem_id}")
+    Call<Void> deleteSubItem(@Path("order_id") int orderId, @Path("group_id") int groupId, @Path("item_id") int itemId, @Path("subitem_id") int subitemId);
+
 
     // Staff
     // Get all items

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,7 +53,7 @@ public class OrderActivity extends AppCompatActivity {
     private ListView listviewaddednotes;
     private List<Note> notes = new ArrayList<>();
     private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
 
     @Override
@@ -71,11 +72,11 @@ public class OrderActivity extends AppCompatActivity {
         };
 
         btn.setOnClickListener(oclbtn);
-        getAllOrders(-1);
+        getAllOrders(-1, null);
 
     }
 
-    public void getAllOrders(final int pos) {
+    public void getAllOrders(final int pos, final Parcelable scrollState) {
         Call<List<Order>> call = Utils.getApi(this).getOrders();
         call.enqueue(new Callback<List<Order>>() {
             @Override
@@ -101,7 +102,7 @@ public class OrderActivity extends AppCompatActivity {
                     mRecyclerView.setLayoutManager(mLayoutManager);
                     mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
 
-                    setOrderAdapter(pos);
+                    setOrderAdapter(pos, scrollState);
                 }
             }
 
@@ -120,6 +121,7 @@ public class OrderActivity extends AppCompatActivity {
             final int groupId = result.getIntExtra("group-id", 0);
             final int itemId = result.getIntExtra("item-id", 0);
             final int pos = result.getIntExtra("pos", -1);
+            final Parcelable scrollState = result.getParcelableExtra("scrollState");
 
             Callback<IdHolder> callback = new Callback<IdHolder>() {
                 @Override public void onResponse(Response<IdHolder> response, Retrofit retrofit) {
@@ -140,18 +142,19 @@ public class OrderActivity extends AppCompatActivity {
                                     intent.putExtra("group-id", groupId);
                                     intent.putExtra("item-id", item.id);
                                     intent.putExtra("pos", pos);
+                                    intent.putExtra("scrollState", scrollState);
                                     Toast.makeText(OrderActivity.this, "Välj tillbehör till " + item.name, Toast.LENGTH_LONG).show();
 
                                     startActivityForResult(intent, REQUEST_CODE_PICK_SUB_ITEM);
 
-                                    getAllOrders(pos);
+                                    getAllOrders(pos, scrollState);
                                 }
                             });
                             handler.setTitle("Välj tillagning: ");
                             handler.showNoteDialogCooking();
 
                         } else {
-                            getAllOrders(pos);
+                            getAllOrders(pos, scrollState);
                         }
                     }
                 }
@@ -190,11 +193,12 @@ public class OrderActivity extends AppCompatActivity {
         }
     }
 
-    public void onScroll(int i) {
-        mRecyclerView.scrollToPosition(i);
+    public void onScroll(Parcelable savedState) {
+        if (savedState != null)
+            mLayoutManager.onRestoreInstanceState(savedState);
     }
 
-    void setOrderAdapter(final int pos) {
+    void setOrderAdapter(final int pos, final Parcelable scrollState) {
         activePosition = pos;
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
@@ -254,7 +258,7 @@ public class OrderActivity extends AppCompatActivity {
                                             public void onResponse(Response<Void> response, Retrofit retrofit) {
                                                 System.out.println("working");
                                                 g.status = ReadyForKitchen;
-                                                getAllOrders(i);
+                                                getAllOrders(i, scrollState);
                                             }
 
                                             @Override
@@ -293,6 +297,7 @@ public class OrderActivity extends AppCompatActivity {
                             intent.putExtra("order-id", orderId);
                             intent.putExtra("group-id", groupID);
                             intent.putExtra("pos", i);
+                            intent.putExtra("scrollState", mLayoutManager.onSaveInstanceState());
                             startActivityForResult(intent, REQUEST_CODE_PICK_ITEM);
                         }
                     };
@@ -312,9 +317,9 @@ public class OrderActivity extends AppCompatActivity {
                                     System.out.println("working");
                                     g.status = Done;
                                     if (orders.get(i).allDone())
-                                        getAllOrders(-1);
+                                        getAllOrders(-1, scrollState);
                                     else
-                                        getAllOrders(i);
+                                        getAllOrders(i, scrollState);
                                 }
 
                                 @Override
@@ -367,6 +372,8 @@ public class OrderActivity extends AppCompatActivity {
                                     intent.putExtra("group-id", g.id);
                                     intent.putExtra("item-id", it.id);
                                     intent.putExtra("pos", i);
+                                    intent.putExtra("scrollState", mLayoutManager.onSaveInstanceState());
+
                                     startActivityForResult(intent, REQUEST_CODE_PICK_SUB_ITEM);
 
                                     return true;
@@ -420,7 +427,7 @@ public class OrderActivity extends AppCompatActivity {
                         OnClickListener deletebuttonListener = new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                showSecureDialog(it, g, orderId, i);
+                                showSecureDialog(null, it, g, orderId, i);
                             }
                         };
                         deletebtn.setOnClickListener(deletebuttonListener);
@@ -433,7 +440,7 @@ public class OrderActivity extends AppCompatActivity {
                                 NoteDialogHandler handler = new NoteDialogHandler(it, g.id, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
                                     @Override
                                     public void onDone() {
-                                        getAllOrders(i);
+                                        getAllOrders(i, mLayoutManager.onSaveInstanceState());
                                     }
                                 });
 
@@ -482,7 +489,7 @@ public class OrderActivity extends AppCompatActivity {
                             OnClickListener deletesubitembuttonListener = new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    showSecureDialog(subIt, g, orderId, i);
+                                    showSecureDialog(subIt, it,  g, orderId, i);
                                 }
                             };
                             deletesubitembtn.setOnClickListener(deletesubitembuttonListener);
@@ -495,7 +502,7 @@ public class OrderActivity extends AppCompatActivity {
                                     NoteDialogHandler handler = new NoteDialogHandler(subIt, it, g.id, orderId, OrderActivity.this, new NoteDialogHandler.Callback() {
                                         @Override
                                         public void onDone() {
-                                            getAllOrders(i);
+                                            getAllOrders(i, scrollState);
                                         }
                                     });
                                     handler.setTitle("Lägg till notering för tillbehör: ");
@@ -526,7 +533,7 @@ public class OrderActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Response<Group> response, Retrofit retrofit) {
                                 Log.i(MainActivity.class.getName(), "NICE");
-                                getAllOrders(i);
+                                getAllOrders(i, scrollState);
                             }
 
                             @Override
@@ -562,7 +569,7 @@ public class OrderActivity extends AppCompatActivity {
                                         @Override
                                         public void onResponse(Response<Void> response, Retrofit retrofit) {
                                             Log.i(MainActivity.class.getName(), "NICE");
-                                            getAllOrders(-1);
+                                            getAllOrders(-1, scrollState);
                                         }
 
                                         @Override
@@ -631,7 +638,7 @@ public class OrderActivity extends AppCompatActivity {
         };
         mRecyclerView.setAdapter(mAdapter);
         if (activePosition > 0)
-            onScroll(activePosition);
+            onScroll(scrollState);
 
 
     }
@@ -658,7 +665,7 @@ public class OrderActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Response<Void> response, Retrofit retrofit) {
                         Log.i("idg", "Response succesfull");
-                        getAllOrders(-1);
+                        getAllOrders(-1, mLayoutManager.onSaveInstanceState());
                     }
 
                     @Override
@@ -676,7 +683,7 @@ public class OrderActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public void showSecureDialog(final Item item, final Group group, final int orderId, final int position) {
+    public void showSecureDialog(final Item subitem, final Item item, final Group group, final int orderId, final int position) {
         final Dialog dialog = new Dialog(OrderActivity.this);
         dialog.setContentView(R.layout.activity_order_secure_remove);
         dialog.setTitle("Ta bort");
@@ -688,11 +695,7 @@ public class OrderActivity extends AppCompatActivity {
         yesButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                group.items.remove(item);
-                deleteItem(orderId, group.id, item.id);
-                mAdapter.notifyItemRemoved(position);
-                getAllOrders(position);
-                dialog.dismiss();
+                deleteItem(orderId, group.id, item.id, subitem == null ? null : subitem.id, position, dialog);
             }
         });
 
@@ -710,14 +713,20 @@ public class OrderActivity extends AppCompatActivity {
 
 
 
-    public void deleteItem(int orderId, int groupId, int itemId) {
+    public void deleteItem(int orderId, int groupId, int itemId, final Integer subItemId, final int position, final Dialog dialog) {
 
-
-        Call<Void> call = Utils.getApi(this).deleteItem(orderId, groupId, itemId);
-
+        Call<Void> call;
+        if (subItemId == null)
+            call = Utils.getApi(this).deleteItem(orderId, groupId, itemId);
+        else
+            call = Utils.getApi(this).deleteSubItem(orderId, groupId, itemId, subItemId);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Response<Void> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    getAllOrders(position, mLayoutManager.onSaveInstanceState());
+                    dialog.dismiss();
+                }
                 Log.i("DELETE", "Success");
             }
 
