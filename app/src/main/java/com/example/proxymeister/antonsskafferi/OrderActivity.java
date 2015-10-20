@@ -621,8 +621,7 @@ public class OrderActivity extends AppCompatActivity {
                         call.enqueue(new retrofit.Callback<Group>() {
                             @Override
                             public void onResponse(Response<Group> response, Retrofit retrofit) {
-                                Log.i(MainActivity.class.getName(), "NICE");
-                                getAllOrders(i, scrollState);
+                                getAllOrders(i, mLayoutManager.onSaveInstanceState());
                             }
 
                             @Override
