@@ -1,5 +1,6 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -69,10 +70,10 @@ public class ItemActivity extends AppCompatActivity {
 
             ViewHolder(View itemView) {
                 super(itemView);
-                text1 = (TextView)itemView.findViewById(R.id.name);
-                text2 = (TextView)itemView.findViewById(R.id.description);
-                text3 = (TextView)itemView.findViewById(R.id.price);
-                addItem = (Button)itemView.findViewById(R.id.add_item);
+                text1 = (TextView) itemView.findViewById(R.id.name);
+                text2 = (TextView) itemView.findViewById(R.id.description);
+                text3 = (TextView) itemView.findViewById(R.id.price);
+                addItem = (Button) itemView.findViewById(R.id.add_item);
             }
         }
 
@@ -134,9 +135,9 @@ public class ItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
 
-        groupId =  getIntent().getIntExtra("group-id", -1);
+        groupId = getIntent().getIntExtra("group-id", -1);
 
-        rv = (RecyclerView)findViewById(R.id.rv);
+        rv = (RecyclerView) findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         adapter = new ItemAdapter();
@@ -150,21 +151,42 @@ public class ItemActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                adapter.onDeleteRow(viewHolder.getAdapterPosition());
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+                final Dialog dialog = new Dialog(ItemActivity.this);
+                dialog.setContentView(R.layout.activity_generic_yes_no_dialog);
+                dialog.setTitle("Ta bort ");
+                final TextView sendkitchen = (TextView) dialog.findViewById(R.id.textSuretoSend);
+                sendkitchen.append("Är du säker du vill ta bort? ");
+
+                //YES
+                Button yesButton = (Button) dialog.findViewById(R.id.genericDialogButtonYES);
+                yesButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        adapter.onDeleteRow(viewHolder.getAdapterPosition());
+                        dialog.dismiss();
+                    }
+                });
+                //NO
+                Button noButton = (Button) dialog.findViewById(R.id.genericDialogButtonNO);
+                noButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
             }
         };
         ItemTouchHelper touchHelper = new ItemTouchHelper(touchCallback);
-        touchHelper.attachToRecyclerView(rv);
-
-
-
-
-
-
         setTitle("Lägg till maträtt på menyn");
         refreshData();
+        touchHelper.attachToRecyclerView(rv);
     }
+
+
 
     private void refreshData() {
 

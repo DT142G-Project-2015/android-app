@@ -10,5 +10,16 @@
     <color name="old_button_black">#272121</color>
     <color name="old_background_grey">#615656</color>
 
+    <!--
+    <?xml version="1.0" encoding="utf-8"?>
+    <resources>
+        <color name="refresh_blue">#478eb2</color>
+        <color name="kitchen_white">#E0D8E0</color>
+        <color name="button_black">#050e30</color>
+        <color name="background_grey">#7E7676</color>
+        <color name="white">#fff</color>
+        <color name="black">#000</color>
+        </resources>
+-->
 
 </resources>
