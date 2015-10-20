@@ -258,7 +258,7 @@ public class OrderActivity extends AppCompatActivity {
                                             public void onResponse(Response<Void> response, Retrofit retrofit) {
                                                 System.out.println("working");
                                                 g.status = ReadyForKitchen;
-                                                getAllOrders(i, scrollState);
+                                                getAllOrders(i, mLayoutManager.onSaveInstanceState());
                                             }
 
                                             @Override
@@ -413,7 +413,7 @@ public class OrderActivity extends AppCompatActivity {
                        if (g.status == ReadyForKitchen) {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
-                            tv.setTextColor(Color.BLACK);
+                           tv.setTextColor(Color.BLACK);
                             deletebtn.setVisibility(View.GONE);
                             addnotebtn.setVisibility(View.GONE);
                         }
@@ -650,7 +650,7 @@ public class OrderActivity extends AppCompatActivity {
             }
         };
         mRecyclerView.setAdapter(mAdapter);
-        if (activePosition > 0)
+        if (activePosition >= 0)
             onScroll(scrollState);
 
 
