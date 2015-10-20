@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity {
 
                             // LOGIN SUCCESSSFUL
                             // GÅ VIDARE!
-                            Toast.makeText(getApplicationContext(), "Redirecting...", Toast.LENGTH_SHORT).show();
                             Intent intent;
                             intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
@@ -87,27 +86,27 @@ public class LoginActivity extends AppCompatActivity {
 
                             for (Staff staff : staffs) {
                                 if (user.getText().toString().equals(staff.username)) {
-                                    Toast.makeText(getApplicationContext(), "Welcome " +
+                                    Toast.makeText(getApplicationContext(), "Välkommen " +
                                             staff.first_name + " " + staff.last_name ,
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Fel inloggningsuppgifter", Toast.LENGTH_SHORT).show();
                             tx1.setVisibility(View.VISIBLE);
                             tx1.setBackgroundColor(Color.RED);
                             counter--;
                             tx1.setText(Integer.toString(counter));
 
                             if (counter == 0) {
-                                Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Du har använt alla försök, var vänlig kontakta Anders", Toast.LENGTH_SHORT).show();
                                 Login.setEnabled(false);
                         }
                     }
                     }
                     @Override
                     public void onFailure(Throwable t) {
-                        Toast.makeText(getApplicationContext(), "Connection Problem", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "C", Toast.LENGTH_SHORT).show();
 
                     }
                 });

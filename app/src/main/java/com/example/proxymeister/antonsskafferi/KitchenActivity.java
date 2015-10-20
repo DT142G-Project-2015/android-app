@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.DividerItemDecoration;
 import com.example.proxymeister.antonsskafferi.model.Group;
@@ -393,12 +394,12 @@ public class KitchenActivity extends AppCompatActivity {
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Response<Void> response, Retrofit retrofit) {
-                            System.out.println("working");
+                            System.out.println("Fungerar");
                         }
 
                         @Override
                         public void onFailure(Throwable t) {
-                            System.out.println("not working");
+                            System.out.println("Fungerar ej");
 
                         }
                     });
@@ -426,7 +427,6 @@ public class KitchenActivity extends AppCompatActivity {
                 new OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        //Toast.makeText(KitchenActivity.this, "Clicked " + groups.get(position), Toast.LENGTH_SHORT).show();
                     }
                 }));
     }

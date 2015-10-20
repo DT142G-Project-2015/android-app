@@ -345,7 +345,7 @@ public class LagerActivity extends AppCompatActivity  {
 
                         createArticle();
                         dialog.dismiss();
-                        createToaster("Vara skapad");
+                        createToaster("Vara tillagd");
                         lr.refreshView();
 
                     } catch (Throwable t) {

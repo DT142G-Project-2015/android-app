@@ -17,6 +17,7 @@
 
     <style name="TextSmall">
         <item name="android:textColor">#00f425</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="AppCompatAlertDialogStyle">

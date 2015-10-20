@@ -149,6 +149,7 @@ public class MenuListActivity extends AppCompatActivity {
                     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                         if (item.getItemId() == R.id.action_remove_menu) {
                             deleteMenu();
+                            Toast.makeText(getApplicationContext(), "Raderad", Toast.LENGTH_SHORT).show();
                             return true;
                         } else if (item.getItemId() == R.id.action_edit_menu) {
                             openUpdateMenuDialog();
@@ -208,7 +209,7 @@ public class MenuListActivity extends AppCompatActivity {
                 }
             }
             public void onFailure(Throwable t) {
-                Log.i(MenuActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                Log.i(MenuActivity.class.getName(), "Misslyckades hämtning av data" + t.getMessage());
             }
         });
     }
@@ -231,6 +232,7 @@ public class MenuListActivity extends AppCompatActivity {
             new MenuDialog(this, null, new MenuDialog.Callback() {
                 public void onResult(Menu menu, DialogInterface dialog) {
                     addMenu(menu, dialog);
+                    Toast.makeText(getApplicationContext(), "Meny skapad", Toast.LENGTH_SHORT).show();
                 }
             }).show();
             return true;
@@ -263,10 +265,10 @@ public class MenuListActivity extends AppCompatActivity {
         final Integer row = adapter.getSelectedRow();
         if (row != null) {
             Menu selectedMenu = adapter.menus.get(row);
-
             new MenuDialog(MenuListActivity.this, selectedMenu, new MenuDialog.Callback() {
                 public void onResult(Menu menu, final DialogInterface dialog) {
                     updateMenu(menu, dialog);
+                    Toast.makeText(getApplicationContext(), "Meny redigerad", Toast.LENGTH_SHORT).show();
                 }
             }).show();
         }

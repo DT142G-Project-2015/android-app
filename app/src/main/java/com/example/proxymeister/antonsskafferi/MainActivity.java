@@ -47,7 +47,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+  /*  @Override
+    public void onBackPressed() {
 
+// dont call **super**, if u want disable back button in current screen.
+    }*/
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -121,4 +125,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, LagerActivity.class);
         startActivity(intent);
     }
+
 }
