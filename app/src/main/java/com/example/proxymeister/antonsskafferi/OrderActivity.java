@@ -328,23 +328,35 @@ public class OrderActivity extends AppCompatActivity {
                     mDoneButton.setOnClickListener(markDone);
                     //END
 
+                    TextView mItemStatus = (TextView) groupView.findViewById(R.id.group_status);
+
                     if (g.status == Initial) {
                         groupView.setBackgroundColor(Color.WHITE);
                         if (!g.items.isEmpty())
                             mSendToKitchenButton.setVisibility(View.VISIBLE);
+
+                            mItemStatus.setVisibility(View.GONE);
                     }
                     if (g.status == ReadyForKitchen) {
                         groupView.setBackgroundColor(Color.parseColor("#FFC726"));
                         mAddItemButton.setVisibility(View.GONE);
                         mSendToKitchenButton.setVisibility(View.GONE);
+
+                        mItemStatus.setText(R.string.status_ready_for_kitchen);
+                        mItemStatus.setTextColor(Color.BLACK);
+                        mItemStatus.setVisibility(View.VISIBLE);
                     }
                     if (g.status == ReadyToServe) {
                         groupView.setBackgroundColor(Color.parseColor("#609040"));
                         mAddItemButton.setVisibility(View.GONE);
                         mSendToKitchenButton.setVisibility(View.GONE);
+
+                        mItemStatus.setText(R.string.status_ready_to_serve);
+                        mItemStatus.setVisibility(View.VISIBLE);
                     }
                     if (g.status == Done) {
                         groupView.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                        mItemStatus.setVisibility(View.GONE);
                     }
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     lp.setMargins(0, 4, 0, 4);
@@ -391,9 +403,10 @@ public class OrderActivity extends AppCompatActivity {
                             tv.setBackgroundColor(Color.WHITE);
                             tv.setTextColor(Color.BLACK);
                         }
-                        if (g.status == ReadyForKitchen) {
+                       if (g.status == ReadyForKitchen) {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
+                            tv.setTextColor(Color.BLACK);
                             deletebtn.setVisibility(View.GONE);
                             addnotebtn.setVisibility(View.GONE);
                         }
