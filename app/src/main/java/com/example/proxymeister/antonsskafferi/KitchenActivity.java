@@ -45,7 +45,7 @@ import static com.example.proxymeister.antonsskafferi.model.Group.Status.ReadyTo
 
 public class KitchenActivity extends AppCompatActivity {
     //Checks for new orders
-    private Timer timer = new Timer();
+    private Timer timer;
 
     private List<Order> orders;
     private List<Group> groups = new ArrayList<>();
@@ -124,8 +124,12 @@ public class KitchenActivity extends AppCompatActivity {
             }
         };
         undodeletebtn.setOnClickListener(buttonListener);
+    }
 
-        //Listener for new orders
+    @Override
+    protected void onResume() {
+        super.onResume();
+        timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -133,6 +137,13 @@ public class KitchenActivity extends AppCompatActivity {
             }
         }, 0, 5000);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        timer.cancel();
+    }
+
 
     void notice() {
         try {
