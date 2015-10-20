@@ -1,5 +1,6 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,8 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proxymeister.antonsskafferi.model.Group;
@@ -25,6 +29,8 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static com.example.proxymeister.antonsskafferi.model.Group.Status.ReadyForKitchen;
 
 public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callback {
 
@@ -73,8 +79,35 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
                 }
 
                 @Override
-                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                    adapter.onDeleteRow(viewHolder.getAdapterPosition());
+                public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+
+                    //Yes or no dialog box
+                    final Dialog dialog = new Dialog(MenuActivity.this);
+                    dialog.setContentView(R.layout.activity_generic_yes_no_dialog);
+                    dialog.setTitle("Ta bort ");
+                    final TextView sendkitchen = (TextView) dialog.findViewById(R.id.textSuretoSend);
+                    sendkitchen.append("Är du säker du vill ta bort? ");
+
+                    //YES
+                    Button yesButton = (Button) dialog.findViewById(R.id.genericDialogButtonYES);
+                    yesButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            adapter.onDeleteRow(viewHolder.getAdapterPosition());
+                            dialog.dismiss();
+                        }
+                    });
+                    //NO
+                    Button noButton = (Button) dialog.findViewById(R.id.genericDialogButtonNO);
+                    noButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                            dialog.dismiss();
+                        }
+                    });
+
+                    dialog.show();
                 }
             };
             ItemTouchHelper touchHelper = new ItemTouchHelper(touchCallback);
@@ -99,7 +132,7 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.Callb
 
                     if (menu != null) {
                         setTitle("Redigera " + menu.getMenuTypeString() + "meny");
-                        adapter = new MenuAdapter(MenuActivity.this, menu, editMenu, MenuActivity.this);;
+                        adapter = new MenuAdapter(MenuActivity.this, menu, editMenu, MenuActivity.this);
                         rv.setAdapter(adapter);
                     }
                 }
