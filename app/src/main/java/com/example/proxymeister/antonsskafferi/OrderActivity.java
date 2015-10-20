@@ -2,11 +2,17 @@ package com.example.proxymeister.antonsskafferi;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +37,8 @@ import com.example.proxymeister.antonsskafferi.model.Order;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -47,9 +55,9 @@ public class OrderActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_ITEM = 1;
     private static final int REQUEST_CODE_PICK_SUB_ITEM = 2;
 
+    private Timer timer = new Timer();
     private List<Order> orders;
-    private int activePosition;
-    private List<Group> groups = new ArrayList<>();
+    private int expandedPosition = -1;
     private ListView listviewaddednotes;
     private List<Note> notes = new ArrayList<>();
     private RecyclerView mRecyclerView;
@@ -74,41 +82,95 @@ public class OrderActivity extends AppCompatActivity {
         btn.setOnClickListener(oclbtn);
         getAllOrders(-1, null);
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
+        mLayoutManager = new LinearLayoutManager(OrderActivity.this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ready();
+            }
+        }, 0, 5000);
     }
 
-    public void getAllOrders(final int pos, final Parcelable scrollState) {
-        Call<List<Order>> call = Utils.getApi(this).getOrders();
-        call.enqueue(new Callback<List<Order>>() {
-            @Override
-            public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
+    void notice() {
+        try {
+            //Sound
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+            //Vibration
+            Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(250);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    void ready() {
+        actuallyGetAllOrders(new OrdersCallback() {
+            public void ordersReady(List<Order> orders) {
+
+                List<Order> existingOrders = OrderActivity.this.orders;
+
+
+                if (existingOrders != null) {
+                    Order changedOrder = null;
+
+                    for (Order order : orders)
+                        for (Order existingOrder : existingOrders)
+                            if (order.id == existingOrder.id)
+                                for (Group group : order.groups)
+                                    for (Group existingGroup : existingOrder.groups)
+                                        if (group.id == existingGroup.id && !group.status.equals(existingGroup.status))
+                                            changedOrder = order;
+
+
+                    if (changedOrder != null) {
+                        OrderActivity.this.orders = orders;
+                        setOrderAdapter(orders.indexOf(changedOrder), mLayoutManager.onSaveInstanceState());
+                        notice();
+                    }
+                }
+
+            }
+        });
+    }
+
+
+    interface OrdersCallback {
+        void ordersReady(List<Order> orders);
+    }
+
+    private void actuallyGetAllOrders(final OrdersCallback callback) {
+        Utils.getApi(this).getOrders().enqueue(new Callback<List<Order>>() {
+            @Override public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
 
                 int statusCode = response.code();
                 Log.i(MainActivity.class.getName(), "Status: " + statusCode);
-                orders = response.body();
+                List<Order> newOrders = response.body();
 
-                if (orders != null) {
-                    for (int i = 0; i < orders.size(); i++) {
-                        if (orders.get(i).payed)
-                            orders.remove(i--);
-                        else {
-                            List<Group> temp = orders.get(i).groups;
-                            for (int j = 0; j < temp.size(); j++) {
-                                groups.add(temp.get(j));
-                            }
-                        }
+                if (newOrders != null) {
+                    for (int i = 0; i < newOrders.size(); i++) {
+                        if (newOrders.get(i).payed)
+                            newOrders.remove(i--);
                     }
-                    mRecyclerView = (RecyclerView) findViewById(R.id.ordersRecyclerView);
-                    mLayoutManager = new LinearLayoutManager(OrderActivity.this);
-                    mRecyclerView.setLayoutManager(mLayoutManager);
-                    mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
-
-                    setOrderAdapter(pos, scrollState);
+                    callback.ordersReady(newOrders);
                 }
             }
 
+            @Override public void onFailure(Throwable t) {}
+        });
+    }
+
+
+    public void getAllOrders(final int pos, final Parcelable scrollState) {
+        actuallyGetAllOrders(new OrdersCallback() {
             @Override
-            public void onFailure(Throwable t) {
-                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+            public void ordersReady(List<Order> orders) {
+                OrderActivity.this.orders = orders;
+                setOrderAdapter(pos, scrollState);
             }
         });
     }
@@ -181,7 +243,6 @@ public class OrderActivity extends AppCompatActivity {
         public LinearLayout groupHolder;
         public Button mAddGroupButton;
         public Button mPayedButton;
-        public boolean expanded = false;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
@@ -199,7 +260,6 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     void setOrderAdapter(final int pos, final Parcelable scrollState) {
-        activePosition = pos;
         mAdapter = new RecyclerView.Adapter<CustomViewHolder>() {
             @Override
             public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
@@ -218,13 +278,18 @@ public class OrderActivity extends AppCompatActivity {
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(OrderActivity.LAYOUT_INFLATER_SERVICE);
                 final LinearLayout groupHolder = (LinearLayout) viewHolder.groupHolder;
+
                 groupHolder.removeAllViews();
-                if (i == activePosition) {
+                if (i == expandedPosition) {
                     groupHolder.setVisibility(View.VISIBLE);
                     viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
                     viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
                     viewHolder.mPayedButton.setVisibility(View.VISIBLE);
-                    viewHolder.expanded = true;
+                } else {
+                    groupHolder.setVisibility(View.GONE);
+                    viewHolder.mTotPriceTextView.setVisibility(View.GONE);
+                    viewHolder.mAddGroupButton.setVisibility(View.GONE);
+                    viewHolder.mPayedButton.setVisibility(View.GONE);
                 }
 
                 for (final Group g : orders.get(i).groups) {
@@ -620,20 +685,21 @@ public class OrderActivity extends AppCompatActivity {
                 OnClickListener oclbtn = new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!viewHolder.expanded) {
-                            groupHolder.setVisibility(View.VISIBLE);
-                            viewHolder.mTotPriceTextView.setVisibility(View.VISIBLE);
-                            viewHolder.mAddGroupButton.setVisibility(View.VISIBLE);
-                            viewHolder.mPayedButton.setVisibility(View.VISIBLE);
-                            viewHolder.expanded = true;
 
+                        if (expandedPosition == i) {
+                            expandedPosition = -1;
                         } else {
-                            groupHolder.setVisibility(View.GONE);
-                            viewHolder.mTotPriceTextView.setVisibility(View.GONE);
-                            viewHolder.mAddGroupButton.setVisibility(View.GONE);
-                            viewHolder.mPayedButton.setVisibility(View.GONE);
-                            viewHolder.expanded = false;
+                            expandedPosition = i;
+                        }
 
+                        mAdapter.notifyDataSetChanged();
+                        if (expandedPosition != -1) {
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mRecyclerView.scrollToPosition(expandedPosition);
+                                }
+                            });
                         }
                     }
                 };
@@ -650,9 +716,8 @@ public class OrderActivity extends AppCompatActivity {
             }
         };
         mRecyclerView.setAdapter(mAdapter);
-        if (activePosition >= 0)
+        if (pos >= 0)
             onScroll(scrollState);
-
 
     }
 
