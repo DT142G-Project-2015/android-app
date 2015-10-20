@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/LayoutID">
+    android:id="@+id/LayoutID"
+    android:layout_marginBottom="16dp">
 
     <TextView
         android:layout_width="fill_parent"
@@ -35,15 +36,15 @@
         android:id="@+id/totalPrice"
         android:textStyle="bold"
         android:textSize="20dp"
-        android:paddingBottom="20dp"
+
         android:layout_marginLeft="20dp"
         android:visibility="gone"
         />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Betald beställning"
-        android:layout_marginLeft="20dp"
+        android:text="@string/terminate_order_text"
+        android:layout_marginLeft="18dp"
         android:visibility="gone"
         android:id="@+id/doneOrder"/>
 </LinearLayout>

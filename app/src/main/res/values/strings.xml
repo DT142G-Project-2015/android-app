@@ -41,6 +41,7 @@
     <string name="StatusReadyForKitchen">readyForKitchen</string>
     <string name="title_add_subItem">Lägg till tillbehör</string>
     <string name="title_activity_item">ItemActivity</string>
+    <string name="terminate_order_text">Avsluta beställning</string>
 
 
 </resources>

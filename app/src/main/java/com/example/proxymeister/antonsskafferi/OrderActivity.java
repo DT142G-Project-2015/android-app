@@ -233,22 +233,49 @@ public class OrderActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
 
-                            g.status = ReadyForKitchen;
-                            Call<Void> call = Utils.getApi(OrderActivity.this).changeStatus(g, orderId, groupID);
-                            call.enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Response<Void> response, Retrofit retrofit) {
-                                    System.out.println("working");
-                                    g.status = ReadyForKitchen;
-                                    getAllOrders(i);
-                                }
+                                //Yes or no dialog box
+                                final Dialog dialog = new Dialog(OrderActivity.this);
+                                dialog.setContentView(R.layout.activity_order_secure_send_kitchen);
+                                dialog.setTitle("Skicka till köket");
 
-                                @Override
-                                public void onFailure(Throwable t) {
-                                    System.out.println("not working");
+                                //YES
+                                Button yesButton = (Button) dialog.findViewById(R.id.toKitchenDialogButtonYES);
+                                yesButton.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        //Sends the order to the kitchen
+                                        g.status = ReadyForKitchen;
+                                        Call<Void> call = Utils.getApi(OrderActivity.this).changeStatus(g, orderId, groupID);
+                                        call.enqueue(new Callback<Void>() {
+                                            @Override
+                                            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                                                System.out.println("working");
+                                                g.status = ReadyForKitchen;
+                                                getAllOrders(i);
+                                            }
 
-                                }
-                            });
+                                            @Override
+                                            public void onFailure(Throwable t) {
+                                                System.out.println("not working");
+
+                                            }
+                                        });
+
+                                        dialog.dismiss();
+                                    }
+                                });
+                                //NO
+                                Button noButton = (Button) dialog.findViewById(R.id.toKitchenDialogButtonNO);
+                                noButton.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                dialog.show();
+
+
                         }
                     };
                     mSendToKitchenButton.setOnClickListener(sendGroup);
@@ -648,6 +675,8 @@ public class OrderActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
+
 
     public void deleteItem(int orderId, int groupId, int itemId) {
 
