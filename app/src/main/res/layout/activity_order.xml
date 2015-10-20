@@ -16,7 +16,7 @@ android:layout_height="fill_parent">
         android:id="@+id/place_new_order_button"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:background="@color/button_black">
+        style="@style/ButtonTheme">
     </Button>
 
     <Button

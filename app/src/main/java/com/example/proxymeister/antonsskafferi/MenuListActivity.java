@@ -1,5 +1,6 @@
 package com.example.proxymeister.antonsskafferi;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -148,7 +149,7 @@ public class MenuListActivity extends AppCompatActivity {
                     }
                     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                         if (item.getItemId() == R.id.action_remove_menu) {
-                            deleteMenu();
+                                    deleteMenu();
                             Toast.makeText(getApplicationContext(), "Raderad", Toast.LENGTH_SHORT).show();
                             return true;
                         } else if (item.getItemId() == R.id.action_edit_menu) {

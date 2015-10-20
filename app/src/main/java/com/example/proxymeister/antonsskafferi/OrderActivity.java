@@ -208,7 +208,7 @@ public class OrderActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(final CustomViewHolder viewHolder, final int i) {
-                viewHolder.mOrderTextView.setText("Bord:" + orders.get(i).booth);
+                viewHolder.mOrderTextView.setText("Bord " + orders.get(i).booth);
                 double totPrice = orders.get(i).getTotalPrice();
                 final int orderId = orders.get(i).getId();
 
