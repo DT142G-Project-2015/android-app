@@ -55,7 +55,7 @@ public class OrderActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_ITEM = 1;
     private static final int REQUEST_CODE_PICK_SUB_ITEM = 2;
 
-    private Timer timer = new Timer();
+    private Timer timer;
     private List<Order> orders;
     private int expandedPosition = -1;
     private ListView listviewaddednotes;
@@ -91,6 +91,7 @@ public class OrderActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
