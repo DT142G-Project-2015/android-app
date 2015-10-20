@@ -86,13 +86,23 @@ public class OrderActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(OrderActivity.this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(OrderActivity.this, DividerItemDecoration.VERTICAL_LIST));
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 ready();
             }
         }, 0, 5000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        timer.cancel();
     }
 
     void notice() {
@@ -632,8 +642,8 @@ public class OrderActivity extends AppCompatActivity {
                             dialog.setContentView(R.layout.activity_generic_yes_no_dialog);
                             dialog.setTitle("Avsluta beställning");
 
-                        final TextView terminateorder = (TextView) dialog.findViewById(R.id.textSuretoSend);
-                        terminateorder.append(getString(R.string.confirm_terminate_order));
+                            final TextView terminateorder = (TextView) dialog.findViewById(R.id.textSuretoSend);
+                            terminateorder.append(getString(R.string.confirm_terminate_order));
 
                             Button yesButton = (Button) dialog.findViewById(R.id.genericDialogButtonYES);
                             yesButton.setOnClickListener(new OnClickListener() {
@@ -647,6 +657,7 @@ public class OrderActivity extends AppCompatActivity {
                                         @Override
                                         public void onResponse(Response<Void> response, Retrofit retrofit) {
                                             Log.i(MainActivity.class.getName(), "NICE");
+                                            expandedPosition = -1;
                                             getAllOrders(-1, scrollState);
                                         }
 
