@@ -623,7 +623,7 @@ public class OrderActivity extends AppCompatActivity {
         dialog.setTitle("Ta bort");
 
         final TextView itemtoremove = (TextView) dialog.findViewById(R.id.textSuretoremove);
-        itemtoremove.append(item.name + "?");
+        itemtoremove.append(" \"" + item.name + "\"?");
 
         Button yesButton = (Button) dialog.findViewById(R.id.dialogButtonYES);
         yesButton.setOnClickListener(new OnClickListener() {

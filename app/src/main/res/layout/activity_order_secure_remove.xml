@@ -9,7 +9,10 @@
         android:id="@+id/textSuretoremove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Är du säker på att du vill ta bort " />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:text="@string/secure_remove_text" />
 
 
     <LinearLayout
@@ -24,8 +27,10 @@
             android:id="@+id/dialogButtonYES"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
-            android:text="Ja" />
+            android:text="Ja"
+            style="@style/ButtonThemeSmall"/>
 
         <Button
             android:id="@+id/dialogButtonNO"
@@ -33,6 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Nej"
+            style="@style/ButtonThemeSmall"
 
             />
     </LinearLayout>

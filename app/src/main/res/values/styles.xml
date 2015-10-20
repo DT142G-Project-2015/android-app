@@ -8,17 +8,20 @@
         <item name="android:windowBackground">@color/old_background_grey</item>
         <item name="colorPrimary">#675757</item>
         <item name="colorPrimaryDark">#321A1A</item>
-        <item name="colorAccent">#ff5656</item>
+        <item name="colorAccent">@color/refresh_blue</item>
+        <!--
         <item name="alertDialogTheme">@style/AppCompatAlertDialogStyle</item>
         <item name="android:dialogTheme">@style/AppCompatAlertDialogStyle</item>
+        -->
     </style>
 
     <style name="TextSmall">
         <item name="android:textColor">#00f425</item>
     </style>
 
-    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Dialog">
-        <item name="colorAccent">#ff5656</item>
+    <style name="AppCompatAlertDialogStyle">
+        <!-- NOTE: Same values as AppTheme. Unnecessary style? -->
+        <item name="colorAccent">@color/refresh_blue</item>
         <item name="android:windowBackground">@color/old_background_grey</item>
     </style>
 
@@ -29,11 +32,13 @@
     <style name="ButtonTheme" parent="AppTheme">
         <!-- NOTE: overridden in main's layout files: This button theme could be removed? -->
         <item name="android:textSize">@dimen/main_buttons_textsize</item>
+
     </style>
 
     <!-- Smaller button style -->
     <style name="ButtonThemeSmall" parent="AppTheme">
         <item name="android:textSize">@dimen/small_buttons_textsize</item>
+        <item name="android:textColorPrimary">@color/white</item>
     </style>
 
     <style name="ButtonNote" parent="ButtonThemeSmall">

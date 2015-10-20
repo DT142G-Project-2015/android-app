@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/dialogButtonCANCEL"
             android:text="Avbryt"
+            style="@style/ButtonThemeSmall"
 
             />
 
@@ -48,7 +49,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/dialogButtonDONE"
-            android:text="Klar"/>
+            android:text="Klar"
+            style="@style/ButtonThemeSmall"/>
     </LinearLayout>
 
 
@@ -76,6 +78,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/raremeatbtn"
             android:text="Blodig"
+            style="@style/ButtonThemeSmall"
             />
 
         <Button
@@ -83,14 +86,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/mediummeatbtn"
-        android:text="Medium"/>
+        android:text="Medium"
+            style="@style/ButtonThemeSmall"/>
 
         <Button
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/welldonemeatbtn"
-            android:text="Välstekt"/>
+            android:text="Välstekt"
+            style="@style/ButtonThemeSmall"/>
     </LinearLayout>
 
     </LinearLayout>

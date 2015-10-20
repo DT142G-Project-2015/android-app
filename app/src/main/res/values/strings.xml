@@ -28,6 +28,7 @@
     <string name="text_notes_prep">Tillagning:</string>
     <string name="text_note_hint">Skriv notering här</string>
     <string name="text_update_button">Ny updatering tillgänglig\t</string>
+    <string name="secure_remove_text">Är du säker på att du vill ta bort</string>
 
     //Variabler till login rutan
     <string name="title_activity_login">Login</string>
