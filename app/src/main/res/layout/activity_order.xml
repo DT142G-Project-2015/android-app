@@ -7,8 +7,7 @@ android:layout_height="fill_parent">
     android:orientation="vertical"
     android:id="@+id/linearlayout_topbar"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
 
     <Button
         android:text="@string/text_add_item"
@@ -19,14 +18,20 @@ android:layout_height="fill_parent">
         style="@style/ButtonTheme">
     </Button>
 
-    <Button
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/refresh_blue">
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:id="@+id/new_update_button"
+        android:id="@+id/new_update_view"
         android:textSize="@dimen/small_buttons_textsize"
         android:visibility="gone"
+        android:text="@string/text_update_button"
         style="@style/ButtonRefresh"/>
+    </FrameLayout>
 
 </LinearLayout>
 

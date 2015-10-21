@@ -27,7 +27,7 @@
     <string name="text_common_notes">Vanliga noteringar:</string>
     <string name="text_notes_prep">Tillagning:</string>
     <string name="text_note_hint">Skriv notering här</string>
-    <string name="text_update_button">Ny updatering tillgänglig\t</string>
+    <string name="text_update_button">Ny updatering hämtad\t</string>
     <string name="secure_remove_text">Är du säker på att du vill ta bort</string>
     <string name="confirm_send_kitchen">Vill du skicka den aktuella delbeställningen till köket?</string>
     <string name="terminate_order_text">Avsluta beställning</string>

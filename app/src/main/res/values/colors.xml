@@ -10,6 +10,11 @@
     <color name="old_button_black">#272121</color>
     <color name="old_background_grey">#000</color>
 
+    <color name="order_yellow">#FFC726</color>
+    <color name="order_yellow_dark">#f2b400</color>
+    <color name="order_green">#609040</color>
+    <color name="order_green_dark">#547e38</color>
+
     <!--
     <?xml version="1.0" encoding="utf-8"?>
     <resources>

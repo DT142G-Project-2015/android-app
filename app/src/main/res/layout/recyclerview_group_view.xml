@@ -12,9 +12,11 @@
         style="@style/ButtonThemeSmall"
         android:text="@string/text_send_kitchen"/>
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:paddingBottom="15dp"
+        android:paddingStart="15dp"
+        android:paddingTop="15dp"
         android:id="@+id/group_status"
         android:visibility="gone"
         style="@style/ButtonThemeSmall"/>

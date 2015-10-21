@@ -8,7 +8,8 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:id="@+id/noteLayoutLeft">
 
     <EditText
         android:layout_width="match_parent"
@@ -107,7 +108,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginLeft="16dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:id="@+id/noteLayoutRight">
 
     <TextView
         android:layout_width="wrap_content"
