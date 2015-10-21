@@ -142,6 +142,9 @@ public class OrderActivity extends AppCompatActivity {
                         OrderActivity.this.orders = orders;
                         setOrderAdapter(orders.indexOf(changedOrder), mLayoutManager.onSaveInstanceState());
                         notice();
+                        Toast.makeText(OrderActivity.this, "Ny uppdatering för Bord " + changedOrder.getBooth(), Toast.LENGTH_LONG).show();
+
+
                     }
                 }
 
@@ -156,7 +159,8 @@ public class OrderActivity extends AppCompatActivity {
 
     private void actuallyGetAllOrders(final OrdersCallback callback) {
         Utils.getApi(this).getOrders().enqueue(new Callback<List<Order>>() {
-            @Override public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
+            @Override
+            public void onResponse(Response<List<Order>> response, Retrofit retrofit) {
 
                 int statusCode = response.code();
                 Log.i(MainActivity.class.getName(), "Status: " + statusCode);
@@ -171,7 +175,9 @@ public class OrderActivity extends AppCompatActivity {
                 }
             }
 
-            @Override public void onFailure(Throwable t) {}
+            @Override
+            public void onFailure(Throwable t) {
+            }
         });
     }
 
@@ -419,25 +425,31 @@ public class OrderActivity extends AppCompatActivity {
                             mItemStatus.setVisibility(View.GONE);
                     }
                     if (g.status == ReadyForKitchen) {
-                        groupView.setBackgroundColor(Color.parseColor("#FFC726"));
+                        groupView.setBackgroundColor(getResources().getColor(R.color.order_yellow));
                         mAddItemButton.setVisibility(View.GONE);
                         mSendToKitchenButton.setVisibility(View.GONE);
 
                         mItemStatus.setText(R.string.status_ready_for_kitchen);
                         mItemStatus.setTextColor(Color.BLACK);
+                        mItemStatus.setBackgroundColor(getResources().getColor(R.color.order_yellow_dark));
                         mItemStatus.setVisibility(View.VISIBLE);
                     }
                     if (g.status == ReadyToServe) {
-                        groupView.setBackgroundColor(Color.parseColor("#609040"));
+                        groupView.setBackgroundColor(getResources().getColor(R.color.order_green));
                         mAddItemButton.setVisibility(View.GONE);
                         mSendToKitchenButton.setVisibility(View.GONE);
 
                         mItemStatus.setText(R.string.status_ready_to_serve);
+                        mItemStatus.setBackgroundColor(getResources().getColor(R.color.order_green_dark));
                         mItemStatus.setVisibility(View.VISIBLE);
+                        mDoneButton.setVisibility(View.VISIBLE);
                     }
                     if (g.status == Done) {
                         groupView.setBackgroundColor(Color.parseColor("#CDCDCD"));
                         mItemStatus.setVisibility(View.GONE);
+                        mDoneButton.setVisibility(View.GONE);
+
+                        mAddItemButton.setVisibility(View.GONE);
                     }
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     lp.setMargins(0, 4, 0, 4);
@@ -489,9 +501,9 @@ public class OrderActivity extends AppCompatActivity {
                        if (g.status == ReadyForKitchen) {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
-                           tv.setTextColor(Color.BLACK);
+                            tv.setTextColor(Color.BLACK);
                             deletebtn.setVisibility(View.GONE);
-                            addnotebtn.setVisibility(View.GONE);
+                            addnotebtn.setVisibility(View.VISIBLE);
                         }
                         if (g.status == ReadyToServe) {
                             itemView.setBackgroundColor(Color.parseColor("#609040"));
@@ -502,6 +514,8 @@ public class OrderActivity extends AppCompatActivity {
                         if (g.status == Done) {
                             itemView.setBackgroundColor(Color.parseColor("#CDCDCD"));
                             tv.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                            deletebtn.setVisibility(View.GONE);
+                            addnotebtn.setVisibility(View.GONE);
                         }
 
                         tv.setText(it.name + ", " + it.price + ":-");
@@ -568,6 +582,7 @@ public class OrderActivity extends AppCompatActivity {
                             if (g.status == Done) {
                                 itemSubView.setBackgroundColor(Color.parseColor("#CDCDCD"));
                                 tvsub.setBackgroundColor(Color.parseColor("#CDCDCD"));
+
                             }
 
                             if(!subIt.notes.isEmpty())
@@ -578,7 +593,7 @@ public class OrderActivity extends AppCompatActivity {
                             OnClickListener deletesubitembuttonListener = new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    showSecureDialog(subIt, it,  g, orderId, i);
+                                    showSecureDialog(subIt, it, g, orderId, i);
                                 }
                             };
                             deletesubitembtn.setOnClickListener(deletesubitembuttonListener);
@@ -602,8 +617,14 @@ public class OrderActivity extends AppCompatActivity {
                             addnotesubitembtn.setOnClickListener(addnotesubitembuttonListener);
 
                             tvsub.setText("        " + subIt.name + ", " + subIt.price + ":-");
-                            tvsub.setTextColor(Color.GRAY);
                             itemHolder.addView(itemSubView);
+
+                            if (g.status == ReadyToServe) {
+                                tvsub.setTextColor(Color.LTGRAY);
+                            }
+                            else{
+                                tvsub.setTextColor(Color.GRAY);
+                            }
                         }
                         //END
                     }
