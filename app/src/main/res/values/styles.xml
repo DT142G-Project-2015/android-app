@@ -6,8 +6,8 @@
     <style name="AppTheme" parent="Theme.AppCompat">
         <item name="colorButtonNormal">@color/background_grey</item>
         <item name="android:windowBackground">@color/background_blue_gray</item>
-        <item name="colorPrimary">@color/background_grey </item>
-        <item name="colorPrimaryDark">@color/old_background_grey </item>
+        <item name="colorPrimary">@color/background_blue_gray</item>
+        <item name="colorPrimaryDark">@color/old_background_grey</item>
         <item name="colorAccent">@color/refresh_blue</item>
         <!--
         <item name="alertDialogTheme">@style/AppCompatAlertDialogStyle</item>

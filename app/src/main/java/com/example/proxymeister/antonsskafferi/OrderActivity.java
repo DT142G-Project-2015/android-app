@@ -514,7 +514,7 @@ public class OrderActivity extends AppCompatActivity {
                             itemView.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setBackgroundColor(Color.parseColor("#FFC726"));
                             tv.setTextColor(Color.BLACK);
-                            deletebtn.setVisibility(View.GONE);
+                            deletebtn.setVisibility(View.INVISIBLE);
                             addnotebtn.setVisibility(View.VISIBLE);
                         }
                         if (g.status == ReadyToServe) {
@@ -582,8 +582,8 @@ public class OrderActivity extends AppCompatActivity {
                             if (g.status == ReadyForKitchen) {
                                 itemSubView.setBackgroundColor(Color.parseColor("#FFC726"));
                                 tvsub.setBackgroundColor(Color.parseColor("#FFC726"));
-                                deletesubitembtn.setVisibility(View.GONE);
-                                addnotesubitembtn.setVisibility(View.GONE);
+                                deletesubitembtn.setVisibility(View.INVISIBLE);
+                                addnotesubitembtn.setVisibility(View.VISIBLE);
                             }
                             if (g.status == ReadyToServe) {
                                 itemSubView.setBackgroundColor(Color.parseColor("#609040"));
@@ -594,6 +594,8 @@ public class OrderActivity extends AppCompatActivity {
                             if (g.status == Done) {
                                 itemSubView.setBackgroundColor(Color.parseColor("#CDCDCD"));
                                 tvsub.setBackgroundColor(Color.parseColor("#CDCDCD"));
+                                deletesubitembtn.setVisibility(View.GONE);
+                                addnotesubitembtn.setVisibility(View.GONE);
 
                             }
 
