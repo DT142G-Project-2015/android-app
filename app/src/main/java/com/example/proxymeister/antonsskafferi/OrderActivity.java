@@ -456,7 +456,9 @@ public class OrderActivity extends AppCompatActivity {
                     }
                     if (g.status == Done) {
                         groupView.setBackgroundColor(Color.parseColor("#CDCDCD"));
-                        mItemStatus.setVisibility(View.GONE);
+                        mItemStatus.setText(R.string.status_done);
+                        mItemStatus.setBackgroundColor(Color.parseColor("#C0C0C0"));
+                        mItemStatus.setVisibility(View.VISIBLE);
                         mDoneButton.setVisibility(View.GONE);
 
                         mAddItemButton.setVisibility(View.GONE);

@@ -35,6 +35,7 @@
                                             \n\nÄr du säker på att du vill avsluta den aktuella beställningen?</string>
     <string name="status_ready_for_kitchen">Beställningen hanteras av köket...</string>
     <string name="status_ready_to_serve">Beställningen är redo att hämtas!</string>
+    <string name="status_done">Slutförd beställning</string>
 
     //Variabler till login rutan
     <string name="title_activity_login">Login</string>
