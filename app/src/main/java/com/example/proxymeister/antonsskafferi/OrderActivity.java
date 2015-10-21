@@ -127,9 +127,9 @@ public class OrderActivity extends AppCompatActivity {
 
                 List<Order> existingOrders = OrderActivity.this.orders;
 
+                boolean updated = false;
 
                 if (existingOrders != null) {
-                    changedOrders = new ArrayList<>();
 
                     for (Order order : orders)
                         for (Order existingOrder : existingOrders)
@@ -137,16 +137,14 @@ public class OrderActivity extends AppCompatActivity {
                                 for (Group group : order.groups)
                                     for (Group existingGroup : existingOrder.groups)
                                         if (group.id == existingGroup.id && !group.status.equals(existingGroup.status) && group.status == Group.Status.ReadyToServe)
-                                            changedOrders.add(order.id);
+                                            { changedOrders.add(order.id); updated = true; }
 
 
-                    if (!changedOrders.isEmpty()) {
+                    if (!changedOrders.isEmpty() && updated) {
                         OrderActivity.this.orders = orders;
 
                         setOrderAdapter(-1, mLayoutManager.onSaveInstanceState());
                         notice();
-                        Toast.makeText(OrderActivity.this, "Ny uppdatering för Bord " + changedOrder.getBooth(), Toast.LENGTH_LONG).show();
-
 
                     }
                 }
@@ -301,7 +299,7 @@ public class OrderActivity extends AppCompatActivity {
                 else
                     viewHolder.mNotice.setVisibility(View.GONE);
 
-                changedOrders.remove((Integer)orders.get(i).id);
+
 
                 double totPrice = orders.get(i).getTotalPrice();
                 final int orderId = orders.get(i).getId();
@@ -738,6 +736,7 @@ public class OrderActivity extends AppCompatActivity {
 
                         mAdapter.notifyDataSetChanged();
                         if (expandedPosition != -1) {
+                            changedOrders.remove((Integer)orders.get(i).id);
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
