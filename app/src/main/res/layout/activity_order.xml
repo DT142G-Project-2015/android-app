@@ -25,7 +25,6 @@ android:layout_height="fill_parent">
         android:layout_gravity="center"
         android:id="@+id/new_update_button"
         android:textSize="@dimen/small_buttons_textsize"
-
         android:visibility="gone"
         style="@style/ButtonRefresh"/>
 

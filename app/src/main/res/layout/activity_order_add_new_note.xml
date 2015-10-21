@@ -16,13 +16,13 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="12dp"
         android:layout_height="50dp"
-        android:background="@color/kitchen_white"
+        android:background="#ffffff"
         android:hint="@string/text_note_hint"
         android:textColorHint="#A8A2A8"
         android:gravity="top|left"
         android:maxLength="100"
         android:id="@+id/newnotetext"
-        />
+        android:textColor="#000000" />
 
 
     <LinearLayout

@@ -13,9 +13,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="10"
-            android:textSize="17sp"
+            android:textSize="30sp"
             android:gravity="center"
-            android:textStyle="bold"
             android:text="Namn | Mängd, Enhet | Utgångsdatum"/>
 
     </LinearLayout>

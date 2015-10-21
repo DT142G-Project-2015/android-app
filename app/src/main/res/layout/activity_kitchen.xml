@@ -9,7 +9,9 @@
         android:id="@+id/linearlayout_topbar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        style="@style/CustomListviewLayout"
+       >
 
 
         <Button
@@ -17,7 +19,8 @@
             android:layout_height="fill_parent"
             android:visibility="gone"
             android:layout_weight="1.0"
-            android:text="undo"
+            android:text="Ångra"
+            style="@style/ButtonTheme"
             android:id="@+id/undodeletebutton" />
     </LinearLayout>
 
@@ -25,22 +28,16 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_below = "@id/linearlayout_topbar"
-        />
-    <!-- Temporarily ADDED for testing purposes -->
-    <!--<TextView-->
-        <!--android:layout_width="186dp"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:text="New Text"-->
-        <!--android:id="@+id/text"-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:layout_weight="0.33" />-->
+        style="@style/CustomListviewLayout"        />
+
 
     <!-- Temporarily REMOVED for testing purposes -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ordersRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        />
 </LinearLayout>
 
 

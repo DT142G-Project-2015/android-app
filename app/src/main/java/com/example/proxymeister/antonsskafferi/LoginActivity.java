@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(Throwable t) {
-                        Toast.makeText(getApplicationContext(), "C", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Uppkopplingsfel", Toast.LENGTH_SHORT).show();
 
                     }
                 });

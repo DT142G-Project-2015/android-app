@@ -4,7 +4,8 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Lunch"
         android:id="@+id/name"
         android:layout_alignTop="@+id/add_item"
@@ -16,12 +17,13 @@
         android:gravity="center_vertical" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
+        style="@style/ButtonTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lägg till"
         android:id="@+id/add_item"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        />
 </RelativeLayout>

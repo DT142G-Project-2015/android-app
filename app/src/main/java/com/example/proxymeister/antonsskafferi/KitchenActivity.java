@@ -279,9 +279,9 @@ public class KitchenActivity extends AppCompatActivity {
                             Log.e("error", "special" + occurrencesspecial + " " + specialitems.get(n).name);
                         }
                         if (!specialitems.get(n).notes.isEmpty()) {
-                            viewHolder.itemname.append(": ");
+                            viewHolder.itemname.append(" - ");
                             for (int j = 0; j < specialitems.get(n).notes.size(); j++) {
-                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + specialitems.get(n).notes.get(j).text + "</font></i>"));
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#478eb2\">" + specialitems.get(n).notes.get(j).text + "</font></i>"));
                                 if (j != specialitems.get(n).notes.size() - 1)
                                     viewHolder.itemname.append(", ");
                             }
@@ -289,11 +289,11 @@ public class KitchenActivity extends AppCompatActivity {
                         if (!specialitems.get(n).subItems.isEmpty()) {
                             for (Item subitem : specialitems.get(n).subItems) {
                                 viewHolder.itemname.append("\n" + "     ");
-                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#0000FF\">" + subitem.name + "</font></i>"));
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#808080\">" + subitem.name + "</font></i>"));
                                 if (!subitem.notes.isEmpty()) {
-                                    viewHolder.itemname.append(": ");
+                                    viewHolder.itemname.append(" - ");
                                     for (int k = 0; k < subitem.notes.size(); k++) {
-                                        viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#FF0000\">" + subitem.notes.get(k).text + "</font></i>"));
+                                        viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#478eb2\">" + subitem.notes.get(k).text + "</font></i>"));
                                         if (k != subitem.notes.size() - 1)
                                             viewHolder.itemname.append(", ");
                                     }

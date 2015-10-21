@@ -8,13 +8,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="16dp"
     android:orientation="vertical"
-    tools:context="com.example.proxymeister.antonsskafferi.LagerActivity">
+    tools:context="com.example.proxymeister.antonsskafferi.LagerActivity"
+    >
 
     <TextView
     android:id="@+id/recycler_lager_title"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:textSize="17sp" />
+    android:textSize="20sp" />
 
 </LinearLayout>
