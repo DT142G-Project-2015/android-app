@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -63,6 +64,7 @@ public class OrderActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
+    private ArrayList<Integer> changedOrders = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,20 +129,21 @@ public class OrderActivity extends AppCompatActivity {
 
 
                 if (existingOrders != null) {
-                    Order changedOrder = null;
+                    changedOrders = new ArrayList<>();
 
                     for (Order order : orders)
                         for (Order existingOrder : existingOrders)
                             if (order.id == existingOrder.id)
                                 for (Group group : order.groups)
                                     for (Group existingGroup : existingOrder.groups)
-                                        if (group.id == existingGroup.id && !group.status.equals(existingGroup.status))
-                                            changedOrder = order;
+                                        if (group.id == existingGroup.id && !group.status.equals(existingGroup.status) && group.status == Group.Status.ReadyToServe)
+                                            changedOrders.add(order.id);
 
 
-                    if (changedOrder != null) {
+                    if (!changedOrders.isEmpty()) {
                         OrderActivity.this.orders = orders;
-                        setOrderAdapter(orders.indexOf(changedOrder), mLayoutManager.onSaveInstanceState());
+
+                        setOrderAdapter(-1, mLayoutManager.onSaveInstanceState());
                         notice();
                     }
                 }
@@ -251,12 +254,14 @@ public class OrderActivity extends AppCompatActivity {
         public List<Item> items = new ArrayList<>();
         private TextView mOrderTextView;
         private TextView mTotPriceTextView;
+        private ImageView mNotice;
         public LinearLayout groupHolder;
         public Button mAddGroupButton;
         public Button mPayedButton;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
+            mNotice = (ImageView) itemView.findViewById(R.id.notice);
             mOrderTextView = (TextView) itemView.findViewById(R.id.order);
             mTotPriceTextView = (TextView) itemView.findViewById(R.id.totalPrice);
             mAddGroupButton = (Button) itemView.findViewById(R.id.addGroup);
@@ -284,6 +289,14 @@ public class OrderActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(final CustomViewHolder viewHolder, final int i) {
                 viewHolder.mOrderTextView.setText("Bord " + orders.get(i).booth);
+
+                if (changedOrders.contains(orders.get(i).id))
+                    viewHolder.mNotice.setVisibility(View.VISIBLE);
+                else
+                    viewHolder.mNotice.setVisibility(View.GONE);
+
+                changedOrders.remove((Integer)orders.get(i).id);
+
                 double totPrice = orders.get(i).getTotalPrice();
                 final int orderId = orders.get(i).getId();
 
@@ -415,7 +428,6 @@ public class OrderActivity extends AppCompatActivity {
                         groupView.setBackgroundColor(Color.WHITE);
                         if (!g.items.isEmpty())
                             mSendToKitchenButton.setVisibility(View.VISIBLE);
-
                             mItemStatus.setVisibility(View.GONE);
                     }
                     if (g.status == ReadyForKitchen) {
