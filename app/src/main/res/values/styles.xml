@@ -4,9 +4,9 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat">
-        <item name="colorButtonNormal">@color/refresh_blue</item>
-        <item name="android:windowBackground">@color/old_background_grey</item>
-        <item name="colorPrimary">@color/old_background_grey </item>
+        <item name="colorButtonNormal">@color/background_grey</item>
+        <item name="android:windowBackground">@color/background_blue_gray</item>
+        <item name="colorPrimary">@color/background_grey </item>
         <item name="colorPrimaryDark">@color/old_background_grey </item>
         <item name="colorAccent">@color/refresh_blue</item>
         <!--

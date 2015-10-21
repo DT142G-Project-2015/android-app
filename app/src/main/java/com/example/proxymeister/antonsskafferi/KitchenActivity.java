@@ -247,7 +247,7 @@ public class KitchenActivity extends AppCompatActivity {
 
                 int tablenum = groups.get(i).tablenum;
                 // Print tablenumber
-                viewHolder.groupnumber.setText("Bord: " + tablenum);
+                viewHolder.groupnumber.setText("Bord  " + tablenum);
 
 
                 // If the item has subitems or notes, the item is added to specialitems
@@ -289,7 +289,7 @@ public class KitchenActivity extends AppCompatActivity {
                         if (!specialitems.get(n).subItems.isEmpty()) {
                             for (Item subitem : specialitems.get(n).subItems) {
                                 viewHolder.itemname.append("\n" + "     ");
-                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#808080\">" + subitem.name + "</font></i>"));
+                                viewHolder.itemname.append(Html.fromHtml("<i><font color=\"#9B9B9B\n\">" + subitem.name + "</font></i>"));
                                 if (!subitem.notes.isEmpty()) {
                                     viewHolder.itemname.append(" - ");
                                     for (int k = 0; k < subitem.notes.size(); k++) {

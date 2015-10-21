@@ -2,9 +2,10 @@
 <resources>
     <!-- Refer to this file when assigning new colors! -->
     <color name="refresh_blue">#478eb2</color>
+    <color name="background_blue_gray">#32454e</color>
     <color name="kitchen_white">#E0D8E0</color>
     <color name="button_black">#050e30</color>
-    <color name="background_grey">#64252424</color>
+    <color name="background_grey">#6f03130d</color>
     <color name="white">#fff</color>
     <color name="black">#000</color>
     <color name="old_button_black">#272121</color>
