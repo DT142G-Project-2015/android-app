@@ -33,10 +33,10 @@
         android:layout_height="wrap_content"
         android:text="Lägg till"
         android:id="@+id/add_item"
-        android:layout_alignBottom="@+id/description"
+        style="@style/ButtonTheme"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="false"
-        style="@style/ButtonTheme"/>
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
