@@ -1,13 +1,16 @@
 package com.example.proxymeister.antonsskafferi.model;
 
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.proxymeister.antonsskafferi.LagerActivity;
 import com.example.proxymeister.antonsskafferi.R;
+
 
 import java.util.ArrayList;
 
@@ -59,7 +62,7 @@ public class LagerAdapter extends RecyclerView.Adapter<LagerAdapter.LagerViewHol
     public void onBindViewHolder(LagerViewHolder lagerholder, int position) {
         lagerholder.lagerTextView.setText(myLagerDataset.get(position));
         if (selectedPos == position) {
-            lagerholder.lagerTextView.setBackgroundColor(Color.BLACK);
+            lagerholder.lagerTextView.setBackgroundColor(Color.rgb(71,142,178));
         } else {
             lagerholder.lagerTextView.setBackgroundColor(Color.TRANSPARENT);
         }

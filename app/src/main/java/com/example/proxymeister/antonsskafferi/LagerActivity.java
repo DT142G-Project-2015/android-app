@@ -120,8 +120,6 @@ public class LagerActivity extends AppCompatActivity  {
 
                     rv.setItemAnimator(new DefaultItemAnimator());
                     rv.setAdapter(lAdapter);
-
-                    Log.i("getart", "succ: ");
                 }
 
                 @Override
@@ -194,7 +192,7 @@ public class LagerActivity extends AppCompatActivity  {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(LagerActivity.this);
             builder.setTitle("");
-            builder.setMessage("Är du säker på att du vill ta bort denna vara?");
+            builder.setMessage("Är du säker på att du vill ta bort varan?");
 
             builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -210,7 +208,6 @@ public class LagerActivity extends AppCompatActivity  {
                         deleteArticle();
                         dialog.dismiss();
                         createToaster("Vara borttagen");
-                        lr.refreshView();
                     } catch (Throwable t) {
                         dialog.dismiss();
                         String s = t.getMessage();
@@ -333,9 +330,9 @@ public class LagerActivity extends AppCompatActivity  {
                         {
                             case "Tillbehör": body.category_id = 1;
                                 break;
-                            case "Grönsaker": body.category_id = 2;
+                            case "Grönsak": body.category_id = 2;
                                 break;
-                            case "Råvaror": body.category_id = 3;
+                            case "Råvara": body.category_id = 3;
                                 break;
                             case "Färskvara": body.category_id = 4;
                                 break;
@@ -343,10 +340,10 @@ public class LagerActivity extends AppCompatActivity  {
                                 break;
                         }
 
+
                         createArticle();
                         dialog.dismiss();
                         createToaster("Vara tillagd");
-                        lr.refreshView();
 
                     } catch (Throwable t) {
                         dialog.dismiss();
@@ -458,7 +455,6 @@ public class LagerActivity extends AppCompatActivity  {
                         changeArticle();
                         dialog.dismiss();
                         createToaster("Ändring genomförd");
-                        lr.refreshView();
 
                     } catch (Throwable t) {
                         dialog.dismiss();
@@ -480,7 +476,7 @@ public class LagerActivity extends AppCompatActivity  {
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Response<Void> response, Retrofit retrofit) {
-                    Log.i("DELETE", "Success");
+                    lr.refreshView();
                 }
 
                 @Override
@@ -498,7 +494,7 @@ public class LagerActivity extends AppCompatActivity  {
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Response<Void> response, Retrofit retrofit) {
-                    Log.i("CREATE", response.message());
+                    lr.refreshView();
                 }
 
                 @Override
@@ -516,7 +512,7 @@ public class LagerActivity extends AppCompatActivity  {
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Response<Void> response, Retrofit retrofit) {
-                    Log.i("CHANGE", "Success");
+                    lr.refreshView();
                 }
 
                 @Override
