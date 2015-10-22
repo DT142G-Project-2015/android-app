@@ -8,9 +8,10 @@ public class Order {
     public int id;
     public int booth;
     public boolean payed;
-    public double totPrice = 0.00;
 
     public double getTotalPrice(){
+        double totPrice = 0.00;
+
         for(Group g : groups) {
             for(Item i : g.items)
                 totPrice += i.price;
