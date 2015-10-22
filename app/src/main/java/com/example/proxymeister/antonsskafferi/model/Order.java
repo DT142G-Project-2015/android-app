@@ -13,8 +13,11 @@ public class Order {
         double totPrice = 0.00;
 
         for(Group g : groups) {
-            for(Item i : g.items)
+            for(Item i : g.items) {
                 totPrice += i.price;
+                for (Item si : i.subItems)
+                    totPrice += si.price;
+            }
         }
         return totPrice;
     }
