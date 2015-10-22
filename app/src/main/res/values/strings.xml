@@ -25,7 +25,7 @@
     <string name="text_done">Klar</string>
     <string name="text_add_note">Tillagda noteringar:</string>
     <string name="text_common_notes">Vanliga noteringar:</string>
-    <string name="text_notes_prep">Tillagning:</string>
+    <string name="text_notes_prep">Extra notering:</string>
     <string name="text_note_hint">Skriv notering här</string>
     <string name="text_update_button">Ny updatering hämtad\t</string>
     <string name="secure_remove_text">Är du säker på att du vill ta bort</string>

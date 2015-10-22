@@ -2,15 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:weightSum="1">
+    android:layout_height="fill_parent">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:id="@+id/linearlayout_topbar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        style="@style/CustomListviewLayout"
        >
 
 
@@ -18,17 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:visibility="gone"
-            android:layout_weight="1.0"
+            android:layout_weight="1"
             android:text="Ångra"
             style="@style/ButtonTheme"
             android:id="@+id/undodeletebutton" />
     </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_below = "@id/linearlayout_topbar"
-        style="@style/CustomListviewLayout"        />
 
 
     <!-- Temporarily REMOVED for testing purposes -->

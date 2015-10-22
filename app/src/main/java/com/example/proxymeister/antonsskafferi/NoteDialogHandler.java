@@ -51,9 +51,6 @@ public class NoteDialogHandler implements View.OnClickListener {
         dialog.findViewById(R.id.dialogButtonCANCEL).setVisibility(View.GONE);
 
 
-
-
-
         final Button mediumButton = (Button) dialog.findViewById(R.id.mediummeatbtn);
         final Button rareButton = (Button) dialog.findViewById(R.id.raremeatbtn);
         final Button welldoneButton = (Button) dialog.findViewById(R.id.welldonemeatbtn);
@@ -69,8 +66,7 @@ public class NoteDialogHandler implements View.OnClickListener {
     }
 
     // Add note to item
-    public NoteDialogHandler(Item it, int gid, int orderId, Context con, Callback callback)
-    {
+    public NoteDialogHandler(Item it, int gid, int orderId, Context con, Callback callback) {
         context = con;
         item = it;
         this.orderId = orderId;
@@ -82,8 +78,7 @@ public class NoteDialogHandler implements View.OnClickListener {
     }
 
     // Add no to subitem
-    public NoteDialogHandler(Item subit, Item it, int gid, int orderId, Context con, Callback callback)
-    {
+    public NoteDialogHandler(Item subit, Item it, int gid, int orderId, Context con, Callback callback) {
         context = con;
         item = it;
         subitem = subit;
@@ -95,8 +90,7 @@ public class NoteDialogHandler implements View.OnClickListener {
         dialog.setContentView(R.layout.activity_order_add_new_note);
     }
 
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         dialog.setTitle(title);
     }
 
@@ -110,21 +104,18 @@ public class NoteDialogHandler implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        String thenewnote = ((Button)v).getText().toString();
+        String thenewnote = ((Button) v).getText().toString();
 
-        Button clickedButton = (Button)v;
+        Button clickedButton = (Button) v;
         if (clickedButton.getId() == R.id.dialogButtonDONE) {
-            EditText noteTextView = (EditText)dialog.findViewById(R.id.newnotetext);
+            EditText noteTextView = (EditText) dialog.findViewById(R.id.newnotetext);
             thenewnote = noteTextView.getText().toString();
         }
 
         this.n.text = thenewnote;
-        if(this.n.text.isEmpty())
-        {
+        if (this.n.text.isEmpty()) {
             Toast.makeText(context, "Fel: Ange notering eller tryck avbryt", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
+        } else {
             addNote();
         }
     }
@@ -133,24 +124,34 @@ public class NoteDialogHandler implements View.OnClickListener {
     // Show dialogs for creating notes to an item
     public void showNoteDialog() {
 
-        if(isItem) {
+        if (isItem) {
             if (item.type == 2) {
                 dialog.findViewById(R.id.buttonsmeat).setVisibility(View.VISIBLE);
                 dialog.findViewById(R.id.textmeat).setVisibility(View.VISIBLE);
-            } else {
-                dialog.findViewById(R.id.buttonsmeat).setVisibility(View.GONE);
-                dialog.findViewById(R.id.textmeat).setVisibility(View.GONE);
-            }
-        }
-        else{
-            if (subitem.type == 2) {
-                dialog.findViewById(R.id.buttonsmeat).setVisibility(View.VISIBLE);
+            } else if (item.type == 1) {
+                dialog.findViewById(R.id.buttonsSize).setVisibility(View.VISIBLE);
                 dialog.findViewById(R.id.textmeat).setVisibility(View.VISIBLE);
             } else {
                 dialog.findViewById(R.id.buttonsmeat).setVisibility(View.GONE);
+                dialog.findViewById(R.id.buttonsSize).setVisibility(View.GONE);
+                dialog.findViewById(R.id.textmeat).setVisibility(View.GONE);
+            }
+
+        } else {
+            if (subitem.type == 2) {
+                dialog.findViewById(R.id.buttonsmeat).setVisibility(View.VISIBLE);
+                dialog.findViewById(R.id.textmeat).setVisibility(View.VISIBLE);
+            } else if (subitem.type == 1) {
+                dialog.findViewById(R.id.buttonsSize).setVisibility(View.VISIBLE);
+                dialog.findViewById(R.id.textmeat).setVisibility(View.VISIBLE);
+            } else {
+                dialog.findViewById(R.id.buttonsmeat).setVisibility(View.GONE);
+                dialog.findViewById(R.id.buttonsSize).setVisibility(View.GONE);
                 dialog.findViewById(R.id.textmeat).setVisibility(View.GONE);
             }
         }
+
+
 
 
         // This button closes the inner dialog
@@ -198,7 +199,7 @@ public class NoteDialogHandler implements View.OnClickListener {
                     listviewaddednotes.setAdapter(theAdapter);
                 }
                 else
-                    dialog.findViewById(R.id.addednotestext).setVisibility(View.GONE);
+                    dialog.findViewById(R.id.addednotestext).setVisibility(View.INVISIBLE);
             }
         }
         else {
@@ -214,7 +215,7 @@ public class NoteDialogHandler implements View.OnClickListener {
                         listviewaddednotes.setAdapter(theAdapter);
                 }
                 else
-                    dialog.findViewById(R.id.addednotestext).setVisibility(View.GONE);
+                    dialog.findViewById(R.id.addednotestext).setVisibility(View.INVISIBLE);
             }
         }
 
@@ -225,13 +226,22 @@ public class NoteDialogHandler implements View.OnClickListener {
         Button doneButton = (Button) dialog.findViewById(R.id.dialogButtonDONE);
 
         final Button mediumButton = (Button) dialog.findViewById(R.id.mediummeatbtn);
-
         final Button rareButton = (Button) dialog.findViewById(R.id.raremeatbtn);
         final Button welldoneButton = (Button) dialog.findViewById(R.id.welldonemeatbtn);
+
+        final Button sizeMediumButton = (Button) dialog.findViewById(R.id.sizeMediumbtn);
+        final Button sizeLargeButton = (Button) dialog.findViewById(R.id.sizeLargetbtn);
+        final Button sizeSmallButton = (Button) dialog.findViewById(R.id.sizeSmallbtn);
+
 
         rareButton.setOnClickListener(this);
         mediumButton.setOnClickListener(this);
         welldoneButton.setOnClickListener(this);
+
+        sizeLargeButton.setOnClickListener(this);
+        sizeMediumButton.setOnClickListener(this);
+        sizeSmallButton.setOnClickListener(this);
+
         doneButton.setOnClickListener(this);
 
 

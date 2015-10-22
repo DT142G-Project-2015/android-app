@@ -3,6 +3,7 @@
     <!-- Refer to this file when assigning new colors! -->
     <color name="refresh_blue">#478eb2</color>
     <color name="background_blue_gray">#32454e</color>
+    <color name="primary_dark_blue_gray">#1e2a2f</color>
     <color name="kitchen_white">#E0D8E0</color>
     <color name="button_black">#050e30</color>
     <color name="background_grey">#6f03130d</color>

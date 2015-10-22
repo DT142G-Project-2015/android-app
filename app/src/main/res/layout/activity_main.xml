@@ -47,6 +47,7 @@
             android:text="@string/menu"
             android:id="@+id/button3"
             style="@style/ButtonTheme"
+            android:layout_marginTop="4dp"
             android:onClick="openMenuActivity"/>
 
         <Button

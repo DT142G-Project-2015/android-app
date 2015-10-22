@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:baselineAligned="false">
 
     <LinearLayout
@@ -16,6 +16,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_height="50dp"
         android:background="#ffffff"
         android:hint="@string/text_note_hint"
@@ -70,7 +71,8 @@
         android:id="@+id/buttonsmeat"
         android:layout_height="wrap_content"
         android:gravity="top|right"
-        android:paddingBottom="20dp">
+        android:paddingBottom="20dp"
+        android:visibility="gone">
 
 
         <Button
@@ -99,6 +101,44 @@
             style="@style/ButtonThemeSmall"/>
     </LinearLayout>
 
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:id="@+id/buttonsSize"
+            android:layout_height="wrap_content"
+            android:gravity="top|right"
+            android:paddingBottom="20dp"
+            android:visibility="gone">
+
+
+            <Button
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/sizeLargetbtn"
+                android:text="Stor"
+                style="@style/ButtonThemeSmall"
+                />
+
+            <Button
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/sizeMediumbtn"
+                android:text="Medium"
+                style="@style/ButtonThemeSmall"/>
+
+            <Button
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/sizeSmallbtn"
+                android:text="Liten"
+                style="@style/ButtonThemeSmall"/>
+        </LinearLayout>
+
+
     </LinearLayout>
 
 
@@ -109,7 +149,8 @@
         android:orientation="vertical"
         android:layout_marginLeft="16dp"
         android:layout_weight="1"
-        android:id="@+id/noteLayoutRight">
+        android:id="@+id/noteLayoutRight"
+        >
 
     <TextView
         android:layout_width="wrap_content"

@@ -24,6 +24,15 @@
         android:paddingBottom="20dp">
 
         <Button
+            android:id="@+id/dialogButtonNO"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nej"
+            style="@style/ButtonThemeSmall"/>
+
+
+        <Button
             android:id="@+id/dialogButtonYES"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -32,15 +41,7 @@
             android:text="Ja"
             style="@style/ButtonThemeSmall"/>
 
-        <Button
-            android:id="@+id/dialogButtonNO"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Nej"
-            style="@style/ButtonThemeSmall"
 
-            />
     </LinearLayout>
 
 
