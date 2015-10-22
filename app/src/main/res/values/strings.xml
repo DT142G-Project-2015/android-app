@@ -36,6 +36,10 @@
     <string name="status_ready_for_kitchen">Beställningen hanteras av köket...</string>
     <string name="status_ready_to_serve">Beställningen är redo att hämtas!</string>
     <string name="status_done">Slutförd beställning</string>
+    <string name="confirm_new_order_group">Vill du lägga till en ny delbeställning?</string>
+    <string name="force_green_button_text">Färdigställ beställning</string>
+    <string name="force_green_text">Beställningens status kommer att ändras till \"redo att hämtas\", och kommer inte längre visas i köket.
+                                    \n\nÄr du säker på att du vill färdigtälla denna beställning?</string>
 
     //Variabler till login rutan
     <string name="title_activity_login">Login</string>

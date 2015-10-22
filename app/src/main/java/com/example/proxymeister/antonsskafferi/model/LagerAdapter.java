@@ -62,7 +62,7 @@ public class LagerAdapter extends RecyclerView.Adapter<LagerAdapter.LagerViewHol
     public void onBindViewHolder(LagerViewHolder lagerholder, int position) {
         lagerholder.lagerTextView.setText(myLagerDataset.get(position));
         if (selectedPos == position) {
-            lagerholder.lagerTextView.setBackgroundColor(Color.BLACK);
+            lagerholder.lagerTextView.setBackgroundColor(Color.rgb(71, 142, 178));
         } else {
             lagerholder.lagerTextView.setBackgroundColor(Color.TRANSPARENT);
         }

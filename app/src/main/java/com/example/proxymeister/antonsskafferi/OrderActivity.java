@@ -397,6 +397,63 @@ public class OrderActivity extends AppCompatActivity {
                     mAddItemButton.setOnClickListener(additem);
                     //END
 
+                    //MARK READYTOSERVE
+                    Button mForceGreenButton = (Button) groupView.findViewById(R.id.forcegreenbtn);
+                    OnClickListener markRTS = new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            final Dialog dialog = new Dialog(OrderActivity.this);
+                            dialog.setContentView(R.layout.activity_generic_yes_no_dialog);
+                            dialog.setTitle("Färdigställ beställning");
+
+                            final TextView forcegreenorder = (TextView) dialog.findViewById(R.id.textSuretoSend);
+                            forcegreenorder.append(getString(R.string.force_green_text));
+
+                            Button yesButton = (Button) dialog.findViewById(R.id.genericDialogButtonYES);
+                            yesButton.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    g.status = ReadyToServe;
+                                    Call<Void> call = Utils.getApi(OrderActivity.this).changeStatus(g, orderId, groupID);
+                                    call.enqueue(new Callback<Void>() {
+                                        @Override
+                                        public void onResponse(Response<Void> response, Retrofit retrofit) {
+                                            System.out.println("working");
+                                            g.status = ReadyToServe;
+                                            if (orders.get(i).allDone())
+                                                getAllOrders(-1, scrollState);
+                                            else
+                                                getAllOrders(i, scrollState);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Throwable t) {
+                                            System.out.println("not working");
+
+                                        }
+                                    });
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            Button noButton = (Button) dialog.findViewById(R.id.genericDialogButtonNO);
+
+                            noButton.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            dialog.show();
+
+                        }
+                    };
+                    mForceGreenButton.setOnClickListener(markRTS);
+
+
                     //MARK DONE
                     Button mDoneButton = (Button) groupView.findViewById(R.id.done);
                     OnClickListener markDone = new OnClickListener() {
@@ -443,6 +500,7 @@ public class OrderActivity extends AppCompatActivity {
                         mItemStatus.setTextColor(Color.BLACK);
                         mItemStatus.setBackgroundColor(getResources().getColor(R.color.order_yellow_dark));
                         mItemStatus.setVisibility(View.VISIBLE);
+                        mForceGreenButton.setVisibility(View.VISIBLE);
                     }
                     if (g.status == ReadyToServe) {
                         groupView.setBackgroundColor(getResources().getColor(R.color.order_green));
@@ -650,20 +708,48 @@ public class OrderActivity extends AppCompatActivity {
                 viewHolder.mAddGroupButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Group gr = new Group();
-                        gr.status = Initial;
-                        final Call<Group> call = Utils.getApi(OrderActivity.this).createOrderGroup(gr, orderId);
-                        call.enqueue(new retrofit.Callback<Group>() {
-                            @Override
-                            public void onResponse(Response<Group> response, Retrofit retrofit) {
-                                getAllOrders(i, mLayoutManager.onSaveInstanceState());
-                            }
 
+                        final Dialog dialog = new Dialog(OrderActivity.this);
+                        dialog.setContentView(R.layout.activity_generic_yes_no_dialog);
+                        dialog.setTitle("Ny delbeställning");
+
+                        final TextView terminateorder = (TextView) dialog.findViewById(R.id.textSuretoSend);
+                        terminateorder.append(getString(R.string.confirm_new_order_group));
+
+                        Button yesButton = (Button) dialog.findViewById(R.id.genericDialogButtonYES);
+                        yesButton.setOnClickListener(new OnClickListener() {
                             @Override
-                            public void onFailure(Throwable t) {
-                                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                            public void onClick(View v) {
+
+                                Group gr = new Group();
+                                gr.status = Initial;
+                                final Call<Group> call = Utils.getApi(OrderActivity.this).createOrderGroup(gr, orderId);
+                                call.enqueue(new retrofit.Callback<Group>() {
+                                    @Override
+                                    public void onResponse(Response<Group> response, Retrofit retrofit) {
+                                        getAllOrders(i, mLayoutManager.onSaveInstanceState());
+                                    }
+
+                                    @Override
+                                    public void onFailure(Throwable t) {
+                                        Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                                    }
+                                });
+
+                                dialog.dismiss();
                             }
                         });
+
+                        Button noButton = (Button) dialog.findViewById(R.id.genericDialogButtonNO);
+
+                        noButton.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        dialog.show();
                     }
                 });
                 //END ADDGROUP
@@ -674,36 +760,36 @@ public class OrderActivity extends AppCompatActivity {
                     public void onClick(View v) {
 
                             final Dialog dialog = new Dialog(OrderActivity.this);
-                            dialog.setContentView(R.layout.activity_generic_yes_no_dialog);
-                            dialog.setTitle("Avsluta beställning");
+                                dialog.setContentView(R.layout.activity_generic_yes_no_dialog);
+                                dialog.setTitle("Avsluta beställning");
 
-                            final TextView terminateorder = (TextView) dialog.findViewById(R.id.textSuretoSend);
-                            terminateorder.append(getString(R.string.confirm_terminate_order));
+                                final TextView terminateorder = (TextView) dialog.findViewById(R.id.textSuretoSend);
+                                terminateorder.append(getString(R.string.confirm_terminate_order));
 
-                            Button yesButton = (Button) dialog.findViewById(R.id.genericDialogButtonYES);
-                            yesButton.setOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
+                                Button yesButton = (Button) dialog.findViewById(R.id.genericDialogButtonYES);
+                                yesButton.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
 
-                                    Order or = orders.get(i);
-                                    or.payed = true;
-                                    final Call<Void> call = Utils.getApi(OrderActivity.this).updateOrderStatus(or, orderId);
-                                    call.enqueue(new retrofit.Callback<Void>() {
-                                        @Override
-                                        public void onResponse(Response<Void> response, Retrofit retrofit) {
-                                            Log.i(MainActivity.class.getName(), "NICE");
-                                            expandedPosition = -1;
-                                            getAllOrders(-1, scrollState);
-                                        }
+                                        Order or = orders.get(i);
+                                        or.payed = true;
+                                        final Call<Void> call = Utils.getApi(OrderActivity.this).updateOrderStatus(or, orderId);
+                                        call.enqueue(new retrofit.Callback<Void>() {
+                                            @Override
+                                            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                                                Log.i(MainActivity.class.getName(), "NICE");
+                                                expandedPosition = -1;
+                                                getAllOrders(-1, scrollState);
+                                            }
 
-                                        @Override
-                                        public void onFailure(Throwable t) {
-                                            Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
-                                        }
-                                    });
+                                            @Override
+                                            public void onFailure(Throwable t) {
+                                                Log.i(MainActivity.class.getName(), "Failed to fetch data: " + t.getMessage());
+                                            }
+                                        });
 
-                                    dialog.dismiss();
-                                }
+                                        dialog.dismiss();
+                                    }
                             });
 
                             Button noButton = (Button) dialog.findViewById(R.id.genericDialogButtonNO);
